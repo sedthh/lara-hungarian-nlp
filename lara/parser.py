@@ -10,21 +10,8 @@ if 'lara.nlp' not in sys.modules:
 class Intents:
 	
 	##### CONSTRUCTOR #####
-	def __init__(self,new_intents={},include_default_intents=True):		
+	def __init__(self,new_intents={}):		
 		self.intents	= {}
-		
-		if include_default_intents:
-			default_intents	= {
-				"_negative"		: [{"stem":"nem"},{"stem":"ne"},{"stem":"soha"},{"stem":"mégse","affix":["m"]}],
-				"_positive"		: [{"stem":"igen"},{"stem":"aha"},{"stem":"ja"},{"stem":"ok","affix":["é","s"]}],
-				"_greeting" 	: [{"stem":"hi","match_at":"start"},{"stem":"szia","match_at":"start"},{"stem":"helló","match_at":"start"},{"stem":"szervusz","match_at":"start"},{"stem":"hali","match_at":"start"}],
-				"_leaving" 		: [{"stem":"bye","match_at":"end"},{"stem":"szia","match_at":"end"},{"stem":"viszlát"},{"stem":"viszont látásra"},{"stem":"jó éj","affix":["t","szakát"]}],
-				"_thanking"		: [{"stem":"kösz","affix":["i","önöm","önjük","önet"]}],
-				"_command"		: [{"stem":"keres(s|d)","wordclass":"regex"},{"stem":"mutass(s|d)","wordclass":"regex"},{"stem":"mond(j|d)","wordclass":"regex"},{"stem":"szeretné(k|m)","wordclass":"regex"},{"stem":"akaro(k|m)","wordclass":"regex"}],
-				"_question"		: [{"stem":"\?+($|\s\w+)","wordclass":"regex"},{"stem":"([^,][^,\S+]hogy|^hogy)(an)?","wordclass":"regex"},{"stem":"hol"},{"stem":"honnan"},{"stem":"hová"},{"stem":"hány","affix":["an","at","ból"]},{"stem":"mettől"},{"stem":"meddig"},{"stem":"merre"},{"stem":"mennyi","affix":["en","re"]},{"stem":"mi","affix":["t","k","ket","kor","korra","lyen","lyenek","nek","től","kortól","korra","ből","hez","re","vel"]},{"stem":"ki","affix":["t","k","ket","nek","knek","től","ktől","ből","kből","hez","re","kre","vel","kkel"]}],
-				"_conditional"	: [{"stem":"volna"},{"stem":"lenne"},{"stem":"\w+h[ae]t\w+","wordclass":"regex"}]
-			}
-			new_intents		= self._merge_dicts(default_intents,new_intents)
 		if new_intents:
 			self.add_intents(new_intents)
 
@@ -34,7 +21,10 @@ class Intents:
 		
 	def __str__(self):
 		return json.dumps(self.intents)
-		
+
+	def __len__(self):		
+		return len(self.intents.keys())
+	
 	def __eq__(self,other):
 		if self.__class__.__name__ == other.__class__.__name__:
 			return (self.intents==other.intents)
@@ -47,12 +37,13 @@ class Intents:
 	
 	def __add__(self,other):
 		if other:
-			tmp = Intents(self.intents,False)
+			tmp = Intents(self.intents)
 			if self.__class__.__name__ == other.__class__.__name__:
 				tmp.add_intents(other.intents)
 			elif isinstance(other,dict):
 				tmp.add_intents(other)
-			return tmp		
+			return tmp
+		return self
 	
 	##### CLASS FUNCTIONS #####
 				
@@ -98,10 +89,20 @@ class Intents:
 		else:
 			#item['prefix']		=  [re.escape(prefix) for prefix in item['prefix']]
 			if 'clean_prefix' not in item:
-				item['clean_prefix']= r'('+lara.nlp.strip_accents('|'.join(item['prefix']))+')?'
+				if isinstance(item['prefix'],list):
+					item['clean_prefix']= r'('+lara.nlp.strip_accents('|'.join(item['prefix']))+')?'
+				else:
+					item['clean_prefix']= r''+lara.nlp.strip_accents(item['prefix'])
 			else:
-				item['clean_prefix']= r'('+('|'.join(item['prefix']))+')?'
-			item['prefix']		= r'('+('|'.join(item['prefix']))+')?'
+				if isinstance(item['clean_prefix'],list):
+					item['clean_prefix']=  [re.escape(prefix) for prefix in item['clean_prefix']]
+					item['clean_prefix']= r'('+('|'.join(item['clean_prefix']))+')?' #prefix?
+				else:
+					item['clean_prefix']= r''+(item['clean_prefix'])
+			if isinstance(item['prefix'],list):
+				item['prefix']		= r'('+('|'.join(item['prefix']))+')?'
+			else:
+				item['prefix']		= r''+(item['prefix'])
 		
 		if 'affix' not in item or not item['affix']:
 			item['affix']		= r''
@@ -109,11 +110,20 @@ class Intents:
 		else:
 			#item['affix']		=  [re.escape(affix) for affix in item['affix']]
 			if 'clean_affix' not in item:
-				item['clean_affix']	= r'('+lara.nlp.strip_accents('|'.join(item['affix']))+')?'
+				if isinstance(item['affix'],list):
+					item['clean_affix']	= r'('+lara.nlp.strip_accents('|'.join(item['affix']))+')?'
+				else:
+					item['clean_affix']	= r''+lara.nlp.strip_accents(item['affix'])
 			else:
-				item['clean_affix']	=  [re.escape(affix) for affix in item['clean_affix']]
-				item['clean_affix']	= r'('+('|'.join(item['clean_affix']))+')?'
-			item['affix']		= r'('+('|'.join(item['affix']))+')?'
+				if isinstance(item['clean_affix'],list):
+					item['clean_affix']	=  [re.escape(affix) for affix in item['clean_affix']]
+					item['clean_affix']	= r'('+('|'.join(item['clean_affix']))+')?'
+				else:
+					item['clean_affix']	= r''+(item['clean_affix'])
+			if isinstance(item['affix'],list):
+				item['affix']		= r'('+('|'.join(item['affix']))+')?'
+			else:
+				item['affix']		= r''+(item['affix'])
 			
 		if 'score' not in item:
 			item['score']		= 1
@@ -149,15 +159,10 @@ class Intents:
 		
 		return item
 	
-	# Shorthang for get_all_intents
-	def match(text=""):
-		return get_all_intents(text)
-	
 	# Get all matches from text
-	def get_all_intents(self,text=""):
+	def match_all_intents(self,text=""):
 		if len(text):
 			score		= self._get_all_score(text,self.intents)
-
 			final_score	= {}
 			for key, value in score.items():
 				if value:
@@ -193,17 +198,13 @@ class Intents:
 								if key not in score:
 									score[key]	= 0
 								found	= self._find_intent(text,sub_item)
-								if not found[0]:
-									score[key]	= 0
-								else:
+								if found[0]:
 									score[key]	+=found[1]
 							if 'clean_stem' in sub_item:
 								if key not in score:
 									score[key]	= 0
 								found	= self._find_intent(clean_text,sub_item,True)
-								if not found[0]:
-									score[key]	= 0
-								else:
+								if found[0]:
 									score[key]	+=found[1]
 					if found and 'without' in item and len(item['without']):
 						if key in score and score[key]:
@@ -228,14 +229,14 @@ class Intents:
 				pattern		= '('+re.escape(item[select+'stem'])+item[select+'affix']+')'
 				if item['wordclass'] == 'noun':
 					if is_clean:
-						pattern	+= r'{1,2}a?i?([aeiou]?[djknmrst])?([abjhkntv]?[aeiou][lgkntz]?)?'
+						pattern	+= r'{1,2}a?i?n?([aeiou]?[djknmrst])?([abjhkntv]?[aeiou][lgkntz]?)?'
 					else:
-						pattern	+= r'{1,2}a?i?([aáeéioóöőuúü]?[djknmrst])?([abjhkntv]?[aáeéioóöőuúü][lgkntz]?)?'
+						pattern	+= r'{1,2}a?i?n?([aáeéioóöőuúü]?[djknmrst])?([abjhkntv]?[aáeéioóöőuúü][lgkntz]?)?'
 				elif item['wordclass'] == 'adjective':
 					if is_clean:
-						pattern	+= r'b*(([aeiou]?[dkmnt])?([aeiou]?[knt])?)'
+						pattern	+= r'([ae]?b*)(([aeiou]?[dklmnt])?([aeiou]?[knt]?)?)'
 					else:
-						pattern	+= r'b*(([aáeéioóöőuúü]?[dkmnt])?([aáeéioóöőuúü]?[knt])?)'
+						pattern	+= r'([aáeé]?b*)(([aáeéioóöőuúü]?[dklmnt])?([aáeéioóöőuúü]?[knt]?)?)'
 				elif item['wordclass'] == 'verb':
 					if is_clean:
 						pattern	+= r'((j|([eo]?g[ae]t+))?(([aeiou]n?[dklmt])|(n[aei]k?)|(sz)|[ai])?(t[aeou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aeou]([dkm]|(t[eo]k))?)?)|(ni))?'
@@ -274,8 +275,8 @@ class Intents:
 		return [False,0]
 		
 	# Get matching intent with the highest value
-	def get_intent(self,text):
-		score	= self.get_all_intents(text)
+	def best_intent(self,text):
+		score	= self.match_all_intents(text)
 		try:
 			return max(score, key=score.get)
 		except:
@@ -299,5 +300,18 @@ def match_intents(fast_intent,text=""):
 		if isinstance(fast_intent,dict):
 			fast_intent=Intents(fast_intent)
 		if fast_intent.__class__.__name__=='Intents':
-			return fast_intent.get_all_intents(text)
-	return None
+			return fast_intent.match_all_intents(text)
+	return {}
+	
+def get_common_intents():
+	return {
+		"_negative"		: [{"stem":"nem"},{"stem":"ne"},{"stem":"soha"},{"stem":"mégse","affix":["m"]}],
+		"_positive"		: [{"stem":"igen"},{"stem":"aha"},{"stem":"ja"},{"stem":"ok","affix":["é","s"]}],
+		"_greeting" 	: [{"stem":"hi","match_at":"start"},{"stem":"szia","match_at":"start"},{"stem":"helló","match_at":"start"},{"stem":"szervusz","match_at":"start"},{"stem":"hali","match_at":"start"}],
+		"_leaving" 		: [{"stem":"bye","match_at":"end"},{"stem":"szia","match_at":"end"},{"stem":"viszlát"},{"stem":"viszont látásra"},{"stem":"jó éj","affix":["t","szakát"]}],
+		"_thanking"		: [{"stem":"kösz","affix":["i","önöm","önjük","önet"]}],
+		"_command"		: [{"stem":"keres(s|d)","wordclass":"regex"},{"stem":"mutass(s|d)","wordclass":"regex"},{"stem":"mond(j|d)","wordclass":"regex"},{"stem":"szeretné(k|m)","wordclass":"regex"},{"stem":"akaro(k|m)","wordclass":"regex"}],
+		"_question"		: [{"stem":"\?+($|\s\w+)","wordclass":"regex"},{"stem":"([^,][^,\S+]hogy|^hogy)(an)?","wordclass":"regex"},{"stem":"hol"},{"stem":"honnan"},{"stem":"hová"},{"stem":"hány","affix":["an","at","ból"]},{"stem":"mettől"},{"stem":"meddig"},{"stem":"merre"},{"stem":"mennyi","affix":["en","re"]},{"stem":"mi","affix":["t","k","ket","kor","korra","lyen","lyenek","nek","től","kortól","korra","ből","hez","re","vel"]},{"stem":"ki","affix":["t","k","ket","nek","knek","től","ktől","ből","kből","hez","re","kre","vel","kkel"]}],
+		"_conditional"	: [{"stem":"volna"},{"stem":"lenne"},{"stem":"\w+h[ae]t\w+","wordclass":"regex"}]
+	}
+
