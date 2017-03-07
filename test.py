@@ -11,6 +11,19 @@ if __name__ == "__main__":
 	alma_test		= lara.parser.Intents(alma_intents)
 	print(alma_test.match_all_intents("Mikor szedjük le a pirosabb almákat?"))
 	
+	igekoto_intents	= {
+		"do"			: [{"stem":"csinál","wordclass":"verb"}],
+	}
+	igekoto_test		= lara.parser.Intents(igekoto_intents)
+	
+	print(igekoto_test.match_all_intents("Ő mit csinál a szobában?"))
+	print(igekoto_test.match_all_intents("Mit fogok még csinálni?"))
+	print(igekoto_test.match_all_intents("Mikor csináltad meg a szekrényt?"))
+	print(igekoto_test.match_all_intents("Megcsináltatták a berendezést."))
+	print(igekoto_test.match_all_intents("Teljesen kicsinálva érzem magamat ettől a melegtől."))
+	print(igekoto_test.match_all_intents("Csinálhatott volna mást is."))
+	print(igekoto_test.match_all_intents("Visszacsinalnad az ekezeteket a billentyuzetemen, kerlek?"))
+
 	busz_intents	= {
 		"palyaudvar"	: [{"stem":"pályaudvar","wordclass":"noun","prefix":["busz"]}],
 		"auto"			: [{"stem":"autó","wordclass":"noun","affix":["busz"]}],

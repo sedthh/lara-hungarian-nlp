@@ -61,7 +61,7 @@ class Intents:
 	# Add default values and fill in optional paramteres for a single intent
 	def _fix_intent(self,item):
 		prefixes		= ("abba","alá","át","be","bele","benn","el","ellen","elő","fel","föl","hátra","hozzá","ide","ki","körül","le","meg","mellé","neki","oda","össze","rá","szét","túl","utána","vissza")
-		clean_prefixes	= ("abba","ala","at","be","bele","benn","el","ellen","elo","fel","fol","hatra","hozza","ide","ki","korul","le","meg","melle","neki","oda","ossze","ra","szet","tul","utana","vissza")
+		clean_prefixes	= ("aba","ala","at","be","bele","ben","el","elen","elo","fel","fol","hatra","hoza","ide","ki","korul","le","meg","mele","neki","oda","osze","ra","szet","tul","utana","visza")
 		
 		if 'wordclass' not in item or item['wordclass'] not in ('noun','verb','adjective','regex','special'):
 			item['wordclass']		= 'special'
@@ -239,9 +239,9 @@ class Intents:
 						pattern	+= r'([aáeé]?b*)(([aáeéioóöőuúü]?[dklmnt])?([aáeéioóöőuúü]?[knt]?)?)'
 				elif item['wordclass'] == 'verb':
 					if is_clean:
-						pattern	+= r'((j|([eo]?g[ae]t+))?(([aeiou]n?[dklmt])|(n[aei]k?)|(sz)|[ai])?(t[aeou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aeou]([dkm]|(t[eo]k))?)?)|(ni))?'
+						pattern	+= r'(([jntv]|([eo]?g[ae]t+))?(([aeiou]n?[dklmt])|(n[aei]k?)|(sz)|[ai])?(t[aeou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aeou]([dkm]|(t[eo]k))?)?(tt?)?)|(ni))?'
 					else:
-						pattern	+= r'((j|([eo]?g[ae]t+))?(([aeioöuü]n?[dklmt])|(n[aáeéi]k?)|(sz)|[aái])?(t[aáeéou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aáeéou]([dkm]|(t[eéo]k))?)?)|(ni))?'
+						pattern	+= r'(([jntv]|([eo]?g[ae]t+))?(([aeioöuü]n?[dklmt])|(n[aáeéi]k?)|(sz)|[aái])?(t[aáeéou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aáeéou]([dkm]|(t[eéo]k))?)?(tt?)?)|(ni))?'
 			
 			if item['match_at'] == 'regex':
 				if item['ignorecase']:
