@@ -2,15 +2,17 @@
 
 import sys
 import re
+import json
 
 if 'lara.nlp' not in sys.modules:
 	import lara.nlp
 
 class Intents:
-	intents		= {}
 	
 	##### CONSTRUCTOR #####
 	def __init__(self,new_intents={},include_default_intents=True):		
+		self.intents	= {}
+		
 		if include_default_intents:
 			default_intents	= {
 				"_negative"		: [{"stem":"nem"},{"stem":"ne"},{"stem":"soha"},{"stem":"mégse","affix":["m"]}],
@@ -26,10 +28,34 @@ class Intents:
 		if new_intents:
 			self.add_intents(new_intents)
 
-	# Shorthand for add_intents
-	def add(self,new_intents={}):
-		self.add_intents(new_intents)
+	##### DATA MODEL #####
+	def __repr__(self):
+		return "<Lara Intents Parser instance at {0}>".format(hex(id(self)))
 		
+	def __str__(self):
+		return json.dumps(self.intents)
+		
+	def __eq__(self,other):
+		if self.__class__.__name__ == other.__class__.__name__:
+			return (self.intents==other.intents)
+		elif isinstance(other, bool):
+			return (len(self.intents)!=0)==other
+		return False
+	
+	def __ne__(self,other):
+		return not self.__eq__(other)
+	
+	def __add__(self,other):
+		if other:
+			tmp = Intents(self.intents,False)
+			if self.__class__.__name__ == other.__class__.__name__:
+				tmp.add_intents(other.intents)
+			elif isinstance(other,dict):
+				tmp.add_intents(other)
+			return tmp		
+	
+	##### CLASS FUNCTIONS #####
+				
 	# Add dict of intents
 	def add_intents(self,new_intents={}):
 		for key, value in new_intents.items():
