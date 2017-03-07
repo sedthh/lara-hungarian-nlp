@@ -137,7 +137,15 @@ class Intents:
 			item['with']	= new_items[:]
 		else:
 			item['with']	= []
-		#TODO: implement 'without'
+		if 'without' in item:
+			new_items	= []
+			for sub_item in item['without']:
+				sub_item	= self._fix_intent(sub_item)
+				if sub_item not in new_items:
+					new_items.append(sub_item)
+			item['without']	= new_items[:]
+		else:
+			item['without']	= []		
 		
 		return item
 	
@@ -184,11 +192,28 @@ class Intents:
 							if 'stem' in sub_item:
 								if key not in score:
 									score[key]	= 0
-								score[key]	+= self._find_intent(text,sub_item)[1]
+								found	= self._find_intent(text,sub_item)
+								if not found[0]:
+									score[key]	= 0
+								else:
+									score[key]	+=found[1]
 							if 'clean_stem' in sub_item:
 								if key not in score:
 									score[key]	= 0
-								score[key]	+= self._find_intent(clean_text,sub_item,True)[1]
+								found	= self._find_intent(clean_text,sub_item,True)
+								if not found[0]:
+									score[key]	= 0
+								else:
+									score[key]	+=found[1]
+					if found and 'without' in item and len(item['without']):
+						if key in score and score[key]:
+							for sub_item in item['without']:
+								if 'stem' in sub_item:
+									if self._find_intent(text,sub_item)[0]:
+										score[key]	= 0
+								if 'clean_stem' in sub_item:
+									if self._find_intent(clean_text,sub_item,True)[0]:
+										score[key]	= 0
 		return score
 	
 	# Find an intent in text
@@ -267,3 +292,12 @@ class Intents:
 		for dictionary in dict_args:
 			result.update(dictionary)
 		return result
+
+##### FUNCTIONS OUTSIDE OF CLASS #####
+def match_intents(fast_intent,text=""):
+	if len(text):
+		if isinstance(fast_intent,dict):
+			fast_intent=Intents(fast_intent)
+		if fast_intent.__class__.__name__=='Intents':
+			return fast_intent.get_all_intents(text)
+	return None
