@@ -274,26 +274,14 @@ class Intents:
 				return [True,len(matches)*item[select+'score']]
 		return [False,0]
 		
-	# Get matching intent with the highest value
-	def best_intent(self,text):
+	# Get N best matching intents with the highest value
+	def match_best_intent(self,text,n=1):
 		score	= self.match_all_intents(text)
-		try:
-			return max(score, key=score.get)
-		except:
-			return None
+		if score:
+			best_candidates	= sorted(score, key=score.get, reverse=True)
+			best_candidates	= best_candidates[:(min(len(best_candidates),n))]
+			return {item:score[item] for item in best_candidates}
 			
-	# Merge the contents of two dictionaries (backward compatible)
-	def _merge_dicts(self,*dict_args):
-		'''
-		Given any number of dicts, shallow copy and merge into a new dict,
-		precedence goes to key value pairs in latter dicts.
-		via http://stackoverflow.com/questions/38987/how-can-i-merge-two-python-dictionaries-in-a-single-expression
-		'''
-		result = {}
-		for dictionary in dict_args:
-			result.update(dictionary)
-		return result
-
 ##### FUNCTIONS OUTSIDE OF CLASS #####
 def match_intents(fast_intent,text=""):
 	if len(text):
@@ -315,3 +303,13 @@ def get_common_intents():
 		"_conditional"	: [{"stem":"volna"},{"stem":"lenne"},{"stem":"\w+h[ae]t\w+","wordclass":"regex"}]
 	}
 
+def merge_dicts(self,*dict_args):
+	'''
+	Given any number of dicts, shallow copy and merge into a new dict, 
+	precedence goes to key value pairs in latter dicts.
+	via http://stackoverflow.com/questions/38987/how-can-i-merge-two-python-dictionaries-in-a-single-expression
+	'''
+	result = {}
+	for dictionary in dict_args:
+		result.update(dictionary)
+	return result
