@@ -37,7 +37,7 @@ if __name__ == "__main__":
 		"enni"		: [{"stem":"esz","wordclass":"verb","match_stem":False},{"stem":"en","wordclass":"verb","match_stem":False}]
 	}
 	hasonul_test	= lara.parser.Intents(hasonul_intents)
-	print(hasonul_test.match_all_intents("Tőmorfémák: esz, en."))
+	print(hasonul_test.match_all_intents("Tőmorfémák: esz, en."))		# nem veszi figyelembe
 	print(hasonul_test.match_all_intents("Eszel valamit?"))
 	print(hasonul_test.match_all_intents("Azt nem lehet megenni."))
 	
@@ -46,27 +46,29 @@ if __name__ == "__main__":
 						"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}]}]
 	}
 	egyutt_test		= lara.parser.Intents(egyutt_intents)
-	print(egyutt_test.match_all_intents("Jó."))
-	print(egyutt_test.match_all_intents("Meleg van."))
-	print(egyutt_test.match_all_intents("Milyen az időjárás?"))
+	print(egyutt_test.match_all_intents("Jó."))							# nem veszi figyelembe
+	print(egyutt_test.match_all_intents("Meleg van."))					# nem veszi figyelembe
+	print(egyutt_test.match_all_intents("Milyen az időjárás?"))			# nem veszi figyelembe
 	print(egyutt_test.match_all_intents("Jó meleg van."))
 	print(egyutt_test.match_all_intents("Jó az idő."))
-	print(egyutt_test.match_all_intents("Jó meleg az idő."))
-	print(egyutt_test.match_all_intents("Jó meleg az időjárás."))
-	
+	print(egyutt_test.match_all_intents("Jó meleg az idő."))			# dupla pont
+	print(egyutt_test.match_all_intents("Jó meleg az időjárás."))		# dupla pont
+
 	kulon_intents	= {
-		"jo_ido"	: [{"stem":"jó","wordclass":"adjective","score":0,
+		"jobb_ido"	: [{"stem":"jó","wordclass":"adjective","score":0,
 						"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}],
 						"without":[{"stem":"este","wordclass":"noun"},{"stem":"esté","match_stem":False,"wordclass":"noun"}]}]
 	}
 	kulon_test		= lara.parser.Intents(kulon_intents)
-	print(kulon_test.match_all_intents("Jó."))
-	print(kulon_test.match_all_intents("Jó meleg az időjárás."))
-	print(kulon_test.match_all_intents("Jó estét!"))
-	print(kulon_test.match_all_intents("Jó meleg esténk van!"))
-	
+	print(kulon_test.match_all_intents("Jó."))							# nem veszi figyelembe
+	print(kulon_test.match_all_intents("Jó meleg az időjárás."))		# dupla pont
+	print(kulon_test.match_all_intents("Jó estét!"))					# nem veszi figyelembe
+	print(kulon_test.match_all_intents("Jó meleg esténk van!"))			# szintén nem veszi figyelembe
+
 	fals_pozitiv	= {
-		"elfogadja"	: [{"stem":"alma","wordclass":"noun"}]
+		"megszerel"	: [{"stem":"szerel","wordclass":"verb"}],
+		"hibasan"	: [{"stem":"alma","wordclass":"noun"}],
 	}
 	hibas_test		= lara.parser.Intents(fals_pozitiv)
-	print(hibas_test.match_all_intents("Ezt is elfogadja találatként: Almainüdböz"))
+	print(hibas_test.match_all_intents("Gyönyörű dolog a szerelem!"))	# elfogadja hibásan
+	print(hibas_test.match_all_intents("Ezt is elfogadja találatként: Almainüdböz"))	# elfogadja hibásan
