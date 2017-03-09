@@ -43,12 +43,12 @@ def remove_html_tags(text,replace=''):
 	
 def find_hashtags(text):
 	if text:
-		return ['#{0}'.format(hashtag) for hashtag in re.compile(r'\W#([\w0-9_\-\']+)\b').findall(text)]
+		return ['#{0}'.format(hashtag) for hashtag in re.compile(r'\B#([\w0-9_\-\']+)\b').findall(text)]
 	return []
 	
 def find_mentions(text):
 	if text:
-		return ['@{0}'.format(mention) for mention in re.compile(r'\W@([\w0-9_\-\'\.]+)\b').findall(text)]
+		return ['@{0}'.format(mention) for mention in re.compile(r'\B@([\w0-9_\-\'\.]+)\b').findall(text)]
 	return []
 	
 def find_urls(text):
@@ -105,4 +105,3 @@ def extract_message(text):
 		extraction['mentions']	= find_mentions(text)
 		extraction['urls']		= find_urls(text)
 	return extraction	
-	
