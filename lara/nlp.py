@@ -23,7 +23,7 @@ def remove_double_letters(text,replace=''):
 
 def remove_space_between_numbers(text,replace=''):
 	if text:
-		return re.sub(r'(?<=\d)\s(?=\d)', replace, text)
+		return re.sub(r'(?<=\d)[\s-]+(?=\d)', replace, text)
 	return ''
 		
 def remove_urls(text,replace=''):
@@ -56,12 +56,12 @@ def find_urls(text):
 		return re.compile(r'\b(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})').findall(text)
 	return []
 					
-def vowel_harmony(text,vegyes=True):
-	if text and isinstance(text, str):
+def vowel_harmony(word,vegyes=True):
+	if word and isinstance(word, str):
 		mely	= re.compile('[aáoóuú]', re.IGNORECASE)
 		magas	= re.compile('[eéiíöőüű]', re.IGNORECASE)
-		mely_m	= len(mely.findall(text))
-		magas_m	= len(magas.findall(text))
+		mely_m	= len(mely.findall(word))
+		magas_m	= len(magas.findall(word))
 		if magas_m and mely_m:
 			if vegyes:
 				return 'vegyes'
@@ -71,9 +71,9 @@ def vowel_harmony(text,vegyes=True):
 		return 'mely'
 	return 'hiba'
 	
-def vowel_ending(text):
-	if len(text):
-		return (text[-1].lower() in ('a','á','e','é','i','í','o','ó','ö','ő','u','ú','ü','ű'))
+def vowel_ending(word):
+	if len(word):
+		return (word[-1].lower() in ('a','á','e','é','i','í','o','ó','ö','ő','u','ú','ü','ű'))
 	return False
 
 #TODO: more contexts

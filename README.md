@@ -6,9 +6,10 @@
 1. [Description](#description)
 2. [Documentation](#documentation)
   1. [Examples](#examples)
-  2. [Word classes](#word-classes)
-  3. [Tricks](#tricks)
-  4. [NLP functions](#nlp-functions)
+  2. [Functions](#functions)
+    1. [Parser functions](#parser-functions)
+    2. [NLP functions](#nlp-functions)
+  3. [Declaring intents](#declaring-intents)
 3. [Misc.](#misc)
 
 ## Description
@@ -140,13 +141,66 @@ print(hibas_test.match_all_intents("Ezt is elfogadja találatként: Almainüdbö
 ```
 Az itt leírt példák a **test.py** fájlban is megtalálhatók. 
 
-#### Word classes
-List of available word classes.
-#### Tricks
-How to get the most out of this class.
-#### NLP functions
-List of other available NLP functions implemented by this Class.
+#### Functions
+###### Parser functions
+Public functions available in a lara.parser.Intents() Class instance:
+```python
+import lara
+example	= lara.parser.Intents()
+```
+| Function | Description |
+| ---         | ---     |
+| `example.add_intents(new_intents={})` | Add a dictionary of intents to the existing dictionary of intents. Duplicates will be discarded. |
+| `example.match_all_intents(text="...")` | Find matching intents in a given string. Returns dictionary with intent:score pairs for all intents where score is more than 0. |
+| `example.match_best_intents(text="...",[n=1])`  | Returns a dictinoary with n largest score intent:score pairs. If less than n intents were found, returns them all. |
+Function str(), repr(), len() and logical operators eq (==), ne (!=) and addition (+) are also available.
 
+Public functions outside of the lara.paser.Intents() Class:
+
+| Function | Description |
+| ---         | ---     |
+| `lara.parser.match_intents(Intent instance or dictionary, text)` | Same as example.match_all_intents(text), but it allows declaring intents on the fly. |
+| `lara.parser.merge_dicts(Arbitrary number of dictionaries)` | Allows merging dictionaries. |
+| `lara.parser.get_common_intents()` | Returns dictionary of common intents, that are useful for chatbot development. |
+
+The get_common_intents() function can be used as follows: `example += lara.parser.get_common_intents()`
+
+| Key of common intent | Description |
+| ---         | ---     |
+| `_negative` | Negation, denial, opposition, etc. **(nem, ne, stb.)**|
+| `_positive` | Affirmation, agreeing **(igen, ja, stb.)** |
+| `_greeting` | Greeting, saying hello |
+| `_leaving` | Leaving, saying bye |
+| `_thanking` | Thanking something |
+| `_command` | Giving an order / imperative mode |
+| `_question` | Asking questions / interrogative mode |
+| `_conditional` | Conditional mode |
+
+###### NLP functions
+
+| Function | Description |
+| ---         | ---     |
+| `lara.nlp.strip_accents(text)` | Returns text without accents (á->a, é->e, etc.). |
+| `lara.nlp.trim(text)` | Trims text *and* removes all whitespaces. |
+| `lara.nlp.remove_punctuation(text, [replace=''])` | Removes punctuation from text. |
+| `lara.nlp.remove_double_letters(text, [replace=''])` | The function replaces characters that are followed by the same character multiple times into single characters (kappan->kapan, busszal->buszal). Case sensitive. |
+| `lara.nlp.remove_space_between_numbers(text,[replace=''])` | Removes whitespaces and 
+hyphens between numbers (useful for aprsing phone numbers). |
+| `lara.nlp.remove_urls(text,[replace=''])` | Removes valid URLs from text. |
+| `lara.nlp.remove_email_addresses(text,[replace=''])` | Removes valid e-mail addresses from text. |
+| `lara.nlp.remove_html_Tags(text,[replace=''])` | Removes possible HTML tags from text with regular expressions. Regular epressions are not the most efficient solutions for parsing HTML but it usually works for chat messages. |
+| `lara.nlp.find_hashtags(text)` | Returns a list of extracted #hashtags. |
+| `lara.nlp.find_mentions(text)` | Returns a list of extracted @mentions. |
+| `lara.nlp.find_urls(text)` | Returns a list of extracted valid URLs. |
+| `lara.nlp.vowel_harmony(word,[vegyes=True])` | Returns the vowel harmony for a word. Can return 'magas', 'mely' and 'vegyes' if optional vegyes parameter was set to True. |
+| `lara.nlp.vowel_ending(word)` | Returns True if word ends with a vowel. Returns False otherwise. |
+| `lara.nlp.strip_context(text,[context="search"],[including=None])` | Removes words from text that are unimportant based on ceontext. If context is set to "search", words regarding search commands are removed, so the rest of the text could be used as a clean search query. If the optional including variable can be either a regular expression or a string used as a regualr expression. If set, matching words characters will also be removed from the text.  |
+| `lara.nlp.extract_message(text)` | Removes a dictionary of extracted items. If text contains a command, the command key will be set accordingly. Arguments following a command will be added as list elements. List of existing hashtags, mentions and urls are also included in this dictionary. This is useful if you want to do a quick check on your received text message. |
+
+#### Declaring intents
+TODO: add word classes, tricks and tips, etc.
 
 ## Misc
 TODO list
+TODO current uses of this class
+License
