@@ -43,19 +43,19 @@ def remove_html_tags(text,replace=''):
 	
 def find_hashtags(text):
 	if text:
-		return re.compile(r'#([\w0-9_\-\']+)\b').findall(text)
-	return ''
+		return ['#{0}'.format(hashtag) for hashtag in re.compile(r'\W#([\w0-9_\-\']+)\b').findall(text)]
+	return []
 	
 def find_mentions(text):
 	if text:
-		return re.compile(r'@([\w0-9_\-\']+)\b').findall(text)
-	return ''
+		return ['@{0}'.format(mention) for mention in re.compile(r'\W@([\w0-9_\-\'\.]+)\b').findall(text)]
+	return []
 	
 def find_urls(text):
 	if text:
 		return re.compile(r'\b(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})').findall(text)
-	return ''
-	
+	return []
+					
 def vowel_harmony(text,vegyes=True):
 	if text and isinstance(text, str):
 		mely	= re.compile('[aáoóuú]', re.IGNORECASE)
@@ -85,5 +85,24 @@ def strip_context(text,context="search",including=None):
 	
 		if including:
 			text		= re.compile(r''+including, re.IGNORECASE).sub('',text)
-	
 	return trim(remove_punctuation(text))
+
+def extract_message(text):
+	extraction	= {
+		"command"	: None,
+		"arguments"	: [],
+		"hashtags"	: [],
+		"mentions"	: [],
+		"urls"		: [],
+	}
+	if isinstance(text, str) and trim(text):
+		if text[0] == '/':
+			commands				= (str(text[1:]).strip()).split(" ")
+			extraction['command']	= commands[0]
+			if len(commands)>1:
+				extraction['arguments']	= commands[1:]			
+		extraction['hashtags']	= find_hashtags(text)
+		extraction['mentions']	= find_mentions(text)
+		extraction['urls']		= find_urls(text)
+	return extraction	
+	
