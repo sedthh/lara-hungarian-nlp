@@ -6,10 +6,12 @@
 1. [Description](#description)
 2. [Documentation](#documentation)
   1. [Examples](#examples)
-  2. [Functions](#functions)
+  2. [Declaring intents](#declaring-intents)
+    1. [Wordclasses](#wordclasses)
+    2. [Other properties](#other-properties)
+  3. [Functions](#functions)
     1. [Parser functions](#parser-functions)
     2. [NLP functions](#nlp-functions)
-  3. [Declaring intents](#declaring-intents)
 3. [Misc.](#misc)
 
 ## Description
@@ -141,13 +143,53 @@ print(hibas_test.match_all_intents("Ezt is elfogadja találatként: Almainüdbö
 ```
 Az itt leírt példák a **test.py** fájlban is megtalálhatók. 
 
+#### Declaring intents
+**The usage of Intents will be explained in hungarian.**
+
+Minden intenció elemnek tartalmaznia kell minimum egy `stem` változót, amiben a ragozatlan szótő, morféma kell, hogy álljon **string**ként. 
+###### Wordclasses
+Az alábbi szófajok adhatók meg a `wordclass` változóban:
+
+| Szófaj | Magyarázat |
+| ---         | ---     |
+| `special` | Alapértelmezett érték. Ebben az esetben semmilyen reguláris kifejezés nem generálódik a szó ragozott formáinak megtalálásához. Egy az egyben történő szóbeli egyezés esetén ad csak találatot. Alapértelmezetten nem tesz különbséget a kis-, és nagybetűk között. |
+| `noun` | Főnevek esetén alkalmazandó. |
+| `verb` | Igék esetén alkalmazandó. Alapértelmezetten a gyakori igekötők automatikusan hozzáadódnak a 'prefix' listához. |
+| `adjective` | Melléknevek esetén alkalmazandó. Alapértelmezetten a 'leg' és 'legesleg' fokozások hozzáadódnak a 'prefix' listához. |
+| `regex` | Saját reguláris kifejezések megadásához használható. Ebben az esetben nem ajánlott további tulajdonságok definiálása. Alapértelmezetten nem tesz különbséget a kis-, és nagybetűk között | 
+
+A találatok finomítása érdekében a szavakból létrejön egy **alapértelmezett** és egy **tisztított** forma is. A **tisztított**forma az **alapértelmezetten** megadott formából jön létre: 
+- Az osztály kicseréli az ékezetes betüket az ékezet nélküli megfelelőire (távolabb->tavolabb).
+- Az egymás után egynél többször megjelenő karakterekből az ismétlődéseket törli (tavolabb->tavolab). 
+A **tisztított** formák segítségével egyes, speciális ragozott alakok könnyebben detektálhatóak. 
+
+###### Other properties
+
+A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan generálódnak. Definiálásuk csak nagyon ritka esetekben indokolt.
+
+| Tulajdonság | Alapértelmezett érték | Magyarázat |
+| ---         | ---     | ---     |
+| `score` | 1 | Minden **alapértelemzett** találat esetén a megadott értékkel növeli meg az intenció pontszámát. Egy intencióra, ha egyszerre létezik **alapértelmezett** és **tisztított** találat, akkor a `score` és a `clean_score` értékét kapja az intenció. |
+| `clean_score` |  `score` értéke | Minden **tisztított** találat esetén a megadott értékkel növeli meg az intenció pontszámát. Egy intencióra, ha egyszerre létezik **alapértelmezett** és **tisztított** találat, akkor a `score` és a `clean_score` értékét kapja az intenció. |
+| `prefix` |  `wordclass` beállításoktól függ | Az elfogadott előtagok string **list**ája. |
+| `clean_prefix` |  `wordclass` beállításoktól függ, egyéni `prefix` megadása esetén alapértelmezetten az egyéni `prefix` **list**ából generálódik | Az elfogadott **tisztított** előtagok string **list**ája. |
+| `affix` |  [] | Az elfogadott utótagok string **list**ája. Összetett szavaknál használandó. |
+| `clean_affix` |  [], egyéni `affix` megadása esetén alapértelmezetten az egyéni `affix` **list**ából generálódik | Az elfogadott **tisztított** utótagok string **list**ája. Összetett szavaknál használandó. |
+| `match_stem` |  True | **Boolean** érték, ami azt adja meg, hogy a  `stem ` változóban megadott morfémát önmagában állva is elfogadja-e az osztály találatként. |
+| `match_at` |  "any" vagy `wordlcass`:"regex" esetén "regex" | Elfogadott értékek: "regex","start","end" és "any". "start" esetén *mondatrészek* elején fogadja el az intenciót találatként. "end" esetén *mondatrészek* végén fogadja el az intenciót találatként. Tehát sem a "start" sem az "end" nem a szövegben elfoglalt pozíció, hanem a szövegben elfoglalt logikai pozíció alapján próbál találatokat adni. |
+| `with` | [] | További intenció **dictionary**k definiálhatóak az együttjárások pontozásához. Csak egy mélységig ellenőriz az osztály, tehát az itt deklarált további intenciók `with` tulajdonságait már nem veszi figyelembe pontozásnál. |
+| `without` | [] | További intenció **dictionary**k definiálhatóak, amelyek megtalálásakor a tulajdonos intenció nem kap pontot. |
+
 #### Functions
+**The rest of the functions will be explained in english.**
+
 ###### Parser functions
 Public functions available in a lara.parser.Intents() Class instance:
 ```python
 import lara
 example	= lara.parser.Intents()
 ```
+
 | Function | Description |
 | ---         | ---     |
 | `example.add_intents(new_intents={})` | Add a dictionary of intents to the existing dictionary of intents. Duplicates will be discarded. |
@@ -197,10 +239,12 @@ hyphens between numbers (useful for aprsing phone numbers). |
 | `lara.nlp.strip_context(text,[context="search"],[including=None])` | Removes words from text that are unimportant based on ceontext. If context is set to "search", words regarding search commands are removed, so the rest of the text could be used as a clean search query. If the optional including variable can be either a regular expression or a string used as a regualr expression. If set, matching words characters will also be removed from the text.  |
 | `lara.nlp.extract_message(text)` | Removes a dictionary of extracted items. If text contains a command, the command key will be set accordingly. Arguments following a command will be added as list elements. List of existing hashtags, mentions and urls are also included in this dictionary. This is useful if you want to do a quick check on your received text message. |
 
-#### Declaring intents
-TODO: add word classes, tricks and tips, etc.
-
 ## Misc
-TODO list
-TODO current uses of this class
-License
+Initial work: **Richard Nagyfi**, 2016
+
+Created in collaboration with the [Institute of Advanced Studies, Kőszeg](http://iask.hu/) and [Kitchen Budapest](http://kibu.hu)
+
+This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details
+
+
+
