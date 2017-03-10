@@ -22,7 +22,7 @@ Lara is perfect for developing chatbots in hungarian language, where certain key
 {"to_do"		: [{"stem":"csinál","class":"verb"}]}
 ```
 
-Will match the intent „do” in the following sentences:
+Will match the intent „to_do” in the following sentences:
 - Ő mit **csinál** a szobában?
 - Mit fogok még **csinálni**?
 - Mikor **csináltad** meg a szekrényt?
