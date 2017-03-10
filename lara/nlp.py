@@ -23,7 +23,7 @@ def remove_double_letters(text,replace=''):
 
 def remove_space_between_numbers(text,replace=''):
 	if text:
-		return re.sub(r'(?<=\d)[\s-]+(?=\d)', replace, text)
+		return re.sub(r'(?<=\d)[\s\\\-/]+(?=\d)', replace, text)
 	return ''
 		
 def remove_urls(text,replace=''):

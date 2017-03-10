@@ -19,7 +19,7 @@ Due to the complexity of the hungarian language most known stemmers and lemmatis
 
 Lara is perfect for developing chatbots in hungarian language, where certain keywords would trigger certain answers. The Class will allow developers to easly match almost every possible inflected forms of any keyword in hungarian language. For example:
 ```python
-{"do"		: [{"stem":"csinál","class":"verb"}]}
+{"to_do"		: [{"stem":"csinál","class":"verb"}]}
 ```
 
 Will match the intent „do” in the following sentences:
@@ -173,7 +173,7 @@ A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan
 | `clean_score` |  `score` értéke | Minden **tisztított** találat esetén a megadott értékkel növeli meg az intenció pontszámát. Egy intencióra, ha egyszerre létezik **alapértelmezett** és **tisztított** találat, akkor a `score` és a `clean_score` értékét kapja az intenció. |
 | `prefix` |  `wordclass` beállításoktól függ | Az elfogadott előtagok string **list**ája. |
 | `clean_prefix` |  `wordclass` beállításoktól függ, egyéni `prefix` megadása esetén alapértelmezetten az egyéni `prefix` **list**ából generálódik | Az elfogadott **tisztított** előtagok string **list**ája. |
-| `affix` |  [] | Az elfogadott utótagok string **list**ája. Összetett szavaknál használandó. |
+| `affix` |  [] | Az elfogadott utótagok string **list**ája. Összetett szavaknál használandó. Vigyázzunk arra, hogy a **list**ában olyan további elemeket adjunk meg, amelyek nem változtatják meg a szófajt. |
 | `clean_affix` |  [], egyéni `affix` megadása esetén alapértelmezetten az egyéni `affix` **list**ából generálódik | Az elfogadott **tisztított** utótagok string **list**ája. Összetett szavaknál használandó. |
 | `match_stem` |  True | **Boolean** érték, ami azt adja meg, hogy a  `stem ` változóban megadott morfémát önmagában állva is elfogadja-e az osztály találatként. |
 | `match_at` |  "any" vagy `wordlcass`:"regex" esetén "regex" | Elfogadott értékek: "regex","start","end" és "any". "start" esetén *mondatrészek* elején fogadja el az intenciót találatként. "end" esetén *mondatrészek* végén fogadja el az intenciót találatként. Tehát sem a "start" sem az "end" nem a szövegben elfoglalt pozíció, hanem a szövegben elfoglalt logikai pozíció alapján próbál találatokat adni. |

@@ -12,7 +12,7 @@ if __name__ == "__main__":
 	print(alma_test.match_all_intents("Mikor szedjük le a pirosabb almákat?"))
 	
 	igekoto_intents	= {
-		"do"			: [{"stem":"csinál","wordclass":"verb"}],
+		"to_do"			: [{"stem":"csinál","wordclass":"verb"}],
 	}
 	igekoto_test		= lara.parser.Intents(igekoto_intents)
 	
