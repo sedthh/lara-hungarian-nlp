@@ -5,14 +5,14 @@
 
 1. [Description](#description)
 2. [Documentation](#documentation)
-  1. [Examples](#examples)
-  2. [Declaring intents](#declaring-intents)
-    1. [Wordclasses](#wordclasses)
-    2. [Other properties](#other-properties)
-  3. [Functions](#functions)
-    1. [Parser functions](#parser-functions)
-    2. [NLP functions](#nlp-functions)
-	3. [Tips and tricks](#tips-and-tricks)
+	1. [Examples](#examples)
+	2. [Declaring intents](#declaring-intents)
+		1. [Wordclasses](#wordclasses)
+		2. [Other properties](#other-properties)
+	3. [Functions](#functions)
+		1. [Parser functions](#parser-functions)
+		2. [NLP functions](#nlp-functions)
+		3. [Tips and tricks](#tips-and-tricks)
 3. [Misc.](#misc)
 	1. [To do list](#to-do-list)
 
@@ -244,7 +244,7 @@ hyphens between numbers (useful for aprsing phone numbers). |
 | `lara.nlp.extract_message(text)` | Removes a dictionary of extracted items. If text contains a command, the command key will be set accordingly. Arguments following a command will be added as list elements. List of existing hashtags, mentions and urls are also included in this dictionary. This is useful if you want to do a quick check on your received text message. |
 
 ###### Tips and tricks
-Setting multiple properties for intents can be really useful 
+Setting multiple properties for intents can be useful in detecting patterns:
 - In addition to actual words, regular expressions can also be defined as "stem"s. This also applies to "with" and "without" properties' "stem"s. 
 - Both "prefix"es and "affix"es can be set at the same time.
 - In case inflection would alter a word's "stem", try defining the altered form as another possible Intent **list** element, with the "match_stem" property set to **False**. This way the defined "stem" would only be matched if inflected.  
