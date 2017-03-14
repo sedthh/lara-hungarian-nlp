@@ -10,7 +10,7 @@ if 'lara.nlp' not in sys.modules:
 class Intents:
 	
 	##### CONSTRUCTOR #####
-	def __init__(self,new_intents={}):		
+	def __init__(self, new_intents={}):		
 		self.intents	= {}
 		if new_intents:
 			self.add_intents(new_intents)
@@ -25,17 +25,17 @@ class Intents:
 	def __len__(self):		
 		return len(self.intents.keys())
 	
-	def __eq__(self,other):
+	def __eq__(self, other):
 		if self.__class__.__name__ == other.__class__.__name__:
 			return (self.intents==other.intents)
 		elif isinstance(other, bool):
 			return (len(self.intents)!=0)==other
 		return False
 	
-	def __ne__(self,other):
+	def __ne__(self, other):
 		return not self.__eq__(other)
 	
-	def __add__(self,other):
+	def __add__(self, other):
 		if other:
 			tmp = Intents(self.intents)
 			if self.__class__.__name__ == other.__class__.__name__:
@@ -48,7 +48,7 @@ class Intents:
 	##### CLASS FUNCTIONS #####
 				
 	# Add dict of intents
-	def add_intents(self,new_intents={}):
+	def add_intents(self, new_intents={}):
 		for key, value in new_intents.items():
 			if key not in self.intents:
 				self.intents[key]	= []
@@ -59,12 +59,17 @@ class Intents:
 						self.intents[key].append(item)
 	
 	# Add default values and fill in optional paramteres for a single intent
-	def _fix_intent(self,item):
+	def _fix_intent(self, item):
 		prefixes		= ("abba","alá","át","be","bele","benn","el","ellen","elő","fel","föl","hátra","hozzá","ide","ki","körül","le","meg","mellé","neki","oda","össze","rá","szét","túl","utána","vissza")
 		clean_prefixes	= ("aba","ala","at","be","bele","ben","el","elen","elo","fel","fol","hatra","hoza","ide","ki","korul","le","meg","mele","neki","oda","osze","ra","szet","tul","utana","visza")
 		
 		if 'wordclass' not in item or item['wordclass'] not in ('noun','verb','adjective','regex','special'):
-			item['wordclass']		= 'special'
+			if item['wordclass']=='ADJ':
+				item['wordclass']='adjective'
+			elif isinstance(item['wordclass'],str) and item['wordclass'].lower() in ('noun','verb'):
+				item['wordclass']=item['wordclass'].lower()
+			else:
+				item['wordclass']		= 'special'
 		if 'clean_stem' not in item:
 			if item['wordclass'] == 'regex':
 				item['clean_stem']	= item['stem']
@@ -160,8 +165,8 @@ class Intents:
 		return item
 	
 	# Get all matches from text
-	def match_all_intents(self,text=""):
-		if len(text):
+	def match_all_intents(self, text=""):
+		if text:
 			score		= self._get_all_score(text,self.intents)
 			final_score	= {}
 			for key, value in score.items():
@@ -172,11 +177,11 @@ class Intents:
 			return {}
 	
 	# Get score for intents in text
-	def _get_all_score(self,text,intents):
+	def _get_all_score(self, text, intents):
 		text		= lara.nlp.trim(text)
 		clean_text	= lara.nlp.strip_accents(lara.nlp.remove_double_letters(text)) #.lower()
 		score		= {}
-		if len(text):
+		if text:
 			for key, value in intents.items():
 				for item in self.intents[key]:
 					found	= False
@@ -218,8 +223,8 @@ class Intents:
 		return score
 	
 	# Find an intent in text
-	def _find_intent(self,text,item,is_clean=False):
-		if len(text):		
+	def _find_intent(self, text, item, is_clean=False):
+		if text:		
 			select		= ''
 			if is_clean:
 				select		= 'clean_'
@@ -229,14 +234,14 @@ class Intents:
 				pattern		= '('+re.escape(item[select+'stem'])+item[select+'affix']+')'
 				if item['wordclass'] == 'noun':
 					if is_clean:
-						pattern	+= r'{1,2}a?i?n?([aeiou]?[djknmrst])?([abjhkntv]?[aeiou][lgkntz]?)?'
+						pattern	+= r'{1,2}a?i?n?([aeiou]?[djknmrst])?([abjhkntv]?[aeiou]?[lgkntz]?)?'
 					else:
-						pattern	+= r'{1,2}a?i?n?([aáeéioóöőuúü]?[djknmrst])?([abjhkntv]?[aáeéioóöőuúü][lgkntz]?)?'
+						pattern	+= r'{1,2}a?i?n?([aáeéioóöőuúü]?[djknmrst])?([abjhkntv]?[aáeéioóöőuúü]?[lgkntz]?)?'
 				elif item['wordclass'] == 'adjective':
 					if is_clean:
-						pattern	+= r'([ae]?b*)(([aeiou]?[dklmnt])?([aeiou]?[knt]?)?)'
+						pattern	+= r'([aeo]?s)?([ae]?b*)([ae]?k)?(([aeiou]?[dklmnt])?([aeiou]?[klnt]?)?)'
 					else:
-						pattern	+= r'([aáeé]?b*)(([aáeéioóöőuúü]?[dklmnt])?([aáeéioóöőuúü]?[knt]?)?)'
+						pattern	+= r'([aeoó]?s)?([aáeé]?b*)([ae]?k)?(([aáeéioóöőuúü]?[dklmnt])?([aáeéioóöőuúü]?[klnt]?)?)'
 				elif item['wordclass'] == 'verb':
 					if is_clean:
 						pattern	+= r'(([jntv]|([eo]?g[ae]t+))?(([aeiou]n?[dklmt])|(n[aei]k?)|(sz)|[ai])?(t[aeou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aeou]([dkm]|(t[eo]k))?)?(tt?)?)|(ni))?'
@@ -269,22 +274,24 @@ class Intents:
 					stem_matches	= re.compile(r'\b'+re.escape(item[select+'stem'])+r'\b',re.IGNORECASE).findall(text)
 					if stem_matches:
 						if len(matches) <= len(stem_matches):
-							return [False, 0]
-						return [True,(len(matches)-len(stem_matches))*item[select+'score']]
-				return [True,len(matches)*item[select+'score']]
-		return [False,0]
+							return (False, 0)
+						return (True,(len(matches)-len(stem_matches))*item[select+'score'])
+				return (True,len(matches)*item[select+'score'])
+		return (False,0)
 		
 	# Get N best matching intents with the highest value
-	def match_best_intent(self,text,n=1):
-		score	= self.match_all_intents(text)
-		if score:
-			best_candidates	= sorted(score, key=score.get, reverse=True)
-			best_candidates	= best_candidates[:(min(len(best_candidates),n))]
-			return {item:score[item] for item in best_candidates}
+	def match_best_intent(self, text, n=1):
+		if text:
+			score	= self.match_all_intents(text)
+			if score:
+				best_candidates	= sorted(score, key=score.get, reverse=True)
+				best_candidates	= best_candidates[:(min(len(best_candidates),n))]
+				return {item:score[item] for item in best_candidates}
+		return {}
 			
 ##### FUNCTIONS OUTSIDE OF CLASS #####
-def match_intents(fast_intent,text=""):
-	if len(text):
+def match_intents(fast_intent, text=""):
+	if text:
 		if isinstance(fast_intent,dict):
 			fast_intent=Intents(fast_intent)
 		if fast_intent.__class__.__name__=='Intents':
@@ -303,7 +310,7 @@ def get_common_intents():
 		"_conditional"	: [{"stem":"volna"},{"stem":"lenne"},{"stem":"\w+h[ae]t\w+","wordclass":"regex"}]
 	}
 
-def merge_dicts(self,*dict_args):
+def merge_dicts(self, *dict_args):
 	'''
 	Given any number of dicts, shallow copy and merge into a new dict, 
 	precedence goes to key value pairs in latter dicts.

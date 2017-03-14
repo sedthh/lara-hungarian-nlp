@@ -12,14 +12,16 @@
   3. [Functions](#functions)
     1. [Parser functions](#parser-functions)
     2. [NLP functions](#nlp-functions)
+	3. [Tips and tricks](#tips-and-tricks)
 3. [Misc.](#misc)
+	1. [To do list](#to-do-list)
 
 ## Description
 Due to the complexity of the hungarian language most known stemmers and lemmatisers either fail to find the correct lemmas or require a lot of computational power while relying on large dictionaries. Lara provides a smart workaround for this, by tackling the problem the other way around. The user can provide a set of root words and their word classes, and Lara will automatically create complex regular expressions to match most of the root words’ possible inflected forms. The user can then match any root word with a given text and check wether any inflected forms of that word are present. However, it is worth noting that this method might also give false positives for certain words.
 
 Lara is perfect for developing chatbots in hungarian language, where certain keywords would trigger certain answers. The Class will allow developers to easly match almost every possible inflected forms of any keyword in hungarian language. For example:
 ```python
-{"to_do"		: [{"stem":"csinál","class":"verb"}]}
+{"to_do"		: [{"stem":"csinál","wordclass":"verb"}]}
 ```
 
 Will match the intent „to_do” in the following sentences:
@@ -158,6 +160,8 @@ Az alábbi szófajok adhatók meg a `wordclass` változóban:
 | `adjective` | Melléknevek esetén alkalmazandó. Alapértelmezetten a 'leg' és 'legesleg' fokozások hozzáadódnak a 'prefix' listához. |
 | `regex` | Saját reguláris kifejezések megadásához használható. Ebben az esetben nem ajánlott további tulajdonságok definiálása. Alapértelmezetten nem tesz különbséget a kis-, és nagybetűk között | 
 
+Az NLTK tagsetjével való kompatibilitás megőrzéséhez ADJ, NOUN és VERB érétékek is megadhatóak.
+
 A találatok finomítása érdekében a szavakból létrejön egy **alapértelmezett** és egy **tisztított** forma is. A **tisztított**forma az **alapértelmezetten** megadott formából jön létre: 
 - Az osztály kicseréli az ékezetes betüket az ékezet nélküli megfelelőire (távolabb->tavolabb).
 - Az egymás után egynél többször megjelenő karakterekből az ismétlődéseket törli (tavolabb->tavolab). 
@@ -175,7 +179,7 @@ A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan
 | `clean_prefix` |  `wordclass` beállításoktól függ, egyéni `prefix` megadása esetén alapértelmezetten az egyéni `prefix` **list**ából generálódik | Az elfogadott **tisztított** előtagok string **list**ája. |
 | `affix` |  [] | Az elfogadott utótagok string **list**ája. Összetett szavaknál használandó. Vigyázzunk arra, hogy a **list**ában olyan további elemeket adjunk meg, amelyek nem változtatják meg a szófajt. |
 | `clean_affix` |  [], egyéni `affix` megadása esetén alapértelmezetten az egyéni `affix` **list**ából generálódik | Az elfogadott **tisztított** utótagok string **list**ája. Összetett szavaknál használandó. |
-| `match_stem` |  True | **Boolean** érték, ami azt adja meg, hogy a  `stem ` változóban megadott morfémát önmagában állva is elfogadja-e az osztály találatként. |
+| `match_stem` |  True | **Boolean** érték, ami azt adja meg, hogy a  `stem ` változóban megadott morfémát önmagában állva is elfogadja-e az osztály találatként. **False** esetén csak a ragozott alakokat, "affix"-szel álló alakokat és "prefix"-szel álló alakokat fogad el. |
 | `match_at` |  "any" vagy `wordlcass`:"regex" esetén "regex" | Elfogadott értékek: "regex","start","end" és "any". "start" esetén *mondatrészek* elején fogadja el az intenciót találatként. "end" esetén *mondatrészek* végén fogadja el az intenciót találatként. Tehát sem a "start" sem az "end" nem a szövegben elfoglalt pozíció, hanem a szövegben elfoglalt logikai pozíció alapján próbál találatokat adni. |
 | `with` | [] | További intenció **dictionary**k definiálhatóak az együttjárások pontozásához. Csak egy mélységig ellenőriz az osztály, tehát az itt deklarált további intenciók `with` tulajdonságait már nem veszi figyelembe pontozásnál. |
 | `without` | [] | További intenció **dictionary**k definiálhatóak, amelyek megtalálásakor a tulajdonos intenció nem kap pontot. |
@@ -239,10 +243,26 @@ hyphens between numbers (useful for aprsing phone numbers). |
 | `lara.nlp.strip_context(text,[context="search"],[including=None])` | Removes words from text that are unimportant based on ceontext. If context is set to "search", words regarding search commands are removed, so the rest of the text could be used as a clean search query. If the optional including variable can be either a regular expression or a string used as a regualr expression. If set, matching words characters will also be removed from the text.  |
 | `lara.nlp.extract_message(text)` | Removes a dictionary of extracted items. If text contains a command, the command key will be set accordingly. Arguments following a command will be added as list elements. List of existing hashtags, mentions and urls are also included in this dictionary. This is useful if you want to do a quick check on your received text message. |
 
+###### Tips and tricks
+Setting multiple properties for intents can be really useful 
+- In addition to actual words, regular expressions can also be defined as "stem"s. This also applies to "with" and "without" properties' "stem"s. 
+- Both "prefix"es and "affix"es can be set at the same time.
+- In case inflection would alter a word's "stem", try defining the altered form as another possible Intent **list** element, with the "match_stem" property set to **False**. This way the defined "stem" would only be matched if inflected.  
+- If it is unclear wether or not an iflected word form would be matched by the given definitions, it is always a good idea to manually test it first.
+
 ## Misc
 Initial work: **Richard Nagyfi**, 2016
 
+Special thanks to [Peter Varo](https://github.com/petervaro) for formatting guidelines.
+
 Created in collaboration with the [Institute of Advanced Studies, Kőszeg](http://iask.hu/) and [Kitchen Budapest](http://kibu.hu)
+
+#### To do list
+- Add more word classes (including: numerals nad pronouns).
+- Implement useful NLTK functions for the hungarian language.
+- Rewrite regular expressions in a way that autoamtic POS-tagging would be possible in hungarian.
+- Create dictionaries to enable sentiment analysis in hungarian.
+- List bots and NLP researches based on Lara
 
 This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details
 
