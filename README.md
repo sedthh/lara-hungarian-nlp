@@ -240,7 +240,8 @@ hyphens between numbers (useful for aprsing phone numbers). |
 | `lara.nlp.find_urls(text)` | Returns a list of extracted valid URLs. |
 | `lara.nlp.vowel_harmony(word,[vegyes=True])` | Returns the vowel harmony for a word. Can return 'magas', 'mely' and 'vegyes' if optional vegyes parameter was set to True. |
 | `lara.nlp.vowel_ending(word)` | Returns True if word ends with a vowel. Returns False otherwise. |
-| `lara.nlp.strip_context(text,[context="search"],[including=None])` | Removes words from text that are unimportant based on ceontext. If context is set to "search", words regarding search commands are removed, so the rest of the text could be used as a clean search query. If the optional including variable can be either a regular expression or a string used as a regualr expression. If set, matching words characters will also be removed from the text.  |
+| `lara.nlp.strip_context(text,[context="search|request"],[including=None])` | Removes words from text that are unimportant based on ceontext. If **context** is set to "search", words regarding search commands are removed, so the rest of the text could be used as a clean search query. If **context** is set to "request", common words used for making a request are removed from the text, cleaning the query. The optional **including** variable can be either a regular expression or a string used as a regualr expression. If set, matching words characters will also be removed from the text.  |
+| `lara.nlp.remove_stopwords(text)` | Removes common hungarian stopwords from text. |
 | `lara.nlp.extract_message(text)` | Removes a dictionary of extracted items. If text contains a command, the command key will be set accordingly. Arguments following a command will be added as list elements. List of existing hashtags, mentions and urls are also included in this dictionary. This is useful if you want to do a quick check on your received text message. |
 
 ###### Tips and tricks
