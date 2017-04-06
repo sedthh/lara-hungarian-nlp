@@ -58,6 +58,15 @@ class Intents:
 					if item not in self.intents[key]:
 						self.intents[key].append(item)
 	
+	# Add raw intents without further optimization
+	def add_raw_intents(self, new_intents):
+		if new_intents:
+			if isinstance(new_intents, str):
+				new_intents	= json.loads(new_intents)
+			elif new_intents.__class__.__name__=='Intents':
+				new_intents	= json.loads(str(new_intents))
+			self.intents	= new_intents.copy()
+	
 	# Add default values and fill in optional paramteres for a single intent
 	def _fix_intent(self, item):
 		prefixes		= ("abba","alá","át","be","bele","benn","el","ellen","elő","fel","föl","hátra","hozzá","ide","ki","körül","le","meg","mellé","neki","oda","össze","rá","szét","túl","utána","vissza")

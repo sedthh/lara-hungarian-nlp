@@ -199,6 +199,7 @@ example	= lara.parser.Intents()
 | `example.add_intents(new_intents={})` | Add a dictionary of intents to the existing dictionary of intents. Duplicates will be discarded. |
 | `example.match_all_intents(text="...")` | Find matching intents in a given string. Returns dictionary with intent:score pairs for all intents where score is more than 0. |
 | `example.match_best_intents(text="...",[n=1])`  | Returns a dictinoary with n largest score intent:score pairs. If less than n intents were found, returns them all. |
+| `example.raw_intents(new_intents)` | Replace all current intents with a dictionary of new intents, without further processing them. NOTE: this function should only be used with previously generated (cached) intents with all necessary variables. Accepts dictionary of full intents, string of full intents and existing Intent class instances. |
 Function str(), repr(), len() and logical operators eq (==), ne (!=) and addition (+) are also available.
 
 Public functions outside of the lara.paser.Intents() Class:
