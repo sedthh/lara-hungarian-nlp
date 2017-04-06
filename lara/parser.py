@@ -10,10 +10,13 @@ if 'lara.nlp' not in sys.modules:
 class Intents:
 	
 	##### CONSTRUCTOR #####
-	def __init__(self, new_intents={}):		
+	def __init__(self, new_intents={}, is_raw=False):		
 		self.intents	= {}
 		if new_intents:
-			self.add_intents(new_intents)
+			if is_raw:
+				self.raw_intents(new_intents)
+			else:
+				self.add_intents(new_intents)
 
 	##### DATA MODEL #####
 	def __repr__(self):
@@ -59,13 +62,16 @@ class Intents:
 						self.intents[key].append(item)
 	
 	# Add raw intents without further optimization
-	def add_raw_intents(self, new_intents):
+	def raw_intents(self, new_intents):
 		if new_intents:
 			if isinstance(new_intents, str):
 				new_intents	= json.loads(new_intents)
 			elif new_intents.__class__.__name__=='Intents':
 				new_intents	= json.loads(str(new_intents))
-			self.intents	= new_intents.copy()
+			if isinstance(new_intents,dict):
+				self.intents	= new_intents.copy()
+			else:
+				raise ValueError('Unsupported value: %s' % (new_intents))
 	
 	# Add default values and fill in optional paramteres for a single intent
 	def _fix_intent(self, item):

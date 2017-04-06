@@ -59,9 +59,9 @@ print(alma_test.match_all_intents("Mikor szedjük le a pirosabb almákat?"))
 ```python
 import lara
 busz_intents	= {
-  "palyaudvar"	: [{"stem":"pályaudvar","wordclass":"noun","prefix":["busz"]}],
-  "auto"			: [{"stem":"autó","wordclass":"noun","affix":["busz"]}],
-  "szinten_jo"	: [{"stem":"pálya","wordclass":"noun","prefix":["busz"],"affix":["udvar"]}]
+	"palyaudvar"	: [{"stem":"pályaudvar","wordclass":"noun","prefix":["busz"]}],
+	"auto"			: [{"stem":"autó","wordclass":"noun","affix":["busz"]}],
+	"szinten_jo"	: [{"stem":"pálya","wordclass":"noun","prefix":["busz"],"affix":["udvar"]}]
 }
 busz_test		= lara.parser.Intents(busz_intents)
 print(busz_test.match_all_intents("Lassan beérünk az autóval a pályaudvarra."))
@@ -75,7 +75,7 @@ print(busz_test.match_all_intents("Lassan beérünk az autóbusszal a buszpálya
 ```python
 import lara
 hasonul_intents	= {
-  "enni"		: [{"stem":"esz","wordclass":"verb","match_stem":False}, {"stem":"en","wordclass":"verb","match_stem":False}]
+	"enni"		: [{"stem":"esz","wordclass":"verb","match_stem":False}, {"stem":"en","wordclass":"verb","match_stem":False}]
 }
 hasonul_test	= lara.parser.Intents(hasonul_intents)
 print(hasonul_test.match_all_intents("Tőmorfémák: esz, en.")) # nem veszi figyelembe
@@ -91,8 +91,8 @@ print(hasonul_test.match_all_intents("Azt nem lehet megenni."))
 ```python
 import lara
 egyutt_intents	= {
-  "jo_ido"	: [{"stem":"jó","wordclass":"adjective","score":0,
-                "with":[{"stem":"idő","wordclass":"noun","affix":["járás"]}, {"stem":"meleg","wordclass":"adjective"}]}]
+	"jo_ido"	: [{"stem":"jó","wordclass":"adjective","score":0,
+				"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]}, {"stem":"meleg","wordclass":"adjective"}]}]
 }
 egyutt_test		= lara.parser.Intents(egyutt_intents)
 print(egyutt_test.match_all_intents("Jó.")) # nem veszi figyelembe
@@ -115,9 +115,9 @@ print(egyutt_test.match_all_intents("Jó meleg az időjárás.")) # dupla pont
 ```python
 import lara
 kulon_intents	= {
-  "jobb_ido"	: [{"stem":"jó","wordclass":"adjective","score":0,
-                 "with":[{"stem":"idő","wordclass":"noun","affix":["járás"]}, {"stem":"meleg","wordclass":"adjective"}],
-                 "without":[{"stem":"este","wordclass":"noun"}, {"stem":"esté","match_stem":False,"wordclass":"noun"}]}]
+	"jobb_ido"	: [{"stem":"jó","wordclass":"adjective","score":0,
+				"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]}, {"stem":"meleg","wordclass":"adjective"}],
+				"without":[{"stem":"este","wordclass":"noun"}, {"stem":"esté","match_stem":False,"wordclass":"noun"}]}]
 }
 kulon_test		= lara.parser.Intents(kulon_intents)
 print(kulon_test.match_all_intents("Jó."))  # nem veszi figyelembe
@@ -134,8 +134,8 @@ print(kulon_test.match_all_intents("Jó meleg esténk van!")) # szintén nem ves
 ```python
 import lara
 fals_pozitiv	= {
-  "megszerel"	: [{"stem":"szerel","wordclass":"verb"}],
-  "hibasan"	: [{"stem":"alma","wordclass":"noun"}],
+	"megszerel"	: [{"stem":"szerel","wordclass":"verb"}],
+	"hibasan"	: [{"stem":"alma","wordclass":"noun"}],
 }
 hibas_test		= lara.parser.Intents(fals_pozitiv)
 print(hibas_test.match_all_intents("Gyönyörű dolog a szerelem!")) # elfogadja hibásan
@@ -200,6 +200,17 @@ example	= lara.parser.Intents()
 | `example.match_all_intents(text="...")` | Find matching intents in a given string. Returns dictionary with intent:score pairs for all intents where score is more than 0. |
 | `example.match_best_intents(text="...",[n=1])`  | Returns a dictinoary with n largest score intent:score pairs. If less than n intents were found, returns them all. |
 | `example.raw_intents(new_intents)` | For optimization purposes only. Replaces all current intents with a dictionary of new intents, without further processing them. NOTE: this function should only be used with previously generated (cached) intents with all necessary variables already created by the class itself. Accepts dictionary of full intents, string of full intents and existing Intent class instances. |
+
+The constructor also accepts instances.
+```python
+	def __init__(self, new_intents={}, is_raw=False):		
+		self.intents	= {}
+		if new_intents:
+			if is_raw:
+				self.raw_intents(new_intents)
+			else:
+				self.add_intents(new_intents)
+```
 
 Function str(), repr(), len() and logical operators eq (==), ne (!=) and addition (+) are also available.
 
@@ -268,6 +279,4 @@ Created in collaboration with the [Institute of Advanced Studies, Kőszeg](http:
 - List bots and NLP researches based on Lara
 
 This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details
-
-
 
