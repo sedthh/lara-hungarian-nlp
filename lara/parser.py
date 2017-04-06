@@ -78,7 +78,9 @@ class Intents:
 		prefixes		= ("abba","alá","át","be","bele","benn","el","ellen","elő","fel","föl","hátra","hozzá","ide","ki","körül","le","meg","mellé","neki","oda","össze","rá","szét","túl","utána","vissza")
 		clean_prefixes	= ("aba","ala","at","be","bele","ben","el","elen","elo","fel","fol","hatra","hoza","ide","ki","korul","le","meg","mele","neki","oda","osze","ra","szet","tul","utana","visza")
 		
-		if 'wordclass' not in item or item['wordclass'] not in ('noun','verb','adjective','regex','special'):
+		if 'wordclass' not in item:
+			item['wordclass']		= 'special'
+		elif item['wordclass'] not in ('noun','verb','adjective','regex','special'):
 			if item['wordclass']=='ADJ':
 				item['wordclass']='adjective'
 			elif isinstance(item['wordclass'],str) and item['wordclass'].lower() in ('noun','verb'):
