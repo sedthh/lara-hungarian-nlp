@@ -76,6 +76,11 @@ def vowel_ending(word):
 		return (word[-1].lower() in ('a','á','e','é','i','í','o','ó','ö','ő','u','ú','ü','ű'))
 	return False
 
+def number_of_words(text):
+	if text:
+		return len(re.findall('\w+', text))
+	return 0
+	
 #TODO: more contexts
 def strip_context(text, context="search", including=None):
 	if text:
