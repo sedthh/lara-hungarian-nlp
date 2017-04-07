@@ -86,7 +86,8 @@ def strip_context(text, context="search", including=None):
 			exclude		= re.compile(r'\b((a(z|rra)?)|(azok(ra)?)|([io]lya[a-z]*)|(am(elyik(ek)?|i)?ben?)|(a?mi(kor)?)|(a?hol)|(hogy)|(van(nak)?)|([mk]i(vel|nek))|(mi?[eé]rt)|(r[aá])|(egy)|(mi(t|k(et)?)?)|(meg)|(be)|(az(oka)?t)|(kell(ene)?)|(k[eé]ne)|(szeretn[eé][km])|(k[eé]rn?(([eé][km])|i)?)|(ad[dj]([aá][dl])?)|(nekem)|(van))\b', re.IGNORECASE)
 			text		= exclude.sub('',text)
 		if including:
-			text		= re.compile(r''+including, re.IGNORECASE).sub('',text)
+			exclude		= re.compile(r''+including, re.IGNORECASE)
+			text		= exclude.sub('',text)
 	return trim(remove_punctuation(text))
 
 # based on http://snowball.tartarus.org/algorithms/hungarian/stop.txt 
