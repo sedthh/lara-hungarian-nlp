@@ -40,6 +40,11 @@ def remove_html_tags(text, replace=''):
 	if text:
 		return re.sub(r'(<!--.*?-->|<[^>]*>)', replace, text)
 	return ''
+
+def remove_smileys(text,replace=''):
+	if text:
+		return re.sub(r'([:;]-?[Dd\(\)3]+)\b', replace, text)
+	return ''
 	
 def find_hashtags(text):
 	if text:
@@ -55,7 +60,12 @@ def find_urls(text):
 	if text:
 		return re.compile(r'\b(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})').findall(text)
 	return []
-					
+	
+def find_smileys(text):
+	if text:
+		return re.compile(r'([:;]-?[Dd\(\)3]+)\b').findall(text)
+	return []
+	
 def vowel_harmony(word, vegyes=True):
 	if word:
 		mely	= re.compile('[aáoóuú]', re.IGNORECASE)
@@ -78,9 +88,34 @@ def vowel_ending(word):
 
 def number_of_words(text):
 	if text:
-		return len(re.findall('\w+', text))
+		return len(re.findall('[\w\-_\']+', text))
 	return 0
 	
+def is_gibberish(text=''):
+	length	= float(len(text))
+	if length>6:
+		redflags	= 0
+		# number of different characters
+		unique		= float(len(list(set(text))))
+		if unique<4 or unique/length<.33:
+			redflags	+= 1
+		# vowel ratio
+		vowels		= 0.0
+		for char in text:
+			if char in ('a','á','e','é','i','í','o','ó','ö','ő','u','ú','ü','ű'):
+				vowels	+= 1.0
+		if vowels:
+			if length/vowels<.25:
+				redflags	+= 1
+		else:
+			redflags	+= 1
+		# length of words
+		if length/float(number_of_words(text))>9:
+			redflags	+= 1
+		if redflags>1:
+			return True
+	return False
+
 #TODO: more contexts
 def strip_context(text, context="search", including=None):
 	if text:
@@ -88,7 +123,7 @@ def strip_context(text, context="search", including=None):
 			exclude		= re.compile(r'\b((a(z|rra)?)|(azok(ra)?)|(milyen)|(mennyi)|(mikor)|(hol)|(merre)|(hova)|([mk]i(vel|nek))|(mi?[eé]rt)|(r[aá])|(egy)|(mi(t|k(et)?)?)|(meg)|(be)|(nekem)|(hogy(an)?)|((sz[oó])?cikk\w*)|(oldal\w*)|([ií]r\w*)|(kapcsolat(os(an)?|ban))|(sz[oó]l[oó]?)|(keres\w*)|(n[eé]z[zd])|(mutas(s[aá][dl]|[sd]))|(alapj[aá]n)|(mond[dj]?)|(t[oö]ltse?d?)|(hoz([zd]|z[aá][dl]))|(nyis([ds]|s[aá][dl]))|(megnyit\w*)|((el)?olvas\w*)|(szeretn[eé]\w*)|(k[eé]r(ni|l?e[km]))|(megn[eé]z\w*)|(k[oö]z[oö]tt))\b', re.IGNORECASE)
 			text		= exclude.sub('',text)
 		elif context=='request':
-			exclude		= re.compile(r'\b((a(z|rra)?)|(azok(ra)?)|([io]lya[a-z]*)|(a?m(elyik(ek)?|i)?ben?)|(a?mi(kor)?)|(a?hol)|(hogy)|(van(nak)?)|([mk]i(vel|nek))|(mi?[eé]rt)|(r[aá])|(egy)|(mi(t|k(et)?)?)|(meg)|(be)|(az(oka)?t)|(kell(ene)?)|(k[eé]ne)|(szeretn[eé][km])|(k[eé]rn?(([eé][km])|i)?)|(ad[dj]([aá][dl])?)|(nekem)|(van)|(csak)|(k[uü]ld[dj]?[eé]?[dl]?))\b', re.IGNORECASE)
+			exclude		= re.compile(r'\b((a(z|rra)?)|(azok(ra)?)|([io]lya[a-z]*)|(a?m(elyik(ek)?|i)?ben?)|(a?mi(kor)?)|(a?hol)|(hogy)|(van(nak)?)|([mk]i(vel|nek))|(mi?[eé]rt)|(r[aá])|(egy)|(mi(t|k(et)?)?)|(meg)|(be)|(az(oka)?t)|(kell(ene)?)|(k[eé]ne)|(szeretn[eé][km])|(k[eé]rn?(([eé][km])|i)?)|(ad[dj]([aá][dl])?)|(nekem)|(van)|(nincs)|(csak)|(k[uü]ld[dj]?[eé]?[dl]?)|(mond[a-z]+)|([ae]bb[ae]n?))\b', re.IGNORECASE)
 			text		= exclude.sub('',text)
 		if including:
 			exclude		= re.compile(r''+including, re.IGNORECASE)
