@@ -45,7 +45,7 @@ def remove_smileys(text,replace=''):
 	if text:
 		return re.sub(r'([:;]-?[Dd\(\)3]+)\b', replace, text)
 	return ''
-	
+
 def find_hashtags(text):
 	if text:
 		return ['#{0}'.format(hashtag) for hashtag in re.compile(r'\B#([\w0-9_\-\']+)\b').findall(text)]
@@ -94,6 +94,9 @@ def number_of_words(text):
 def is_gibberish(text=''):
 	length	= float(len(text))
 	if length>6:
+		if find_urls(text):
+			return False
+		
 		redflags	= 0
 		# number of different characters
 		unique		= float(len(list(set(text))))
@@ -147,6 +150,7 @@ def extract_message(text):
 		"hashtags"	: [],
 		"mentions"	: [],
 		"urls"		: [],
+		"smileys"	: []
 	}
 	if isinstance(text, str) and trim(text):
 		if text[0] == '/':
@@ -157,4 +161,5 @@ def extract_message(text):
 		extraction['hashtags']	= find_hashtags(text)
 		extraction['mentions']	= find_mentions(text)
 		extraction['urls']		= find_urls(text)
+		extraction['smileys']	= find_smileys(text)
 	return extraction
