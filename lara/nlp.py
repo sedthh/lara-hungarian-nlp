@@ -170,7 +170,7 @@ def _tippmix_stemmer_recursive(word):
 		elif word[-1] in ('i','j','m'):
 			word	= word[:-2]+strip_accents(word[-2])
 		elif word[-1] in ('a','á','e'):
-			if word[-2] in ('b','r','t'):
+			if word[-2] in ('b','r','t','v'):
 				word	= word[:-2]
 			else:
 				word	= word[:-1]
