@@ -148,6 +148,7 @@ def remove_stopwords(text):
 		return text
 	return ''
 
+
 # a stemmer that's slightly better than guessing
 def tippmix_stemmer(text):
 	if text:
@@ -155,20 +156,48 @@ def tippmix_stemmer(text):
 		if word_list:
 			results		= []
 			for word in word_list:
-				results.append(_tippmix_stemmer_recursive(word))
+				fix		= _tippmix_stemmer_get_prefix(_tippmix_stemmer_get_affix(word))
+				results	+= fix
+				
 			return results		
 	return []
 
-def _tippmix_stemmer_recursive(word):
+def _tippmix_stemmer_accents(word):
+	return word.replace('á','a').replace('é','e')
+	
+def _tippmix_stemmer_get_prefix(word):
+	length			= len(word)
+	if length<=3:
+		return (word,)
+	prefixes		= ("abba","alá","át","be","bele","benn","el","ellen","elő","fel","föl","hátra","hozzá","ide","ki","körül","le","meg","mellé","neki","oda","össze","rá","szét","túl","utána","vissza")
+	strip_prefixes	= ("ala","at","elo","fol","hatra","hozza","korul","melle","ossze","ra","szet","tul","utana")
+
+	for item in prefixes:
+		if len(item)+3<=length:
+			if word.startswith(item):
+				return (item,word[len(item):])
+	for item in strip_prefixes:
+		if len(item)+3<=length:
+			if word.startswith(item):
+				return (item,word[len(item):])
+	return (word,)
+	
+def _tippmix_stemmer_get_affix(word):
 	word= word.lower()
 	cnt	= 4
+	
+	if len(word)>11 and word.startswith('legesleg'):
+		word	= word[8:]
+	elif len(word)>6 and word.startswith('leg'):
+		word	= word[3:]
+		
 	while len(word)>3 and cnt:
 		cnt	-= 1
 		vh	= vowel_harmony(word)
 		if word[-1] == word[-2]:
 			word	= word[:-1]
 		elif word[-1] in ('i','j','m'):
-			word	= word[:-2]+strip_accents(word[-2])
+			word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 		elif word[-1] in ('a','á','e'):
 			if word[-2] in ('b','r','t','v'):
 				word	= word[:-2]
@@ -179,27 +208,30 @@ def _tippmix_stemmer_recursive(word):
 				if word[-2] in ('a','á','o','ó'):
 					word	= word[:-2]
 				else:
-					word	= word[:-2]+strip_accents(word[-2])
+					word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 			elif vh=='magas':
 				if word[-2] in ('e','é'):
 					word	= word[:-2]
 				else:
-					word	= word[:-2]+strip_accents(word[-2])
+					word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 			else:
 				break
 		elif word[-1] in ('k'):
-			if vh=='mely' or vh=='vegyes':
-				if word[-2] in ('a','á','o','ó','u','ü'):
-					word	= word[:-2]
-				else:
-					word	= word[:-2]+strip_accents(word[-2])
-			elif vh=='magas':
-				if word[-2] in ('e','é'):
-					word	= word[:-2]
-				else:
-					word	= word[:-2]+strip_accents(word[-2])
+			if word[-3]	== 'j':
+				word = word[:-3]
 			else:
-				break
+				if vh=='mely' or vh=='vegyes':
+					if word[-2] in ('a','á','o','ó','u','ü'):
+						word	= word[:-2]
+					else:
+						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
+				elif vh=='magas':
+					if word[-2] in ('e','é'):
+						word	= word[:-2]
+					else:
+						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
+				else:
+					break
 		elif word[-1] in ('g'):
 			if word[-2] in ('i'):
 				word	= word[:-2]
@@ -213,12 +245,12 @@ def _tippmix_stemmer_recursive(word):
 					if word[-2] in ('a','á','o','ó'):
 						word	= word[:-2]
 					else:
-						word	= word[:-2]+strip_accents(word[-2])
+						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 				elif vh=='magas':
 					if word[-2] in ('e','é'):
 						word	= word[:-2]
 					else:
-						word	= word[:-2]+strip_accents(word[-2])
+						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 				else:
 					break
 		elif word[-1] in ('n'):
@@ -229,12 +261,12 @@ def _tippmix_stemmer_recursive(word):
 					if word[-2] in ('a','á','o','ó','u','ü'):
 						word	= word[:-2]
 					else:
-						word	= word[:-2]+strip_accents(word[-2])
+						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 				elif vh=='magas':
 					if word[-2] in ('e','é','u','ü'):
 						word	= word[:-2]
 					else:
-						word	= word[:-2]+strip_accents(word[-2])
+						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 				else:
 					break		
 		elif word[-1] in ('t'):
@@ -245,18 +277,18 @@ def _tippmix_stemmer_recursive(word):
 					if word[-2] in ('o','ó','a','á'):
 						word	= word[:-2]
 					else:
-						word	= word[:-2]+strip_accents(word[-2])
+						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 				elif vh=='magas':
 					if word[-2] in ('e','é'):
 						word	= word[:-2]
 					else:
-						word	= word[:-2]+strip_accents(word[-2])
+						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 				else:
 					break
 		else:
 			break
 	return word
-	
+
 def extract_message(text):
 	extraction	= {
 		"command"	: None,
