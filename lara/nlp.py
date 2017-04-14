@@ -142,7 +142,7 @@ def is_gibberish(text=''):
 				consonants	+= 1
 			else:
 				consonants	= 0
-			if consonants>3:
+			if consonants>4:
 				redflags	+= 1
 				break
 			
@@ -195,8 +195,8 @@ def _tippmix_stemmer_get_prefix(word):
 	length			= len(word)
 	if length<=3:
 		return (word,)
-	prefixes		= ("abba","alá","át","be","bele","benn","el","ellen","elő","fel","föl","hátra","hozzá","ide","ki","körül","le","meg","mellé","neki","oda","össze","rá","szét","túl","utána","vissza")
-	strip_prefixes	= ("ala","at","elo","fol","hatra","hozza","korul","melle","ossze","ra","szet","tul","utana")
+	prefixes		= ("abba","alá","bele","benn","ellen","elő","fel","föl","hátra","hozzá","ide","körül","meg","mellé","neki","oda","össze","szét","túl","utána","vissza")
+	strip_prefixes	= ("ala","elo","fol","hatra","hozza","korul","melle","ossze","szet","tul","utana")
 
 	for item in prefixes:
 		if len(item)+3<=length:
@@ -210,50 +210,59 @@ def _tippmix_stemmer_get_prefix(word):
 	
 def _tippmix_stemmer_get_affix(word):
 	word= word.lower()
+	if len(word)<=3:
+		return word
+		
 	cnt	= 4
-	
+	vow= False
 	if len(word)>11 and word.startswith('legesleg'):
 		word	= word[8:]
 	elif len(word)>6 and word.startswith('leg'):
 		word	= word[3:]
 	
-	vow= False
 	while len(word)>3 and cnt:
 		cnt	-= 1
 		vh	= vowel_harmony(word)
 		if word[-1] == word[-2]:
 			word	= word[:-1]
-		elif word[-1] in ('i','j','m'):
+		elif word[-1] in ('i','j'):
+			if word[-1]	== 'i':
+				vow	= False
+			else:
+				vow	= True
 			word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-		elif word[-1] in ('a','á','e') and not vow:
-			if word[-2] in ('b','r','t','v'):
+		elif word[-1] in ('a','e','u','ú','ű') and not vow:
+			if word[-2] in ('b','n','r','t','v'):
 				word	= word[:-2]
 			else:
-				word	= word[:-1]
-		elif word[-1] in ('d','s'):
+				if len(word)>3:
+					word	= word[:-1]
+				else:
+					break
+		elif word[-1] in ('d','m','s'):
 			vow		= is_vowel(word[-2])
 			if vh=='mely' or vh=='vegyes':
-				if word[-2] in ('a','á','o','ó'):
+				if word[-2] in ('a','á','o'):
 					word	= word[:-2]
 				else:
-					#word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 					break
 			elif vh=='magas':
-				if word[-2] in ('e','é'):
+				if word[-2] in ('e'):
 					word	= word[:-2]
 				else:
-					#word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 					break
 			else:
 				break
 		elif word[-1] in ('k'):
-			if word[-3] in ('n','j'):
+			if word[-3] in ('j','n','t'):
 				vow		= is_vowel(word[-2])
 				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('a','u','ü'):
+					if word[-2] in ('a','á','é','u','ü'):
+						if word[-2] == 'a':
+							vow	= False
 						word	= word[:-3]
 					else:
-						if word[-2] in ('o','ó','u','ü'):
+						if word[-2] in ('o','u','ü'):
 							word	= word[:-2]
 						else:
 							word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
@@ -270,12 +279,12 @@ def _tippmix_stemmer_get_affix(word):
 			else:
 				vow		= is_vowel(word[-2])
 				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('o','ó','u','ü'):
+					if word[-2] in ('o','u','ü'):
 						word	= word[:-2]
 					else:
 						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 				elif vh=='magas':
-					if word[-2] in ('e','é'):
+					if word[-2] in ('e','é','u','ü'):
 						word	= word[:-2]
 					else:
 						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
@@ -289,17 +298,30 @@ def _tippmix_stemmer_get_affix(word):
 				break;
 		elif word[-1] in ('l'):
 			if word[-3] in ('r','b'):
-				vow		= False
-				word	= word[:-3]
+				if vh=='mely' or vh=='vegyes':
+					if word[-2] in ('o','ó'):
+						word	= word[:-3]
+				elif vh=='magas':
+					if word[-2] in ('o','ö','ő'):
+						word	= word[:-3]
+				break
+			elif word[-3] in ('v'):
+				if vh=='mely' or vh=='vegyes':
+					if word[-2] in ('a'):
+						word	= word[:-3]
+				elif vh=='magas':
+					if word[-2] in ('e'):
+						word	= word[:-3]
+				break
 			else:
 				vow		= is_vowel(word[-2])
 				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('a','á','o','ó'):
+					if word[-2] in ('a','á','o'):
 						word	= word[:-2]
 					else:
 						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 				elif vh=='magas':
-					if word[-2] in ('e','é'):
+					if word[-2] in ('e','é','ü'):
 						word	= word[:-2]
 					else:
 						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
@@ -312,7 +334,7 @@ def _tippmix_stemmer_get_affix(word):
 			else:
 				vow		= is_vowel(word[-2])
 				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('a','á','o','ó','u','ü'):
+					if word[-2] in ('a','á','o','u','ü'):
 						word	= word[:-2]
 					else:
 						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
@@ -324,13 +346,22 @@ def _tippmix_stemmer_get_affix(word):
 				else:
 					break		
 		elif word[-1] in ('t'):
-			if word[-3] in ('h'):
+			if word[-3] in ('g','h'):
 				vow		= False
-				word	= word[:-3]
+				if vh=='mely' or vh=='vegyes':
+					if word[-2] in ('a'):
+						word	= word[:-3]
+					else:
+						break
+				elif vh=='magas':
+					if word[-2] in ('e'):
+						word	= word[:-3]
+					else:
+						break
 			else:
 				vow		= is_vowel(word[-2])
 				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('o','ó','a','á'):
+					if word[-2] in ('o','a','á'):
 						word	= word[:-2]
 					else:
 						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
@@ -341,9 +372,37 @@ def _tippmix_stemmer_get_affix(word):
 						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
 				else:
 					break
+		elif word[-1] in ('b'):
+			if vh=='mely' or vh=='vegyes':
+				if word[-2] in ('a','o'):
+						word	= word[:-2]
+				elif vh=='magas':
+					if word[-2] in ('e'):
+						word	= word[:-2]
+			break
+		elif word[-1] in ('z'):
+			if word[-3] in ('h'):
+				if vh=='mely' or vh=='vegyes':
+					if word[-2] in ('o'):
+						vow		= False
+						word	= word[:-3]
+					else:
+						break
+				elif vh=='magas':
+					if word[-2] in ('e'):
+						vow		= False
+						word	= word[:-3]
+					else:
+						break
+				else:
+					break
+			else:
+				break
 		else:
 			break
 
+	word	= word[:-1]+_tippmix_stemmer_accents(word[-1])
+	
 	return word
 
 def extract_message(text):
