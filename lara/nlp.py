@@ -80,12 +80,27 @@ def vowel_harmony(word, vegyes=True):
 			return 'magas'
 		return 'mely'
 	return 'hiba'
+
+def is_vowel(letter):
+	if letter:
+		return (letter.lower() in ('a','á','e','é','i','í','o','ó','ö','ő','u','ú','ü','ű'))
+	return False
+
+def is_consonant(letter):
+	if letter.isalpha():
+		return (not is_vowel(letter))
+	return False
 	
 def vowel_ending(word):
 	if word:
-		return (word[-1].lower() in ('a','á','e','é','i','í','o','ó','ö','ő','u','ú','ü','ű'))
+		return is_vowel(word[-1])
 	return False
 
+def consonant_ending(word):
+	if word:
+		return is_consonant(word[-1])
+	return False
+	
 def number_of_words(text):
 	if text:
 		return len(tokenizer(text))
@@ -190,7 +205,8 @@ def _tippmix_stemmer_get_affix(word):
 		word	= word[8:]
 	elif len(word)>6 and word.startswith('leg'):
 		word	= word[3:]
-		
+	
+	vow= False
 	while len(word)>3 and cnt:
 		cnt	-= 1
 		vh	= vowel_harmony(word)
@@ -198,30 +214,52 @@ def _tippmix_stemmer_get_affix(word):
 			word	= word[:-1]
 		elif word[-1] in ('i','j','m'):
 			word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-		elif word[-1] in ('a','á','e'):
+		elif word[-1] in ('a','á','e') and not vow:
 			if word[-2] in ('b','r','t','v'):
 				word	= word[:-2]
 			else:
 				word	= word[:-1]
 		elif word[-1] in ('d','s'):
+			vow		= is_vowel(word[-2])
 			if vh=='mely' or vh=='vegyes':
 				if word[-2] in ('a','á','o','ó'):
 					word	= word[:-2]
 				else:
-					word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
+					#word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
+					break
 			elif vh=='magas':
 				if word[-2] in ('e','é'):
 					word	= word[:-2]
 				else:
-					word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
+					#word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
+					break
 			else:
 				break
 		elif word[-1] in ('k'):
-			if word[-3]	== 'j':
-				word = word[:-3]
-			else:
+			if word[-3] in ('n','j'):
+				vow		= is_vowel(word[-2])
 				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('a','á','o','ó','u','ü'):
+					if word[-2] in ('a','u','ü'):
+						word	= word[:-3]
+					else:
+						if word[-2] in ('o','ó','u','ü'):
+							word	= word[:-2]
+						else:
+							word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
+				elif vh=='magas':
+					if word[-2] in ('e','u','ü'):
+						word	= word[:-3]
+					else:
+						if word[-2] in ('e','é'):
+							word	= word[:-2]
+						else:
+							word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
+				else:
+					break				
+			else:
+				vow		= is_vowel(word[-2])
+				if vh=='mely' or vh=='vegyes':
+					if word[-2] in ('o','ó','u','ü'):
 						word	= word[:-2]
 					else:
 						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
@@ -234,13 +272,16 @@ def _tippmix_stemmer_get_affix(word):
 					break
 		elif word[-1] in ('g'):
 			if word[-2] in ('i'):
+				vow		= True
 				word	= word[:-2]
 			else:
 				break;
 		elif word[-1] in ('l'):
 			if word[-3] in ('r','b'):
+				vow		= False
 				word	= word[:-3]
 			else:
+				vow		= is_vowel(word[-2])
 				if vh=='mely' or vh=='vegyes':
 					if word[-2] in ('a','á','o','ó'):
 						word	= word[:-2]
@@ -255,8 +296,10 @@ def _tippmix_stemmer_get_affix(word):
 					break
 		elif word[-1] in ('n'):
 			if word[-3] in ('r','b'):
+				vow		= False
 				word	= word[:-3]
 			else:
+				vow		= is_vowel(word[-2])
 				if vh=='mely' or vh=='vegyes':
 					if word[-2] in ('a','á','o','ó','u','ü'):
 						word	= word[:-2]
@@ -271,8 +314,10 @@ def _tippmix_stemmer_get_affix(word):
 					break		
 		elif word[-1] in ('t'):
 			if word[-3] in ('h'):
+				vow		= False
 				word	= word[:-3]
 			else:
+				vow		= is_vowel(word[-2])
 				if vh=='mely' or vh=='vegyes':
 					if word[-2] in ('o','ó','a','á'):
 						word	= word[:-2]
@@ -287,6 +332,7 @@ def _tippmix_stemmer_get_affix(word):
 					break
 		else:
 			break
+
 	return word
 
 def extract_message(text):

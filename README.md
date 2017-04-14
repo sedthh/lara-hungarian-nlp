@@ -254,7 +254,10 @@ hyphens between numbers (useful for aprsing phone numbers). |
 | `lara.nlp.find_urls(text)` | Returns a list of extracted valid URLs. |
 | `lara.nlp.find_smileys(text)` | Returns a list of extracted common smileys (does not return emojis). |
 | `lara.nlp.vowel_harmony(word,[vegyes=True])` | Returns the vowel harmony for a word. Can return 'magas', 'mely' and 'vegyes' if optional vegyes parameter was set to True. |
+| `lara.nlp.is_vowel(letter)` | Returns True if the letter is a vowel. Returns False otherwise. |
+| `lara.nlp.is_consonant(letter)` | Returns True if the letter is a consonant. Returns False otherwise. |
 | `lara.nlp.vowel_ending(word)` | Returns True if word ends with a vowel. Returns False otherwise. |
+| `lara.nlp.consonant_ending(word)` | Returns True if word ends with a consonant. Returns False otherwise. |
 | `lara.nlp.number_of_words(text)` | Returns number of words in text, based on the words received from the tokenizer function. |
 | `lara.nlp.tokenizer(text)` | Returns words in text as a list. Note that this function only uses regular expressions. |
 | `lara.nlp.tippmix_stemmer(text)` | A stemming algorithm for removing the commoner morphological and inflexional endings from words in hungarian. Its main use is as part of a term normalisation process that is usually done when setting up Information Retrieval systems without relying on dictionaries. It's called tippmix because its results are slightly better than random guessing. |
