@@ -116,7 +116,7 @@ def is_gibberish(text=''):
 	if length>6:
 		if find_urls(text):
 			return False
-		
+		text		= text.lower()
 		redflags	= 0
 		# number of different characters
 		unique		= float(len(list(set(text))))
@@ -125,7 +125,7 @@ def is_gibberish(text=''):
 		# vowel ratio
 		vowels		= 0.0
 		for char in text:
-			if char in ('a','á','e','é','i','í','o','ó','ö','ő','u','ú','ü','ű'):
+			if is_vowel(char):
 				vowels	+= 1.0
 		if vowels:
 			if length/vowels<.25:
@@ -135,6 +135,17 @@ def is_gibberish(text=''):
 		# length of words
 		if length/float(number_of_words(text))>9:
 			redflags	+= 1
+		# 4 consonants next to each other
+		consonants	= 0
+		for char in text:
+			if is_consonant(char):
+				consonants	+= 1
+			else:
+				consonants	= 0
+			if consonants>3:
+				redflags	+= 1
+				break
+			
 		if redflags>1:
 			return True
 	return False
