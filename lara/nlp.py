@@ -100,6 +100,59 @@ def consonant_ending(word):
 	if word:
 		return is_consonant(word[-1])
 	return False
+
+def crop_text(text,limit=100,end='...',reverse=False):
+	if text:
+		n		= 0
+		output	= ''
+		cache	= ''
+		length	= len(text)
+		for i in range(length):
+			if reverse:
+				char	= text[length-1-i]
+			else:
+				char	= text[i]
+				
+			if char.isalnum():
+				if reverse:
+					cache	= char+cache
+				else:
+					cache	= cache+char
+			else:
+				if len(output)+len(cache)>limit:
+					if len(output)<length:
+						if output:
+							if reverse:
+								return end+output[1:]
+							else:
+								return output[:-1]+end
+						return end
+					else:
+						return output
+				else:
+					if reverse:
+						output	= char+cache+output
+					else:
+						output	+= cache+char
+					cache	= ''
+			n	+= 1
+			if n>limit:
+				cache	= ''
+				break
+		if cache:
+			if reverse:
+				output	= cache+output
+			else:
+				output	+= cache
+		if len(output)<length:
+			if output:
+				if reverse:
+					return end+output[1:]
+				else:
+					return output[:-1]+end
+			return end
+		return output			
+	return ''
 	
 def number_of_words(text):
 	if text:

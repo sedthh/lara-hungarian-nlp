@@ -259,6 +259,7 @@ hyphens between numbers (useful for aprsing phone numbers). |
 | `lara.nlp.vowel_ending(word)` | Returns True if word ends with a vowel. Returns False otherwise. |
 | `lara.nlp.consonant_ending(word)` | Returns True if word ends with a consonant. Returns False otherwise. |
 | `lara.nlp.number_of_words(text)` | Returns number of words in text, based on the words received from the tokenizer function. |
+| `lara.nlp.crop_text(text,limit=100,end='...',reverse=False)` | Returns a maximum of "limit" letters without cutting words in half. If the returned text is longer than the maximum number of letters allowed, the "end" string will be attached to the text. If "reverse" is True, the function will start from the end of the text and add the "end" string to the beggining if needed. |
 | `lara.nlp.tokenizer(text)` | Returns words in text as a list. Note that this function only uses regular expressions. |
 | `lara.nlp.tippmix_stemmer(text)` | A stemming algorithm for removing the commoner morphological and inflexional endings from words in hungarian. Its main use is as part of a term normalisation process that is usually done when setting up Information Retrieval systems without relying on dictionaries. It's called tippmix because its results are slightly better than random guessing. |
 | `lara.nlp.is_gibberish(text)` | Returns True if text is most likely just gibberish. |
