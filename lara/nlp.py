@@ -169,6 +169,10 @@ def is_gibberish(text=''):
 	if length>6:
 		if find_urls(text):
 			return False
+		for char in text:
+			if char>='0' and char<='9':
+				return False
+				
 		text		= text.lower()
 		redflags	= 0
 		# number of different characters
@@ -202,7 +206,7 @@ def is_gibberish(text=''):
 		if redflags>1:
 			return True
 	return False
-
+	
 #TODO: more contexts
 def strip_context(text, context="search", including=None):
 	if text:
