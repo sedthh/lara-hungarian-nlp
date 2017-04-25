@@ -103,12 +103,12 @@ def consonant_ending(word):
 
 def vowel_beginning(word):
 	if word:
-		return is_vowel(word[1])
+		return is_vowel(word[0])
 	return False
 
 def consonant_beginning(word):
 	if word:
-		return is_consonant(word[1])
+		return is_consonant(word[0])
 	return False	
 	
 def crop_text(text,limit=100,end='...',reverse=False):
