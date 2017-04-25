@@ -194,12 +194,19 @@ def is_gibberish(text=''):
 			redflags	+= 1
 		# 4 consonants next to each other
 		consonants	= 0
+		szy			= 0
 		for char in text:
 			if is_consonant(char):
+				if char in ('s','z','y'):
+					szy			+= 1
 				consonants	+= 1
 			else:
 				consonants	= 0
-			if consonants>4:
+				szy			= 0
+			if consonants>4 and not szy:
+				redflags	+= 1
+				break
+			elif consonants>5:
 				redflags	+= 1
 				break
 			
