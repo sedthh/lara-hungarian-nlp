@@ -4,8 +4,9 @@ import sys
 import re
 import json
 
-if 'lara.nlp' not in sys.modules:
-	import lara.nlp
+#if 'lara.nlp' not in sys.modules:
+#	import lara.nlp
+import lara.nlp
 
 class Intents:
 	

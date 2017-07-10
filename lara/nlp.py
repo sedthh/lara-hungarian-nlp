@@ -219,7 +219,7 @@ def is_gibberish(text=''):
 			elif consonants>5:
 				redflags	+= 1
 				break
-			
+				
 		if redflags>1:
 			return True
 	return False
@@ -231,13 +231,13 @@ def strip_context(text, context="search", including=None):
 			exclude		= re.compile(r'\b((a(z|rra)?)|(azok(ra)?)|(milyen)|(mennyi)|(mikor)|(hol)|(merre)|(hova)|([mk]i(vel|nek))|(mi?[eé]rt)|(r[aá])|(egy)|(mi(t|k(et)?)?)|(meg)|(be)|(nekem)|(hogy(an)?)|((sz[oó])?cikk\w*)|(oldal\w*)|([ií]r\w*)|(kapcsolat(os(an)?|ban))|(sz[oó]l[oó]?)|(keres\w*)|(n[eé]z[zd])|(mutas(s[aá][dl]|[sd]))|(alapj[aá]n)|(mond[dj]?)|(t[oö]ltse?d?)|(hoz([zd]|z[aá][dl]))|(nyis([ds]|s[aá][dl]))|(megnyit\w*)|((el)?olvas\w*)|(szeretn[eé]\w*)|(k[eé]r(ni|l?e[km]))|(megn[eé]z\w*)|(k[oö]z[oö]tt))\b', re.IGNORECASE)
 			text		= exclude.sub('',text)
 		elif context=='request':
-			exclude		= re.compile(r'\b((a(z|rra)?)|(azok(ra)?)|([io]lya[a-z]*)|(a?m(elyik(ek)?|i)?ben?)|(a?mi(kor)?)|(a?hol)|(hogy)|(van(nak)?)|([mk]i(vel|nek))|(mi?[eé]rt)|(r[aá])|(egy)|(mi(t|k(et)?)?)|(meg)|(be)|(az(oka)?t)|(kell(ene)?)|(k[eé]ne)|(szeretn[eé][km])|(k[eé]rn?(([eé][km])|i)?)|(ad[dj]([aá][dl])?)|(nekem)|(van)|(nincs)|(csak)|(k[uü]ld[dj]?[eé]?[dl]?)|(mond[a-z]+)|([ae]bb[ae]n?))\b', re.IGNORECASE)
+			exclude		= re.compile(r'\b(([ae](z|rr[ae])?)|(azok(ra)?)|([io]ly[ae][a-z]*)|(a?m(elyik(ek)?|i)?ben?)|(a?mi(kor)?)|(a?hol)|(hogy)|(van(nak)?)|([mk]i(vel|nek))|(mi?[eé]rt)|(r[aá])|(egy)|(mi(t|k(et)?)?)|(meg)|(be)|(az(oka)?t)|(kell(ene)?)|(k[eé]ne)|(szeretn[eé][km])|(k[eé]rn?(([eé][km])|i)?)|(ad[dj]([aá][dl])?)|(nekem)|(van)|(nincs)|(csak)|(k[uü]ld[dj]?[eé]?[dl]?)|(mond[a-z]+)|([ae]bb[ae]n?)|(l[eé]gy\s?sz[ií](ves)?)|(l[eé]cci)|(azt[aá]n)|(vagy)|(m[aá]sik(at)?)|(lesz)|(legyen)|(lenne)|(valami(lyen)?)|(sz[uü]ks[eé]g(em)?)|(ink[aá]bb)|(mondom)|(akkor)|(volt))\b', re.IGNORECASE)
 			text		= exclude.sub('',text)
 		if including:
 			exclude		= re.compile(r''+including, re.IGNORECASE)
 			text		= exclude.sub('',text)
 	return trim(remove_punctuation(text))
-
+	
 # based on http://snowball.tartarus.org/algorithms/hungarian/stop.txt 
 # prepared by Anna Tordai
 def remove_stopwords(text):
@@ -248,237 +248,74 @@ def remove_stopwords(text):
 		return text
 	return ''
 
-
-# a stemmer that's slightly better than guessing
-def tippmix_stemmer(text):
+#get rhythmic structure of a verse line as ['u','-',...]
+def metre(text):
+	result	= []
 	if text:
-		word_list	= tokenizer(text)
-		if word_list:
-			results		= []
-			for word in word_list:
-				fix		= _tippmix_stemmer_get_prefix(_tippmix_stemmer_get_affix(word))
-				results	+= fix
-				
-			return results		
-	return []
+		text	= re.compile('\W+').sub('',re.compile('(sz)|(cs)|(zs)|(gy)|(ly)|(ny)|(ty)').sub('x',text.lower()))
 
-def _tippmix_stemmer_accents(word):
-	return word.replace('á','a').replace('é','e')
-	
-def _tippmix_stemmer_get_prefix(word):
-	length			= len(word)
-	if length<=3:
-		return (word,)
-	prefixes		= ("abba","alá","bele","benn","ellen","elő","fel","föl","hátra","hozzá","ide","körül","meg","mellé","neki","oda","össze","szét","túl","utána","vissza")
-	strip_prefixes	= ("ala","elo","fol","hatra","hozza","korul","melle","ossze","szet","tul","utana")
+		type	= 0
+		cons	= False
+		start	= False
+		for char in text:
+			if is_vowel(char):
+				if cons and cons!='_' and start:
+					result.append('u')
+					start	= False
+				cons	= False
+				if char in ('a','e','i','o','ö','u','ü'):
+					if start:
+						result.append('u')
+					start	= True
+				else:
+					if start:
+						result.append('u')
+					result.append('-')
+					start	= False
+			else:
+				if start:
+					if char=='_':
+						start	= True			
+					elif cons:
+						result.append('-')
+						start	= False
+						cons	= False
+				cons	= char
+		if start:
+			result.append('u')
+	return result
 
-	for item in prefixes:
-		if len(item)+3<=length:
-			if word.startswith(item):
-				return (item,word[len(item):])
-	for item in strip_prefixes:
-		if len(item)+3<=length:
-			if word.startswith(item):
-				return (item,word[len(item):])
-	return (word,)
-	
-def _tippmix_stemmer_get_affix(word):
-	word= word.lower()
-	if len(word)<=3:
-		return word
-		
-	cnt	= 4
-	vow= False
-	if len(word)>11 and word.startswith('legesleg'):
-		word	= word[8:]
-	elif len(word)>6 and word.startswith('leg'):
-		word	= word[3:]
-	
-	while len(word)>3 and cnt:
-		cnt	-= 1
-		vh	= vowel_harmony(word)
-		if word[-1] == word[-2]:
-			word	= word[:-1]
-		elif word[-1] in ('i','j'):
-			if word[-1]	== 'i':
-				vow	= False
-			else:
-				vow	= True
-			word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-		elif word[-1] in ('a','e','u','ú','ű') and not vow:
-			if word[-2] in ('b','n','r','t','v'):
-				word	= word[:-2]
-			else:
-				if len(word)>3:
-					word	= word[:-1]
-				else:
-					break
-		elif word[-1] in ('d','m','s'):
-			vow		= is_vowel(word[-2])
-			if vh=='mely' or vh=='vegyes':
-				if word[-2] in ('a','á','o'):
-					word	= word[:-2]
-				else:
-					break
-			elif vh=='magas':
-				if word[-2] in ('e'):
-					word	= word[:-2]
-				else:
-					break
-			else:
-				break
-		elif word[-1] in ('k'):
-			if word[-3] in ('j','n','t'):
-				vow		= is_vowel(word[-2])
-				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('a','á','é','u','ü'):
-						if word[-2] == 'a':
-							vow	= False
-						word	= word[:-3]
-					else:
-						if word[-2] in ('o','u','ü'):
-							word	= word[:-2]
-						else:
-							word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-				elif vh=='magas':
-					if word[-2] in ('e','u','ü'):
-						word	= word[:-3]
-					else:
-						if word[-2] in ('e','é'):
-							word	= word[:-2]
-						else:
-							word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-				else:
-					break				
-			else:
-				vow		= is_vowel(word[-2])
-				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('o','u','ü'):
-						word	= word[:-2]
-					else:
-						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-				elif vh=='magas':
-					if word[-2] in ('e','é','u','ü'):
-						word	= word[:-2]
-					else:
-						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-				else:
-					break
-		elif word[-1] in ('g'):
-			if word[-2] in ('i'):
-				vow		= True
-				word	= word[:-2]
-			else:
-				break;
-		elif word[-1] in ('l'):
-			if word[-3] in ('r','b'):
-				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('o','ó'):
-						word	= word[:-3]
-				elif vh=='magas':
-					if word[-2] in ('o','ö','ő'):
-						word	= word[:-3]
-				break
-			elif word[-3] in ('v'):
-				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('a'):
-						word	= word[:-3]
-				elif vh=='magas':
-					if word[-2] in ('e'):
-						word	= word[:-3]
-				break
-			else:
-				vow		= is_vowel(word[-2])
-				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('a','á','o'):
-						word	= word[:-2]
-					else:
-						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-				elif vh=='magas':
-					if word[-2] in ('e','é','ü'):
-						word	= word[:-2]
-					else:
-						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-				else:
-					break
-		elif word[-1] in ('n'):
-			if word[-3] in ('r','b'):
-				vow		= False
-				word	= word[:-3]
-			else:
-				vow		= is_vowel(word[-2])
-				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('a','á','o','u','ü'):
-						word	= word[:-2]
-					else:
-						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-				elif vh=='magas':
-					if word[-2] in ('e','é','u','ü'):
-						word	= word[:-2]
-					else:
-						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-				else:
-					break		
-		elif word[-1] in ('t'):
-			if word[-3] in ('g','h'):
-				vow		= False
-				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('a'):
-						word	= word[:-3]
-					else:
-						break
-				elif vh=='magas':
-					if word[-2] in ('e'):
-						word	= word[:-3]
-					else:
-						break
-			else:
-				vow		= is_vowel(word[-2])
-				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('o','a','á'):
-						word	= word[:-2]
-					else:
-						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-				elif vh=='magas':
-					if word[-2] in ('e','é'):
-						word	= word[:-2]
-					else:
-						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-				else:
-					break
-		elif word[-1] in ('b'):
-			if vh=='mely' or vh=='vegyes':
-				if word[-2] in ('a','o'):
-						word	= word[:-2]
-				elif vh=='magas':
-					if word[-2] in ('e'):
-						word	= word[:-2]
-			break
-		elif word[-1] in ('z'):
-			if word[-3] in ('h'):
-				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('o'):
-						vow		= False
-						word	= word[:-3]
-					else:
-						break
-				elif vh=='magas':
-					if word[-2] in ('e'):
-						vow		= False
-						word	= word[:-3]
-					else:
-						break
-				else:
-					break
-			else:
-				break
-		else:
-			break
+# match rhythmic structure of a verse line to given list of structure pattern ['u','-',...] 
+def metre_pattern(text,pattern):
+	original	= metre(text)
+	if len(pattern) == len(original):
+		for i in range(len(original)):
+			if pattern[i] in ('-','u'):
+				if original[i]!=pattern[i]:
+					return False
+		return True
+	return False
 
-	word	= word[:-1]+_tippmix_stemmer_accents(word[-1])
-	
-	return word
+# number of syllables in a word	
+def number_of_syllables(word,rhyme=False):
+	szotag	= 0
+	for char in word:
+		if is_vowel(char):
+			szotag	+= 1
+	if not szotag and rhyme:
+		word	= re.compile('(sz)|(cs)|(zs)|(gy)|(ly)|(ny)|(ty)').sub('x',word.lower().strip())
+		szotag	= len(word)
+	return szotag
 
+# number of syllables in sentence	
+def number_of_syllables_in_text(text):
+	words=text.strip().replace('-',' ').split()
+	return sum([number_of_syllables(word,True) for word in words])
+
+# True if word has a digit in it	
+def hasDigits(text):
+	return any(char.isdigit() for char in text)	
+	
 def extract_message(text):
 	extraction	= {
 		"command"	: None,
