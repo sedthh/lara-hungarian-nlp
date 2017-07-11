@@ -12,7 +12,8 @@
 	3. [Functions](#functions)
 		1. [Parser functions](#parser-functions)
 		2. [NLP functions](#nlp-functions)
-		3. [Tips and tricks](#tips-and-tricks)
+		3. [Stemmer functions](#stemmer-functions)
+		4. [Tips and tricks](#tips-and-tricks)
 3. [Misc.](#misc)
 	1. [To do list](#to-do-list)
 
@@ -241,6 +242,7 @@ The get_common_intents() function can be used as follows: `example += lara.parse
 | ---         | ---     |
 | `lara.nlp.strip_accents(text)` | Returns text without accents (á->a, é->e, etc.). |
 | `lara.nlp.trim(text)` | Trims text *and* removes all whitespaces. |
+| `lara.nlp.remove_line_breaks(text, [replace=''])` | Removes line breaks from text. |
 | `lara.nlp.remove_punctuation(text, [replace=''])` | Removes punctuation from text. |
 | `lara.nlp.remove_double_letters(text, [replace=''])` | The function replaces characters that are followed by the same character multiple times into single characters (kappan->kapan, busszal->buszal). Case sensitive. |
 | `lara.nlp.remove_space_between_numbers(text,[replace=''])` | Removes whitespaces and 
@@ -261,11 +263,29 @@ hyphens between numbers (useful for aprsing phone numbers). |
 | `lara.nlp.number_of_words(text)` | Returns number of words in text, based on the words received from the tokenizer function. |
 | `lara.nlp.crop_text(text,limit=100,end='...',reverse=False)` | Returns a maximum of "limit" letters without cutting words in half. If the returned text is longer than the maximum number of letters allowed, the "end" string will be attached to the text. If "reverse" is True, the function will start from the end of the text and add the "end" string to the beggining if needed. |
 | `lara.nlp.tokenizer(text)` | Returns words in text as a list. Note that this function only uses regular expressions. |
-| `lara.nlp.tippmix_stemmer(text)` | A stemming algorithm for removing the commoner morphological and inflexional endings from words in hungarian. Its main use is as part of a term normalisation process that is usually done when setting up Information Retrieval systems without relying on dictionaries. It's called tippmix because its results are slightly better than random guessing. |
 | `lara.nlp.is_gibberish(text)` | Returns True if text is most likely just gibberish. |
 | `lara.nlp.strip_context(text,[context="search\|request"],[including=None])` | Removes words from text that are unimportant based on ceontext. If **context** is set to "search", words regarding search commands are removed, so the rest of the text could be used as a clean search query. If **context** is set to "request", common words used for making a request are removed from the text, cleaning the query. The optional **including** variable can be either a regular expression or a string used as a regualr expression. If set, matching words characters will also be removed from the text.  |
 | `lara.nlp.remove_stopwords(text)` | Removes common hungarian stopwords from text. |
+| `lara.nlp.metre(text)` | Returns the rhytmic structure of a **verse line** as list of 'u' and '-' characters (former meaning short, latter meaning long foot). |
+| `lara.nlp.metre_pattern(text,pattern)` | Returns True if the the rhytmic structure of a **verse line** matches the given pattern, defined as a list of 'u' and '-' characters. For instance: **metre_pattern('Bús düledékeiden, Husztnak romvára megállék;',['-', 'u', 'u', '-', 'u', 'u', '-', '-', '-', '-', '-', 'u', 'u', '-', '-'])** will return True. |
+| `lara.nlp.number_of_syllables(word, [rhyme=False])` | Returns the number of syllables in a word based on the number of its vowels. If **rhyme** is se to True, the returned number of syllables will be harshly based on pronunciation instead (by taking acronyms in account). |
+| `lara.nlp.hasDigits(text)` | Returns True if text has a digit in it. |
 | `lara.nlp.extract_message(text)` | Removes a dictionary of extracted items. If text contains a command, the command key will be set accordingly. Arguments following a command will be added as list elements. List of existing hashtags, mentions and urls are also included in this dictionary. This is useful if you want to do a quick check on your received text message. |
+
+###### Stemmer functions
+
+Lara also comes with a stemming algorithm for removing the commoner morphological and inflexional endings from words in hungarian. Its main use is as part of a term normalisation process that is usually done when setting up Information Retrieval systems without relying on dictionaries. It's called **tippmix** because its results are slightly better than random guessing. You can call the **stemmer(text)** function the following way:
+
+```python
+import lara.tippmix as tippmix
+text = '''A szövegbányászat a strukturálatlan vagy kis mértékben strukturált szöveges állományokból történő ismeret kinyerésének tudománya; olyan különböző dokumentumforrásokból származó szöveges ismeretek és információk gépi intelligenciával történő kigyűjtése és reprezentációja, amely a feldolgozás előtt rejtve és feltáratlanul maradt az elemző előtt. '''
+print(tippmix.stemmer(text))
+
+>>> ['a', 'szövegbányász', 'a', 'strukturál', 'vagy', 'kis', 'mér', 'strukturál', 'szöveg', 'állományok', 'törte', 'ismer', 'kinyerése', 'tudomány', 'oly', 'különböz', 'dokumentumforrások', 'származ', 'szöveg', 'ismere', 'és', 'információ', 'gép', 'intelligencia', 'törte', 'kigyűjtés', 'és', 'reprezentáció', 'amely', 'a', 'fel', 'dolgoz', 'elő', 'rej', 'és', 'fel', 'tár', 'mar', 'az', 'elemz', 'elő']
+```
+
+Note that number of returned stems might be larger than the actual number of words in the text, as the stemmer aslo separates certain adverb particles. 
+
 
 ###### Tips and tricks
 Setting multiple properties for intents can be useful in detecting patterns:
