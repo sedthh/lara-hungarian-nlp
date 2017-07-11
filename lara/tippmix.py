@@ -63,7 +63,7 @@ def _tippmix_stemmer_get_affix(word):
 			else:
 				vow	= True
 			word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
-		elif word[-1] in ('a','e','u','ú','ű') and not vow:
+		elif word[-1] in ('a','e','u','ú','ű','ó','ő') and not vow:
 			if word[-2] in ('b','n','r','t','v'):
 				word	= word[:-2]
 			else:
@@ -148,7 +148,7 @@ def _tippmix_stemmer_get_affix(word):
 			else:
 				vow		= lara.nlp.is_vowel(word[-2])
 				if vh=='mely' or vh=='vegyes':
-					if word[-2] in ('a','á','o'):
+					if word[-2] in ('a','á','o','u'):
 						word	= word[:-2]
 					else:
 						word	= word[:-2]+_tippmix_stemmer_accents(word[-2])
