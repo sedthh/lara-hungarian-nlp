@@ -15,7 +15,8 @@
 		3. [Stemmer functions](#stemmer-functions)
 		4. [Tips and tricks](#tips-and-tricks)
 3. [Misc.](#misc)
-	1. [To do list](#to-do-list)
+	1. [Known applications](#known-applications)
+	2. [To do list](#to-do-list)
 
 ## Description
 Due to the complexity of the hungarian language most known stemmers and lemmatisers either fail to find the correct lemmas or require a lot of computational power while relying on large dictionaries. Lara provides a smart workaround for this, by tackling the problem the other way around. The user can provide a set of root words and their word classes, and Lara will automatically create complex regular expressions to match most of the root words’ possible inflected forms. The user can then match any root word with a given text and check wether any inflected forms of that word are present. However, it is worth noting that this method might also give false positives for certain words.
@@ -301,12 +302,17 @@ Special thanks to [Peter Varo](https://github.com/petervaro) for formatting guid
 
 Created in collaboration with the [Institute of Advanced Studies, Kőszeg](http://iask.hu/) and [Kitchen Budapest](http://kibu.hu)
 
+#### Known applications
+Feel free to add your own projects to this list if you've found Lara useful.
+
+- Hungarian "Napirajz" Chatbot for Facebook Messenger: https://www.facebook.com/NapirajzBot/
+- Online News Monitoring in Hungarian Language for visualizing quantity of articles on the immigrant crisis
+
 #### To do list
 - Add more word classes (including: numerals nad pronouns).
 - Implement useful NLTK functions for the hungarian language.
 - Rewrite regular expressions in a way that autoamtic POS-tagging would be possible in hungarian.
 - Create dictionaries to enable sentiment analysis in hungarian.
-- List bots and NLP researches based on Lara
 
 This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details
 
