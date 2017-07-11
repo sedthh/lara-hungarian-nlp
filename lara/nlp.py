@@ -12,6 +12,9 @@ def trim(text):
 	if text:
 		return re.sub(r'\s+',' ',text.strip())
 	return ''
+
+def remove_line_breaks(text,replace=''):
+	return re.sub(r"\r?\n", replace, text)
 	
 def remove_punctuation(text, replace=''):
 	return re.sub(r'[^\w\s]', replace, text)
