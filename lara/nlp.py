@@ -310,11 +310,6 @@ def number_of_syllables(word,rhyme=False):
 		szotag	= len(word)
 	return szotag
 
-# number of syllables in sentence	
-def number_of_syllables_in_text(text):
-	words=text.strip().replace('-',' ').split()
-	return sum([number_of_syllables(word,True) for word in words])
-
 # True if word has a digit in it	
 def hasDigits(text):
 	return any(char.isdigit() for char in text)	
