@@ -289,16 +289,75 @@ def metre(text):
 	return result
 
 # match rhythmic structure of a verse line to given list of structure pattern ['u','-',...] 
-def metre_pattern(text,pattern):
-	original	= metre(text)
-	if len(pattern) == len(original):
-		for i in range(len(original)):
+def metre_pattern(match,pattern):
+	if len(pattern) == len(match):
+		for i in range(len(match)):
 			if pattern[i] in ('-','u'):
-				if original[i]!=pattern[i]:
+				if match[i]!=pattern[i]:
 					return False
 		return True
 	return False
+	
+def is_hexameter(pattern):
+	if len(pattern)<=12:
+		return False
 
+	ending		= pattern[-5:]
+	if not metre_pattern(ending,['-','u','u','-','x']):
+		return False
+
+	beginning	= pattern[:-5]
+	test		= ''
+	mora		= 0
+	for metre in beginning:
+		if test:
+			if test == '-':
+				test	+= metre
+				if test == '--':
+					test	= ''
+					mora	+=1
+			elif test == '-u':
+				if metre == 'u':
+					test	= ''
+					mora	+= 1
+				else:
+					return False
+			else:
+				return False
+		else:
+			if metre == '-':
+				test	= '-'
+			else:
+				return False
+	if mora!=4:
+		return False
+	return True	
+
+def is_pentameter(pattern):
+	mora_l	= 0
+	mora_s	= 0
+	mora_cnt= 0
+	test	= ''
+	for metre in pattern:
+		test	+= metre
+		if mora_cnt == 2 or mora_cnt == 5:
+			if test == '-':
+				test	= ''
+				mora_s	+=1
+				mora_cnt+=1
+			else:
+				return False
+		else:
+			if test == '--' or test == '-uu':
+				test	= ''
+				mora_l	+=1
+				mora_cnt+=1
+			elif test == '-u-':
+				return False
+	if mora_l != 4 or mora_s != 2:
+		return False
+	return True
+	
 # number of syllables in a word	
 def number_of_syllables(word,rhyme=False):
 	szotag	= 0
