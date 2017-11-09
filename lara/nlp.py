@@ -372,6 +372,16 @@ def number_of_syllables(word,rhyme=False):
 # True if word has a digit in it	
 def hasDigits(text):
 	return any(char.isdigit() for char in text)	
+
+# generates list of ngrams from list of tokens
+def ngram(tokens,n=2):
+	if tokens and n>0:
+		if n>=len(tokens):
+			return [' '.join(tokens)]
+		else:
+			grams	= [tokens[i:i+n] for i in range(len(tokens)-n+1)]
+			return [' '.join(item) for item in grams]
+	return []
 	
 def extract_message(text):
 	extraction	= {

@@ -1,5 +1,4 @@
-# lara-hungarian-nlp
-**Lara** is a Python3 NLP Class for ChatBots written in Hungarian language. The Class is capable of matching inflected forms of keywords in text messages written in hungarian. 
+**LARA** is a lightweight Python3 NLP library for ChatBots written in Hungarian language. The parser Class is capable of matching inflected forms of keywords in text messages written in hungarian. Lara also comes with a collection of common NLP functions for text processing.
 
 # Table of contents
 
@@ -242,12 +241,11 @@ The get_common_intents() function can be used as follows: `example += lara.parse
 | Function | Description |
 | ---         | ---     |
 | `lara.nlp.strip_accents(text)` | Returns text without accents (á->a, é->e, etc.). |
-| `lara.nlp.trim(text)` | Trims text *and* removes all whitespaces. |
+| `lara.nlp.trim(text)` | Trims text *and* also removes all whitespaces. |
 | `lara.nlp.remove_line_breaks(text, [replace=''])` | Removes line breaks from text. |
 | `lara.nlp.remove_punctuation(text, [replace=''])` | Removes punctuation from text. |
 | `lara.nlp.remove_double_letters(text, [replace=''])` | The function replaces characters that are followed by the same character multiple times into single characters (kappan->kapan, busszal->buszal). Case sensitive. |
-| `lara.nlp.remove_space_between_numbers(text,[replace=''])` | Removes whitespaces and 
-hyphens between numbers (useful for aprsing phone numbers). |
+| `lara.nlp.remove_space_between_numbers(text,[replace=''])` | Removes whitespaces and hyphens between numbers (useful for aprsing phone numbers). |
 | `lara.nlp.remove_urls(text,[replace=''])` | Removes valid URLs from text. |
 | `lara.nlp.remove_email_addresses(text,[replace=''])` | Removes valid e-mail addresses from text. |
 | `lara.nlp.remove_html_tags(text,[replace=''])` | Removes possible HTML tags from text with regular expressions. Regular epressions are not the most efficient solutions for parsing HTML but it usually works for chat messages. |
@@ -262,17 +260,18 @@ hyphens between numbers (useful for aprsing phone numbers). |
 | `lara.nlp.vowel_ending(word)` | Returns True if word ends with a vowel. Returns False otherwise. |
 | `lara.nlp.consonant_ending(word)` | Returns True if word ends with a consonant. Returns False otherwise. |
 | `lara.nlp.number_of_words(text)` | Returns number of words in text, based on the words received from the tokenizer function. |
-| `lara.nlp.crop_text(text,limit=100,end='...',reverse=False)` | Returns a maximum of "limit" letters without cutting words in half. If the returned text is longer than the maximum number of letters allowed, the "end" string will be attached to the text. If "reverse" is True, the function will start from the end of the text and add the "end" string to the beggining if needed. |
+| `lara.nlp.crop_text(text,limit=100,end='...',reverse=False)` | Returns a maximum of **limit** letters without cutting words in half. If the returned text is longer than the maximum number of letters allowed, the **end** string will be attached to the text. If **reverse** is True, the function will start from the end of the text and add the **end** string to the beggining if needed. |
 | `lara.nlp.tokenizer(text)` | Returns words in text as a list. Note that this function only uses regular expressions. |
 | `lara.nlp.is_gibberish(text)` | Returns True if text is most likely just gibberish. |
 | `lara.nlp.strip_context(text,[context="search\|request"],[including=None])` | Removes words from text that are unimportant based on ceontext. If **context** is set to "search", words regarding search commands are removed, so the rest of the text could be used as a clean search query. If **context** is set to "request", common words used for making a request are removed from the text, cleaning the query. The optional **including** variable can be either a regular expression or a string used as a regualr expression. If set, matching words characters will also be removed from the text.  |
 | `lara.nlp.remove_stopwords(text)` | Removes common hungarian stopwords from text. |
-| `lara.nlp.metre(text)` | Returns the rhytmic structure of a **verse line** as list of 'u' and '-' characters (former meaning short, latter meaning long foot). For instance: metre('Bús düledékeiden, Husztnak romvára megállék;') would return ['-', 'u', 'u', '-', 'u', 'u', '-', '-', '-', '-', '-', 'u', 'u', '-', '-'] |
-| `lara.nlp.metre_pattern(match,pattern)` | Returns True if the the list representing the rhytmic structure of a **verse line** matches the given pattern, defined as a list of 'u' and '-' characters. |
-| `lara.nlp.is_hexameter(pattern)` | Returns True if the the metre list representing the rhytmic structure of a **verse line** is a valid Hexameter. |
-| `lara.nlp.is_pentameter(pattern)` | Returns True if the the metre list representing the rhytmic structure of a **verse line** is a valid Pentameter. For example:  is_pentameter(metre('Csend vala, felleg alól szállt fel az éjjeli hold.')) would return True |
+| `lara.nlp.metre(text)` | Returns the rhytmic structure of a *verse line* as list of 'u' and '-' characters (former meaning short, latter meaning long foot). For instance: metre('Bús düledékeiden, Husztnak romvára megállék;') would return ['-', 'u', 'u', '-', 'u', 'u', '-', '-', '-', '-', '-', 'u', 'u', '-', '-'] |
+| `lara.nlp.metre_pattern(match,pattern)` | Returns True if the the list representing the rhytmic structure of a *verse line* matches the given pattern, defined as a list of 'u' and '-' characters. |
+| `lara.nlp.is_hexameter(pattern)` | Returns True if the the metre list representing the rhytmic structure of a *verse line* is a valid Hexameter. |
+| `lara.nlp.is_pentameter(pattern)` | Returns True if the the metre list representing the rhytmic structure of a *verse line* is a valid Pentameter. For example:  is_pentameter(metre('Csend vala, felleg alól szállt fel az éjjeli hold.')) would return True |
 | `lara.nlp.number_of_syllables(word, [rhyme=False])` | Returns the number of syllables in a word based on the number of its vowels. If **rhyme** is se to True, the returned number of syllables will be harshly based on pronunciation instead (by taking acronyms in account). |
 | `lara.nlp.hasDigits(text)` | Returns True if text has a digit in it. |
+| `lara.nlp.ngram(tokens,[n=2])` | Returns list of ngrams generated from the list of **tokens** provided. |
 | `lara.nlp.extract_message(text)` | Removes a dictionary of extracted items. If text contains a command, the command key will be set accordingly. Arguments following a command will be added as list elements. List of existing hashtags, mentions and urls are also included in this dictionary. This is useful if you want to do a quick check on your received text message. |
 
 ###### Stemmer functions
@@ -309,6 +308,7 @@ Feel free to add your own projects to this list if you've found Lara useful.
 
 - Hungarian "Napirajz" Chatbot for Facebook Messenger: https://www.facebook.com/NapirajzBot/
 - Online News Monitoring in Hungarian Language for visualizing quantity of articles on the immigrant crisis
+- Used to develop the AI for Training2038: http://kibu.hu/en/news/training-2038
 
 #### To do list
 - Add more word classes (including: numerals nad pronouns).
