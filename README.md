@@ -1,4 +1,4 @@
-**LARA** is a lightweight Python3 NLP library for ChatBots written in Hungarian language. The parser Class is capable of matching inflected forms of keywords in text messages written in hungarian. Lara also comes with a collection of common NLP functions for text processing.
+**LARA** is a lightweight Python3 NLP library for ChatBots written in Hungarian language. The parser Class is capable of matching inflected forms of keywords in text messages written in hungarian. **Lara** also comes with a collection of common NLP functions for text processing.
 
 # Table of contents
 
@@ -12,15 +12,16 @@
 		1. [Parser functions](#parser-functions)
 		2. [NLP functions](#nlp-functions)
 		3. [Stemmer functions](#stemmer-functions)
-		4. [Tips and tricks](#tips-and-tricks)
+		4. [Generating intents](#parser-generation)
+		5. [Tips and tricks](#tips-and-tricks)
 3. [Misc.](#misc)
 	1. [Known applications](#known-applications)
 	2. [To do list](#to-do-list)
 
 ## Description
-Due to the complexity of the hungarian language most known stemmers and lemmatisers either fail to find the correct lemmas or require a lot of computational power while relying on large dictionaries. Lara provides a smart workaround for this, by tackling the problem the other way around. The user can provide a set of root words and their word classes, and Lara will automatically create complex regular expressions to match most of the root words’ possible inflected forms. The user can then match any root word with a given text and check wether any inflected forms of that word are present. However, it is worth noting that this method might also give false positives for certain words.
+Due to the complexity of the hungarian language most known stemmers and lemmatisers either fail to find the correct lemmas or require a lot of computational power while relying on large dictionaries. **Lara** provides a smart workaround for this, by tackling the problem the other way around. The user can provide a set of root words and their word classes, and Lara will automatically create complex regular expressions to match most of the root words’ possible inflected forms. The user can then match any root word with a given text and check wether any inflected forms of that word are present. However, it is worth noting that this method might also give false positives for certain words.
 
-Lara is perfect for developing chatbots in hungarian language, where certain keywords would trigger certain answers. The Class will allow developers to easly match almost every possible inflected forms of any keyword in hungarian language. For example:
+**Lara** is perfect for developing chatbots in hungarian language, where certain keywords would trigger certain answers. The Class will allow developers to easly match almost every possible inflected forms of any keyword in hungarian language. For example:
 ```python
 {"to_do"		: [{"stem":"csinál","wordclass":"verb"}]}
 ```
@@ -34,12 +35,12 @@ Will match the intent „to_do” in the following sentences:
 - **Csinálhatott** volna mást is.
 - **Visszacsinalnad** az ekezeteket a billentyuzetemen, kerlek?
 
-The Class also comes with some basic NLP functions that are most useful for processing short texts in hungarian. Please note, that despite being an NLP Class, Lara is incompatible with languages other than hungarian. It was developed with the focus on all the quirks and specialities of the hungarian grammar in mind and was not meant to be an equally useful processing tool for all languages. 
+The Class also comes with some basic NLP functions that are most useful for processing short texts in hungarian. Please note, that despite being an NLP Class, **Lara** is currently incompatible with languages other than hungarian. It was developed with the focus on all the quirks and specialities of the hungarian grammar in mind and was not meant to be an equally useful processing tool for all languages. 
 
 ## Documentation
 **The usage of the Class will be explained in hungarian.**
 
-A Lara egy magyar nyelvű, alacsony számítási igényű szövegfeldolgozó osztály Python 3 alá, rövid szöveges üzenetek kulcsszavainak kinyerésére. Automatizálva megállapíthatjuk a szöveg szándékát, úgy, hogy egy dictionary-ben szándékokat definiálunk, amelyekhez a hozzájuk tarrtozó szavak listáját rendeljük. Az elfogadott szavak ezen listájában elegendő a szó szótövét és annak szófaját definiálnunk. Ezek alapján az osztály olyan reguláris kifejezéseket hoz létre, amelyek az adott szótő majdnem minden szófajának megfelelő ragozott alakját képes azonosítani a folyószövegben. 
+A **Lara** egy magyar nyelvű, alacsony számítási igényű szövegfeldolgozó osztály Python 3 alá, rövid szöveges üzenetek kulcsszavainak kinyerésére. Automatizálva megállapíthatjuk a szöveg szándékát, úgy, hogy egy dictionary-ben szándékokat definiálunk, amelyekhez a hozzájuk tarrtozó szavak listáját rendeljük. Az elfogadott szavak ezen listájában elegendő a szó szótövét és annak szófaját definiálnunk. Ezek alapján az osztály olyan reguláris kifejezéseket hoz létre, amelyek az adott szótő majdnem minden szófajának megfelelő ragozott alakját képes azonosítani a folyószövegben. 
 
 #### Examples
 *A következő példában 3 szándékot definiálunk, amelyekhez 1-1 szótövet és azok szófajait társítjuk. Az osztály a példamondatban megtalálja ezeket a szándékokat, annak ellenére, hogy a megadott szavak ragozott formában vannak.*
@@ -276,7 +277,7 @@ The get_common_intents() function can be used as follows: `example += lara.parse
 
 ###### Stemmer functions
 
-Lara also comes with a stemming algorithm for removing the commoner morphological and inflexional endings from words in hungarian. Its main use is as part of a term normalisation process that is usually done when setting up Information Retrieval systems without relying on dictionaries. It's called **tippmix** because its results are slightly better than random guessing. You can call the **stemmer(text)** function the following way:
+**Lara** also comes with a stemming algorithm for removing the commoner morphological and inflexional endings from words in hungarian. Its main use is as part of a term normalisation process that is usually done when setting up Information Retrieval systems without relying on dictionaries. It's called **tippmix** because its results are slightly better than random guessing. You can call the **stemmer(text)** function the following way:
 
 ```python
 import lara.tippmix as tippmix
@@ -288,8 +289,31 @@ print(tippmix.stemmer(text))
 
 Note that number of returned stems might be larger than the actual number of words in the text, as the stemmer aslo separates certain adverb particles. 
 
+###### Generating intents
+
+**Lara** also comes with a built in function to automatically generate parser declarations from CSV files. You can declare stems, wordclasses excluding "regex" and the intent itself. You can also declare possible "affix"es and "prefix"es by putting | separated words in parenthesis before or after the stem.
+
+| stem | wordclass | intent |
+| ---         | ---     | ---     |
+| körte | noun | gyumolcs |
+| (sárga)barack | noun | gyumolcs |
+| (arany|zöld)alma | noun | gyumolcs |
+| narancs(lé) | noun | gyumolcs |
+| (indián|fekete)meggy(szörp) | noun | gyumolcs |
+
+```python
+import pandas as pd
+df			= pd.read_csv('example.csv',sep=';',header=0,names=["stem","wordclass","intent"])
+csv_intents	= {}	# you can also use existing dictionary of intents to extend them
+for index, row in df.iterrows():
+	lara.parser.intents_from_csv(row,csv_intents)
+print(csv_intents)
+
+>>> {'gyumolcs': [{'stem': 'körte', 'wordclass': 'noun'}, {'prefix': ['sárga'], 'stem': 'barack', 'wordclass': 'noun'}, {'prefix': ['arany', 'zöld'], 'stem': 'alma', 'wordclass': 'noun'}, {'affix': ['lé'], 'stem': 'narancs', 'wordclass': 'noun'}, {'prefix': ['indián', 'fekete'], 'affix': ['szörp'], 'stem': 'meggy', 'wordclass': 'noun'}]}
+```
 
 ###### Tips and tricks
+
 Setting multiple properties for intents can be useful in detecting patterns:
 - In addition to actual words, regular expressions can also be defined as "stem"s. This also applies to "with" and "without" properties' "stem"s. 
 - Both "prefix"es and "affix"es can be set at the same time.
@@ -304,7 +328,7 @@ Special thanks to [Peter Varo](https://github.com/petervaro) for formatting guid
 Created in collaboration with the [Institute of Advanced Studies, Kőszeg](http://iask.hu/) and [Kitchen Budapest](http://kibu.hu)
 
 #### Known applications
-Feel free to add your own projects to this list if you've found Lara useful.
+Feel free to add your own projects to this list if you've found **Lara** useful.
 
 - Hungarian "Napirajz" Chatbot for Facebook Messenger: https://www.facebook.com/NapirajzBot/
 - Online News Monitoring in Hungarian Language for visualizing quantity of articles on the immigrant crisis
