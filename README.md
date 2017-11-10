@@ -12,7 +12,7 @@
 		1. [Parser functions](#parser-functions)
 		2. [NLP functions](#nlp-functions)
 		3. [Stemmer functions](#stemmer-functions)
-		4. [Generating intents](#parser-generation)
+		4. [Generating intents](#generating-intents)
 		5. [Tips and tricks](#tips-and-tricks)
 3. [Misc.](#misc)
 	1. [Known applications](#known-applications)
@@ -297,9 +297,9 @@ Note that number of returned stems might be larger than the actual number of wor
 | ---         | ---     | ---     |
 | körte | noun | gyumolcs |
 | (sárga)barack | noun | gyumolcs |
-| (arany|zöld)alma | noun | gyumolcs |
+| (arany\|zöld)alma | noun | gyumolcs |
 | narancs(lé) | noun | gyumolcs |
-| (indián|fekete)meggy(szörp) | noun | gyumolcs |
+| (indián\|fekete)meggy(szörp) | noun | gyumolcs |
 
 ```python
 import pandas as pd
