@@ -236,6 +236,7 @@ The get_common_intents() function can be used as follows: `example += lara.parse
 | `_command` | Giving an order / imperative mode |
 | `_question` | Asking questions / interrogative mode |
 | `_conditional` | Conditional mode |
+| `_profanity` | Text contains swearwords |
 
 ###### NLP functions
 
