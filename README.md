@@ -10,7 +10,8 @@
 		2. [Other properties](#other-properties)
 	3. [Functions](#functions)
 		1. [Parser functions](#parser-functions)
-		2. [NLP functions](#nlp-functions)
+		2. [Name entities](#name-entities)
+		3. [NLP functions](#nlp-functions)
 		3. [Stemmer functions](#stemmer-functions)
 		4. [Generating intents](#generating-intents)
 		5. [Tips and tricks](#tips-and-tricks)
@@ -216,17 +217,15 @@ The constructor also accepts instances.
 
 Function str(), repr(), len() and logical operators eq (==), ne (!=) and addition (+) are also available.
 
-Public functions outside of the lara.paser.Intents() Class:
+###### Name entities
 
-| Function | Description |
-| ---         | ---     |
-| `lara.parser.match_intents(Intent instance or dictionary, text)` | Same as example.match_all_intents(text), but it allows declaring intents on the fly. |
-| `lara.parser.merge_dicts(Arbitrary number of dictionaries)` | Allows merging dictionaries. |
-| `lara.parser.get_common_intents()` | Returns dictionary of common intents, that are useful for chatbot development. |
+Some intents and entities are used
 
-The get_common_intents() function can be used as follows: `example += lara.parser.get_common_intents()`
+You can even add entities to an existing Intent: `example += lara.parser.get_common_intents()`
 
-| Key of common intent | Description |
+**Common intents, that are useful for chatbot development**
+
+| `lara.entities.common()` | Description |
 | ---         | ---     |
 | `_negative` | Negation, denial, opposition, etc. **(nem, ne, stb.)**|
 | `_positive` | Affirmation, agreeing **(igen, ja, stb.)** |
