@@ -186,6 +186,7 @@ A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan
 | `match_at` |  "any" vagy `wordlcass`:"regex" esetén "regex" | Elfogadott értékek: "regex","start","end" és "any". "start" esetén *mondatrészek* elején fogadja el az intenciót találatként. "end" esetén *mondatrészek* végén fogadja el az intenciót találatként. Tehát sem a "start" sem az "end" nem a szövegben elfoglalt pozíció, hanem a szövegben elfoglalt logikai pozíció alapján próbál találatokat adni. |
 | `with` | [] | További intenció **dictionary**k definiálhatóak az együttjárások pontozásához. Csak egy mélységig ellenőriz az osztály, tehát az itt deklarált további intenciók `with` tulajdonságait már nem veszi figyelembe pontozásnál. |
 | `without` | [] | További intenció **dictionary**k definiálhatóak, amelyek megtalálásakor a tulajdonos intenció nem kap pontot. |
+| `ignorecase` | True | Figyelmen kívül hagyja-e a kis-, és nagybetűk közötti különbséget a `stem` változóban. Hasznos tulajdonnevek vagy mozaikszavak megadásánál. |
 
 #### Functions
 **The rest of the functions will be explained in english.**
@@ -201,6 +202,7 @@ example	= lara.parser.Intents()
 | ---         | ---     |
 | `example.add_intents(new_intents={})` | Add a dictionary of intents to the existing dictionary of intents. Duplicates will be discarded. |
 | `example.match_all_intents(text="...")` | Find matching intents in a given string. Returns dictionary with intent:score pairs for all intents where score is more than 0. |
+| `example.match_all_intents_as_set(text="...")` | Same as above but returns a set of matched Intents instead. |
 | `example.match_best_intents(text="...",[n=1])`  | Returns a dictinoary with n largest score intent:score pairs. If less than n intents were found, returns them all. |
 | `example.raw_intents(new_intents)` | For optimization purposes only. Replaces all current intents with a dictionary of new intents, without further processing them. NOTE: this function should only be used with previously generated (cached) intents with all necessary variables already created by the class itself. Accepts dictionary of full intents, string of full intents and existing Intent class instances. |
 
@@ -222,16 +224,19 @@ Function str(), repr(), len() and logical operators eq (==), ne (!=) and additio
 Some intents and entities are used regularly. **Lara** offers built in Intents to make Chatbot development and named-entity detection easier.
 
 You can add further entities (dictionary of intents) to an existing Intent: `example += lara.entities.common()`
+
 or you can just check for matches without having to create your own Intent class instance:
 
 ```python
-match_common	= lara.parser.match_intents(lara.entities.common(), "Köszönöm szépen!")
+match_common	= lara.parser.match_intents_as_set(lara.entities.common(), "Köszönöm szépen!")
 print(match_common)
 	
->>> {"_thanking":2}
+>>> {"_thanking"}
 ```
 
-| `lara.entities.common()` | Common intents for Chatbot conversations |
+Common entities for Chatbot conversations:
+
+| `lara.entities.common()` |  |
 | ---         | ---     |
 | `_negative` | Negation, denial, opposition, etc. **(nem, ne, stb.)**|
 | `_positive` | Affirmation, agreeing **(igen, ja, stb.)** |
@@ -242,6 +247,13 @@ print(match_common)
 | `_question` | Asking questions / interrogative mode |
 | `_conditional` | Conditional mode |
 | `_profanity` | Text contains swearwords |
+
+Other entities:
+
+| Function | Description |
+| ---         | ---     |
+| `lara.entities.counties()` | Hungarian counties and county seats. |
+
 
 ###### NLP functions
 
@@ -342,7 +354,8 @@ Feel free to add your own projects to this list if you've found **Lara** useful.
 
 #### To do list
 - Add more word classes (including: numerals nad pronouns).
-- Implement useful NLTK functions for the hungarian language.
+- Expand named-entity recognition dictionaries.
+- Implement furhter NLTK functions aimed for the hungarian language.
 - Rewrite regular expressions in a way that autoamtic POS-tagging would be possible in hungarian.
 - Create dictionaries to enable sentiment analysis in hungarian.
 

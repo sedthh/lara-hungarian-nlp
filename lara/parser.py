@@ -194,6 +194,13 @@ class Intents:
 		else:
 			return {}
 	
+	# Get set of matches from text
+	def match_all_intents_as_set(self, text=""):
+		if text:
+			matches	= self.match_all_intents(text)
+			return set(list(matches.keys()))
+		return set([])
+	
 	# Get score for intents in text
 	def _get_all_score(self, text, intents):
 		text		= lara.nlp.trim(text)
@@ -315,6 +322,12 @@ def match_intents(fast_intent, text=""):
 		if fast_intent.__class__.__name__=='Intents':
 			return fast_intent.match_all_intents(text)
 	return {}
+
+def match_intents_as_set(fast_intent, text=""):
+	if text:
+		matches	= match_intents(fast_intent,text)
+		return set(list(matches.keys()))
+	return set([])
 	
 def intents_from_csv(row,data={}):
 	if isinstance(row, list):
