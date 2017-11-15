@@ -10,7 +10,7 @@
 		2. [Other properties](#other-properties)
 	3. [Functions](#functions)
 		1. [Parser functions](#parser-functions)
-		2. [Name entities](#name-entities)
+		2. [Named entities](#named-entities)
 		3. [NLP functions](#nlp-functions)
 		3. [Stemmer functions](#stemmer-functions)
 		4. [Generating intents](#generating-intents)
@@ -217,15 +217,21 @@ The constructor also accepts instances.
 
 Function str(), repr(), len() and logical operators eq (==), ne (!=) and addition (+) are also available.
 
-###### Name entities
+###### Named entities
 
-Some intents and entities are used
+Some intents and entities are used regularly. **Lara** offers built in Intents to make Chatbot development and named-entity detection easier.
 
-You can even add entities to an existing Intent: `example += lara.parser.get_common_intents()`
+You can add further entities (dictionary of intents) to an existing Intent: `example += lara.entities.common()`
+or you can just check for matches without having to create your own Intent class instance:
 
-**Common intents, that are useful for chatbot development**
+```python
+match_common	= lara.parser.match_intents(lara.entities.common(), "Köszönöm szépen!")
+print(match_common)
+	
+>>> {"_thanking":2}
+```
 
-| `lara.entities.common()` | Description |
+| `lara.entities.common()` | Common intents for Chatbot conversations |
 | ---         | ---     |
 | `_negative` | Negation, denial, opposition, etc. **(nem, ne, stb.)**|
 | `_positive` | Affirmation, agreeing **(igen, ja, stb.)** |
