@@ -238,15 +238,32 @@ Common entities for Chatbot conversations:
 
 | `lara.entities.common()` |  |
 | ---         | ---     |
-| `_negative` | Negation, denial, opposition, etc. **(nem, ne, stb.)**|
-| `_positive` | Affirmation, agreeing **(igen, ja, stb.)** |
-| `_greeting` | Greeting, saying hello |
-| `_leaving` | Leaving, saying bye |
-| `_thanking` | Thanking something |
-| `_command` | Giving an order / imperative mode |
-| `_question` | Asking questions / interrogative mode |
-| `_conditional` | Conditional mode |
-| `_profanity` | Text contains swearwords |
+| `negative` | Negation, denial, opposition, etc. **(nem, ne, stb.)** |
+| `positive` | Affirmation, agreeing **(igen, ja, stb.)** |
+| `greeting` | Greeting, saying hello |
+| `leaving` | Leaving, saying bye |
+| `thanking` | Thanking something |
+| `command` | Giving an order / imperative mode |
+| `question` | Asking questions / interrogative mode |
+| `conditional` | Conditional mode |
+| `profanity` | Text contains swearwords |
+
+Common menu commands for Chatbot conversations (might give false positives if used out of context):
+
+| `lara.entities.commands()` |  |
+| ---         | ---     |
+| `ok` |  User confirms an action |
+| `cancel` | User cancels action |
+| `next` | User wants to see more |
+| `back` | User wants to go back |
+| `save` | User wants to save |
+| `open` | User wants to open |
+| `delete` | User want to delete |
+| `exit` | Exit |
+| `options` | Access options |
+| `menu` | Access main menu |
+| `login` | User wants to log in |
+| `logout` | User wants to log out |
 
 Other entities:
 

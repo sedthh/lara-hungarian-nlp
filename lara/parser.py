@@ -269,9 +269,9 @@ class Intents:
 						pattern	+= r'([aeoó]?s)?([aáeé]?b*)([ae]?k)?(([aáeéioóöőuúü]?[dklmnt])?([aáeéioóöőuúü]?[klnt]?)?)'
 				elif item['wordclass'] == 'verb':
 					if is_clean:
-						pattern	+= r'(([jntv]|([eo]?g[ae]t+))?(([aeiou]n?[dklmt])|(n[aei]k?)|(sz)|[ai])?(t[aeou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aeou]([dkm]|(t[eo]k))?)?(tt?)?)|(ni))?'
+						pattern	+= r'{1,2}([eaá]?s{0,2}d?)?(([jntv]|([eo]?g[ae]t+))?(([aeiou]n?[dklmt])|(n[aei]k?)|(sz)|[ai])?(t[aeou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aeou]([dkm]|(t[eo]k))?)?(tt?)?)|(ni))?'
 					else:
-						pattern	+= r'(([jntv]|([eo]?g[ae]t+))?(([aeioöuü]n?[dklmt])|(n[aáeéi]k?)|(sz)|[aái])?(t[aáeéou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aáeéou]([dkm]|(t[eéo]k))?)?(tt?)?)|(ni))?'
+						pattern	+= r'{1,2}([eaá]?s{0,2}d?)?(([jntv]|([eo]?g[ae]t+))?(([aeioöuü]n?[dklmt])|(n[aáeéi]k?)|(sz)|[aái])?(t[aáeéou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aáeéou]([dkm]|(t[eéo]k))?)?(tt?)?)|(ni))?'
 			
 			if item['match_at'] == 'regex':
 				if item['ignorecase']:
