@@ -236,6 +236,9 @@ def strip_context(text, context="search", including=None):
 		elif context=='request':
 			exclude		= re.compile(r'\b(([ae](z|rr[ae])?)|(azok(ra)?)|([io]ly[ae][a-z]*)|(a?m(elyik(ek)?|i)?ben?)|(a?mi(kor)?)|(a?hol)|(hogy)|(van(nak)?)|([mk]i(vel|nek))|(mi?[eé]rt)|(r[aá])|(egy)|(mi(t|k(et)?)?)|(meg)|(be)|(az(oka)?t)|(kell(ene)?)|(k[eé]ne)|(szeretn[eé][km])|(k[eé]rn?(([eé][km])|i)?)|(ad[dj]([aá][dl])?)|(nekem)|(van)|(nincs)|(csak)|(k[uü]ld[dj]?[eé]?[dl]?)|(mond[a-z]+)|([ae]bb[ae]n?)|(l[eé]gy\s?sz[ií](ves)?)|(l[eé]cci)|(azt[aá]n)|(vagy)|(m[aá]sik(at)?)|(lesz)|(legyen)|(lenne)|(valami(lyen)?)|(sz[uü]ks[eé]g(em)?)|(ink[aá]bb)|(mondom)|(akkor)|(volt))\b', re.IGNORECASE)
 			text		= exclude.sub('',text)
+		elif context=='mail':
+			exclude		= re.compile(r'\b(szia|szervusz|[uü]dv([oö]zlet(tel)?)?|(j[oó])?(reggelt|napot|est[eé]t)|k[ií]v[aá]nok|szeretn[eé][km]|(meg)k[eé]rdez(ni)?|k[eé]rd[eé]s(t|em|ek|eim|sel|emmel|ekkel)?|[eé]rdekl[oöő]d(ni|[oö]k|n[eé]k)?|[eé]rdekel(ne)?|v[aá]r(o[mk]|unk|juk)?|tisztelt|kedves|v[aá]lasz(ol(ni|t|tak)?|uk(at)?|t)?|[eé]rdekl[oöő]d(ni|n[eé]k|[oö]m)|az([eé]rt)?|azzal|(a)?miatt|abb[oó]l|mert|[uü]gyben|kapcsolat(ban|os|osan))\b', re.IGNORECASE)
+			text		= exclude.sub('',text)
 		if including:
 			exclude		= re.compile(r''+including, re.IGNORECASE)
 			text		= exclude.sub('',text)
