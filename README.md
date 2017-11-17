@@ -231,12 +231,12 @@ or you can just check for matches without having to create your own Intent class
 match_common	= lara.parser.match_intents_as_set(lara.entities.common(), "Köszönöm szépen!")
 print(match_common)
 	
->>> {"_thanking"}
+>>> {"thx"}
 ```
 
 | Collection | Matches the following | Possible intents returned |
 | ---         | ---     | ---     |
-| `lara.entities.common()` | Common entities for Chatbot conversations | `yes, no, hi, bye, thx, command, question, conditional, profanity` |
+| `lara.entities.common()` | Common entities for Chatbot conversations | `yes, no, hi, bye, thx, pls, command, question, conditional, profanity` |
 | `lara.entities.commands()` | Common menu commands for Chatbot conversations (might give false positives if used out of context) | `ok, cancel, next, back, save, open, delete, exit, options, menu, login, logout` |
 | `lara.entities.counties()` | Hungarian counties and county seats | `bacs-kiskun, baranya, bekes, borsod-abauj-zemplen, csongrad, fejer, gyor-moson-sopron, hajdu-bihar, heves, jasz-nagykun-szolnok, komarom-esztergom, nograd, pest, somogy, szabolcs-szatmar-bereg, tolna, vas, veszprem, zala` |
 | `lara.entities.dow()` | Days of the week. Will also match `hetvege` or `hetkoznap` when matching a day. | `hetfo, kedd, szerda, csutortok, pentek, szombat, vasarnap, hetkoznap, hetvege` |
