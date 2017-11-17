@@ -54,3 +54,17 @@ def counties():
 		"veszprem"			: [{"stem":"Veszprém","wordclass":"noun"}],
 		"zala"				: [{"stem":"Zala","wordclass":"noun","affix":["egerszeg"]}]
 	}
+
+# days of the week
+def dow():
+	return {
+		"hetfo"				: [{"stem":"hétfő","wordclass":"noun"}],
+		"kedd"				: [{"stem":"kedd","wordclass":"noun"}],
+		"szerda"			: [{"stem":"szerda","wordclass":"noun"}],
+		"csutortok"			: [{"stem":"csütörtök","wordclass":"noun"}],
+		"pentek"			: [{"stem":"péntek","wordclass":"noun"}],
+		"szombat"			: [{"stem":"szombat","wordclass":"noun"},{"stem":"szonbat","wordclass":"noun"}],
+		"vasarnap"			: [{"stem":"vasárnap","wordclass":"noun"}],
+		"hetkoznap"			: [{"stem":"hétköznap","wordclass":"noun"},{"stem":"hétfő","wordclass":"noun"},{"stem":"kedd","wordclass":"noun"},{"stem":"szerda","wordclass":"noun"},{"stem":"csütörtök","wordclass":"noun"},{"stem":"péntek","wordclass":"noun"}],		
+		"hetvege"			: [{"stem":"hétvége","wordclass":"noun"},{"stem":"szombat","wordclass":"noun"},{"stem":"szonbat","wordclass":"noun"},{"stem":"vasárnap","wordclass":"noun"}]
+	}

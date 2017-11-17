@@ -68,6 +68,17 @@ def find_smileys(text):
 	if text:
 		return re.compile(r'([:;]-?[Dd\(\)3]+)\b').findall(text)
 	return []
+
+def find_dates(text):
+	results	= []
+	if text:		
+		matches	= re.compile(r'\b((\d{2})?((\d{2}[\\\/\.\-]){1,2})(\d{2}\b))([aáeéo]n)?\b').findall(text)
+		for item in matches:
+			results.append(item[0])
+		matches	= re.compile(r'\b((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec)\w{0,7}(\W{1,2}\d{1,2}))\b').findall(text)
+		for item in matches:
+			results.append(item[0])
+	return results
 	
 def vowel_harmony(word, vegyes=True):
 	if word:

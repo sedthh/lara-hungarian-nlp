@@ -239,6 +239,7 @@ print(match_common)
 | `lara.entities.common()` | Common entities for Chatbot conversations | `yes, no, hi, bye, thx, command, question, conditional, profanity` |
 | `lara.entities.commands()` | Common menu commands for Chatbot conversations (might give false positives if used out of context) | `ok, cancel, next, back, save, open, delete, exit, options, menu, login, logout` |
 | `lara.entities.counties()` | Hungarian counties and county seats | `bacs-kiskun, baranya, bekes, borsod-abauj-zemplen, csongrad, fejer, gyor-moson-sopron, hajdu-bihar, heves, jasz-nagykun-szolnok, komarom-esztergom, nograd, pest, somogy, szabolcs-szatmar-bereg, tolna, vas, veszprem, zala` |
+| `lara.entities.dow()` | Days of the week. Will also match `hetvege` or `hetkoznap` when matching a day. | `hetfo, kedd, szerda, csutortok, pentek, szombat, vasarnap, hetkoznap, hetvege` |
 
 ###### NLP functions
 
@@ -258,6 +259,7 @@ print(match_common)
 | `lara.nlp.find_mentions(text)` | Returns a list of extracted @mentions. |
 | `lara.nlp.find_urls(text)` | Returns a list of extracted valid URLs. |
 | `lara.nlp.find_smileys(text)` | Returns a list of extracted common smileys (does not return emojis). |
+| `lara.nlp.find_dates(text)` | Will return matches for different valid hungarian date formats like: 2017.12.31, 17/12/31-én, december 31. |
 | `lara.nlp.vowel_harmony(word,[vegyes=True])` | Returns the vowel harmony for a word. Can return 'magas', 'mely' and 'vegyes' if optional vegyes parameter was set to True. |
 | `lara.nlp.is_vowel(letter)` | Returns True if the letter is a vowel. Returns False otherwise. |
 | `lara.nlp.is_consonant(letter)` | Returns True if the letter is a consonant. Returns False otherwise. |
