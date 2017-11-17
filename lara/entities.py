@@ -3,12 +3,12 @@
 # common intents
 def common():
 	return {
-		"yes"				: [{"stem":"igen"},{"stem":"aha"},{"stem":"ja","affix":["ja","h"]},{"stem":"ok","affix":["é","s","és","sa","ay"]}],
+		"yes"				: [{"stem":"igen"},{"stem":"aha"},{"stem":"ja","affix":["ja","h"]},{"stem":"ok","affix":["é","s","és","sa","ay"],"without":[{"stem":"nem"}]}],
 		"no"				: [{"stem":"nem"},{"stem":"ne"},{"stem":"soha"},{"stem":"mégse","affix":["m"]}],
 		"hi" 				: [{"stem":"hi","match_at":"start"},{"stem":"hai","match_at":"start"},{"stem":"szia","match_at":"start","affix":["sztok"]},{"stem":"helló","match_at":"start","affix":["ka"]},{"stem":"szervusz","match_at":"start"},{"stem":"szerbusz","match_at":"start"},{"stem":"szevasz","match_at":"start"},{"stem":"hali","match_at":"start","affix":["hó"]},{"stem":"j[oó]\s?(reggelt|napot|est[eé]t)","wordclass":"regex"}],
 		"bye" 				: [{"stem":"bye","match_at":"end"},{"stem":"viszlát"},{"stem":"viszont látásra"},{"stem":"jó éj","affix":["t","szakát"]},{"stem":"jóéjt"},{"stem":"jóccakát"},{"stem":"mennem kell"}],
 		"thx"				: [{"stem":"kösz","affix":["i","önöm","önjük","önet","ike","csi"]},{"stem":"kössz"},{"stem":"kösszentyű"},{"stem":"thx"},{"stem":"thanks?","wordclass":"regex"}],
-		"pls"				: [{"stem":"p+l+[iíea]*[zs]+e*","wordclass":"regex"},{"stem":"szeretné(k|m)","wordclass":"regex"},{"stem":"(meg)?kér(het)?([ln]?[eéi][km]?)","wordclass":"regex"},{"stem":"szeretné([km]|lek)","wordclass":"regex"}],
+		"pls"				: [{"stem":"p+l+[iíea]*[zs]+e*","wordclass":"regex"},{"stem":"l[eé]+c+i+(v+e+s+)?","wordclass":"regex"},{"stem":"l[eé](gy|szel|nn[eé]l).*(kedves|sz[ií](ves)?)","wordclass":"regex"},{"stem":"szeretné(k|m)","wordclass":"regex"},{"stem":"(meg)?k[eé]r(het)?([ln]?[eéi][km]?)","wordclass":"regex"},{"stem":"szeretn[eé]([km]|lek)","wordclass":"regex"}],
 		"command"			: [{"stem":"keres(s|d)","wordclass":"regex"},{"stem":"mutass(s|d)","wordclass":"regex"},{"stem":"mond(j|d)","wordclass":"regex"},{"stem":"néz(né|ze)?d","wordclass":"regex"},{"stem":"akaro(k|m)","wordclass":"regex"},{"stem":"utas[ií]t\w{1,}","wordclass":"regex"}],
 		"question"			: [{"stem":"\?+($|\s\w+)","wordclass":"regex"},{"stem":"([^,][^,\S+]hogy|^hogy)(an)?","wordclass":"regex"},{"stem":"hol"},{"stem":"honnan"},{"stem":"hová"},{"stem":"hány","affix":["an","at","ból"]},{"stem":"mettől"},{"stem":"meddig"},{"stem":"merre"},{"stem":"mennyi","affix":["en","re"]},{"stem":"mi","affix":["t","k","ket","kor","korra","lyen","lyenek","nek","től","kortól","korra","ből","hez","re","vel"]},{"stem":"ki","affix":["t","k","ket","nek","knek","től","ktől","ből","kből","hez","re","kre","vel","kkel"]}],
 		"conditional"		: [{"stem":"volna"},{"stem":"lenne"},{"stem":"\w+h[ae]t\w+","wordclass":"regex"}],
@@ -18,7 +18,7 @@ def common():
 # menu commands
 def commands():
 	return {
-		"ok"				: [{"stem":"ye","affix":["s","ah","p"]},{"stem":"igen"},{"stem":"aha"},{"stem":"ja","affix":["ja","h"]},{"stem":"ok","affix":["é","s","és","sa","ay","ézd"]},{"stem":"úgy"},{"stem":"így"},{"stem":"jó","wordclass":"adjective"}],
+		"ok"				: [{"stem":"ye","affix":["s","ah","p"]},{"stem":"igen"},{"stem":"aha"},{"stem":"ja","affix":["ja","h"]},{"stem":"ok","affix":["é","s","és","sa","ay","ézd"],"without":[{"stem":"nem"}]},{"stem":"úgy","without":[{"stem":"nem"}]},{"stem":"így","without":[{"stem":"nem"}]},{"stem":"jó","wordclass":"adjective","without":[{"stem":"nem"}]}],
 		"cancel"			: [{"stem":"no","affix":["ne","pe"]},{"stem":"cancel"},{"stem":"ne","affix":["m"]},{"stem":"mégse","affix":["m"]},{"stem":"elvetés"},{"stem":"ál","affix":["lít"],"wordclass":"verb"}],
 		"next"				: [{"stem":"next"},{"stem":"tovább"},{"stem":"előre"},{"stem":"még","wordclass":"regex"},{"stem":"more"},{"stem":"continue"},{"stem":"folytat","wordclass":"verb"},{"stem":"folyta[st]+([ao]?d|ni|ás)?","wordclass":"regex"}],
 		"back"				: [{"stem":"back"},{"stem":"vissza","affix":["lép","lépés"]},{"stem":"hátra"}],
@@ -29,7 +29,8 @@ def commands():
 		"options"			: [{"stem":"options"},{"stem":"beállít","wordclass":"verb"},{"stem":"[aá]ll[ií]ts.+be","wordclass":"regex"}],
 		"menu"				: [{"stem":"menü","prefix":["main","fő","al","legördülő"],"wordclass":"noun"}],
 		"login"				: [{"stem":"login"},{"stem":"log in"},{"stem":"belép","prefix":[],"wordclass":"verb"},{"stem":"bejelentkez","prefix":[],"wordclass":"verb"},{"stem":"l[eé]p.+be","wordclass":"regex"},{"stem":"jelentkez.+be","wordclass":"regex"}],
-		"logout"			: [{"stem":"logout"},{"stem":"log out"},{"stem":"kilép","prefix":[],"wordclass":"verb"},{"stem":"kijelentkez","prefix":[],"wordclass":"verb"},{"stem":"l[eé]p.+ki","wordclass":"regex"},{"stem":"jelentkez.+ki","wordclass":"regex"}]
+		"logout"			: [{"stem":"logout"},{"stem":"log out"},{"stem":"kilép","prefix":[],"wordclass":"verb"},{"stem":"kijelentkez","prefix":[],"wordclass":"verb"},{"stem":"l[eé]p.+ki","wordclass":"regex"},{"stem":"jelentkez.+ki","wordclass":"regex"}],
+		"error"				: [{"stem":"error","wordclass":"noun"},{"stem":"hiba","wordclass":"noun"},{"stem":"rossz","wordclass":"adjective"},{"stem":"nem (siker[uü]lt|j[oó]l?|m[uüű]k[oö]d(ik|[oö]tt)|ment)","wordclass":"regex"}]
 	}
 	
 # hungarian counties and county seats
