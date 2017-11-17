@@ -234,43 +234,11 @@ print(match_common)
 >>> {"_thanking"}
 ```
 
-Common entities for Chatbot conversations:
-
-| `lara.entities.common()` |  |
-| ---         | ---     |
-| `negative` | Negation, denial, opposition, etc. **(nem, ne, stb.)** |
-| `positive` | Affirmation, agreeing **(igen, ja, stb.)** |
-| `greeting` | Greeting, saying hello |
-| `leaving` | Leaving, saying bye |
-| `thanking` | Thanking something |
-| `command` | Giving an order / imperative mode |
-| `question` | Asking questions / interrogative mode |
-| `conditional` | Conditional mode |
-| `profanity` | Text contains swearwords |
-
-Common menu commands for Chatbot conversations (might give false positives if used out of context):
-
-| `lara.entities.commands()` |  |
-| ---         | ---     |
-| `ok` |  User confirms an action |
-| `cancel` | User cancels action |
-| `next` | User wants to see more |
-| `back` | User wants to go back |
-| `save` | User wants to save |
-| `open` | User wants to open |
-| `delete` | User want to delete |
-| `exit` | Exit |
-| `options` | Access options |
-| `menu` | Access main menu |
-| `login` | User wants to log in |
-| `logout` | User wants to log out |
-
-Other entities:
-
-| Function | Description |
-| ---         | ---     |
-| `lara.entities.counties()` | Hungarian counties and county seats. |
-
+| Collection | Matches the following | Possible intents returned |
+| ---         | ---     | ---     |
+| `lara.entities.common()` | Common entities for Chatbot conversations | `yes, no, hi, bye, thx, command, question, conditional, profanity` |
+| `lara.entities.commands()` | Common menu commands for Chatbot conversations (might give false positives if used out of context) | `ok, cancel, next, back, save, open, delete, exit, options, menu, login, logout` |
+| `lara.entities.counties()` | Hungarian counties and county seats | `bacs-kiskun, baranya, bekes, borsod-abauj-zemplen, csongrad, fejer, gyor-moson-sopron, hajdu-bihar, heves, jasz-nagykun-szolnok, komarom-esztergom, nograd, pest, somogy, szabolcs-szatmar-bereg, tolna, vas, veszprem, zala` |
 
 ###### NLP functions
 
