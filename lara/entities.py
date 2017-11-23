@@ -60,6 +60,11 @@ def counties():
 # days of the week
 def dow():
 	return {
+		"ma"				: [{"stem":"m[aá](ig?|ra|val|t[oó]l)?","wordclass":"regex"}],
+		"holnap"			: [{"stem":"holnap(ig?|ra|pal|t[oó]l)?","wordclass":"regex","without": [{"stem":"holnap\s?ut[aá]n(ig?|ra|nal|t[oó]l)?","wordclass":"regex"}]}],
+		"holnaputan"		: [{"stem":"holnap\s?ut[aá]n(ig?|ra|nal|t[oó]l)?","wordclass":"regex"}],
+		"tegnap"			: [{"stem":"tegnap(ig?|ra|pal|t[oó]l)?","wordclass":"regex","without":[{"stem":"tegnap\sel[oő]tt?(ig?|re|t?el|t?[oó]l)?","wordclass":"regex"}]}],
+		"tegnapelott"		: [{"stem":"tegnap\sel[oő]tt?(ig?|re|t?el|t?[oó]l)?","wordclass":"regex"}],
 		"hetfo"				: [{"stem":"hétfő","wordclass":"noun"}],
 		"kedd"				: [{"stem":"kedd","wordclass":"noun"}],
 		"szerda"			: [{"stem":"szerda","wordclass":"noun"}],
