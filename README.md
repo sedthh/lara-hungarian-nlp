@@ -259,7 +259,9 @@ print(match_common)
 | `lara.nlp.find_mentions(text)` | Returns a list of extracted @mentions. |
 | `lara.nlp.find_urls(text)` | Returns a list of extracted valid URLs. |
 | `lara.nlp.find_smileys(text)` | Returns a list of extracted common smileys (does not return emojis). |
-| `lara.nlp.find_dates(text)` | Will return matches for different valid hungarian date formats like: 2017.12.31, 17/12/31-én, december 31. |
+| `lara.nlp.find_dates(text)` | Returns matches for different valid hungarian date formats like: 2017.12.31, 17/12/31-én, december 31. |
+| `lara.nlp.find_currencies(text)` | Returns matches for common money formats like: $5.000, 5 000 dollár, 5000.- |
+| `lara.nlp.find_commands(text)` | If a message starts with the \\ character, it will return the following command and the array of arguments as a tuple. If no arguments are given, the array of arguments will be empty in the tuple. If no command was found (string does not start with \\) it will return a tuple with an empty string and an empty array. Useful for detecting commands sent to a Chatbot. |
 | `lara.nlp.vowel_harmony(word,[vegyes=True])` | Returns the vowel harmony for a word. Can return 'magas', 'mely' and 'vegyes' if optional vegyes parameter was set to True. |
 | `lara.nlp.is_vowel(letter)` | Returns True if the letter is a vowel. Returns False otherwise. |
 | `lara.nlp.is_consonant(letter)` | Returns True if the letter is a consonant. Returns False otherwise. |
@@ -278,7 +280,6 @@ print(match_common)
 | `lara.nlp.number_of_syllables(word, [rhyme=False])` | Returns the number of syllables in a word based on the number of its vowels. If **rhyme** is se to True, the returned number of syllables will be harshly based on pronunciation instead (by taking acronyms in account). |
 | `lara.nlp.hasDigits(text)` | Returns True if text has a digit in it. |
 | `lara.nlp.ngram(tokens,[n=2])` | Returns list of ngrams generated from the list of **tokens** provided. |
-| `lara.nlp.extract_message(text)` | Removes a dictionary of extracted items. If text contains a command, the command key will be set accordingly. Arguments following a command will be added as list elements. List of existing hashtags, mentions and urls are also included in this dictionary. This is useful if you want to do a quick check on your received text message. |
 
 ###### Stemmer functions
 
