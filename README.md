@@ -272,7 +272,7 @@ print(match_common)
 | `lara.nlp.tokenizer(text)` | Returns words in text as a list. Note that this function only uses regular expressions. |
 | `lara.nlp.is_gibberish(text)` | Returns True if text is most likely just gibberish. |
 | `lara.nlp.strip_context(text,[context="search\|request\|mail"],[including=None])` | Removes words from text that are unimportant based on ceontext. If **context** is set to "search", words regarding search commands are removed, so the rest of the text could be used as a clean search query. If **context** is set to "request", common words used for making a request are removed from the text, cleaning the query. If **context** is set to "mail", common formalities used in e-mails will be removed from the query. The optional **including** variable can be either a regular expression or a string used as a regualr expression. If set, matching words characters will also be removed from the text.  |
-| `lara.nlp.remove_stopwords(text)` | Removes common hungarian stopwords from text. |
+| `lara.nlp.remove_stopwords(text,negation=True)` | Removes common hungarian stopwords from text. If **negation** is True, the words ne, nem, se, sem, semmi, hanem will also be removed. |
 | `lara.nlp.metre(text)` | Returns the rhytmic structure of a *verse line* as list of 'u' and '-' characters (former meaning short, latter meaning long foot). For instance: metre('Bús düledékeiden, Husztnak romvára megállék;') would return ['-', 'u', 'u', '-', 'u', 'u', '-', '-', '-', '-', '-', 'u', 'u', '-', '-'] |
 | `lara.nlp.metre_pattern(match,pattern)` | Returns True if the the list representing the rhytmic structure of a *verse line* matches the given pattern, defined as a list of 'u' and '-' characters. |
 | `lara.nlp.is_hexameter(pattern)` | Returns True if the the metre list representing the rhytmic structure of a *verse line* is a valid Hexameter. |
@@ -325,6 +325,7 @@ Setting multiple properties for intents can be useful in detecting patterns:
 - Both "prefix"es and "affix"es can be set at the same time.
 - In case inflection would alter a word's "stem", try defining the altered form as another possible Intent **list** element, with the "match_stem" property set to **False**. This way the defined "stem" would only be matched if inflected.  
 - If it is unclear wether or not an iflected word form would be matched by the given definitions, it is always a good idea to manually test it first.
+- If you use **Lara** for feature extraction, it is recommended to retrain your models after updating the library to a newer version.
 
 ## Misc
 Initial work: **Richard Nagyfi**, 2016
