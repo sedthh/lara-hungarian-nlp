@@ -340,9 +340,7 @@ Created in collaboration with the [Institute of Advanced Studies, Kőszeg](http:
 #### Known applications
 Feel free to add your own Chatbot solutions to the following list, because
 
-![every civilization was built off the back of a disposable workforce](http://data.whicdn.com/images/286443751/original.gif)
-
-But I can only make so many.
+![every civilization was built off the back of a disposable workforce](https://github.com/sedthh/lara-hungarian-nlp/blob/master/bladerunner.gif)
 
 Recent projects based on **Lara**:
 - Hungarian "Napirajz" Chatbot for Facebook Messenger: https://www.facebook.com/NapirajzBot/
