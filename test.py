@@ -72,3 +72,4 @@ if __name__ == "__main__":
 	hibas_test		= lara.parser.Intents(fals_pozitiv)
 	print(hibas_test.match_all_intents("Gyönyörű dolog a szerelem!"))	# elfogadja hibásan
 	print(hibas_test.match_all_intents("Ezt is elfogadja találatként: Almainüdböz"))	# elfogadja hibásan
+

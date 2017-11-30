@@ -240,7 +240,7 @@ print(match_common)
 | `lara.entities.commands()` | Common menu commands for Chatbot conversations | `ok, cancel, next, back, save, open, delete, exit, options, menu, login, logout, error` |
 | `lara.entities.counties()` | Hungarian counties and county seats | `bacs-kiskun, baranya, bekes, borsod-abauj-zemplen, csongrad, fejer, gyor-moson-sopron, hajdu-bihar, heves, jasz-nagykun-szolnok, komarom-esztergom, nograd, pest, somogy, szabolcs-szatmar-bereg, tolna, vas, veszprem, zala` |
 | `lara.entities.dow()` | Days of the week. Will also match `hetvege` or `hetkoznap` when matching a day. | `ma, holnap, holnaputan, tegnap, tegnapelott, hetfo, kedd, szerda, csutortok, pentek, szombat, vasarnap, hetkoznap, hetvege` |
-| `lara.entities.smalltalk()` | Common small talk topics | `turing_test, well_done, i_love_you, i_am_flirting, about_you, about_creator, about_look, about_family, about_age, are_you_human, lets_be_friends, how_are_you, i_am_bored, i_am_happy, i_am_sad, talk_about_weather, talk_about_news, tell_a_joke` |
+| `lara.entities.smalltalk()` | Common small talk topics | `well_done, user_love, user_flirting, user_bored, user_happy, user_sad` |
 
 Some named entities (common, commands and smalltalk) might give false positive if used out of context. It is recommended that you build your Chatbot in a way, that reacting to more important intents have a higher priority. 
 
@@ -354,6 +354,6 @@ Recent projects based on **Lara**:
 - Implement furhter NLTK functions aimed for the hungarian language.
 - Rewrite regular expressions in a way that autoamtic POS-tagging would be possible in hungarian.
 - Create dictionaries to enable sentiment analysis in hungarian.
+- Do proper unit testing and replace test.py
 
 This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details
-

@@ -82,5 +82,10 @@ def dow():
 # small talk intents
 def smalltalk():
 	return {
-	
+		"well_done"			: [{"stem":"fasza"},{"stem":"jó","prefix":["kurva"]},{"stem":"király"},{"stem":"ügyes"},{"stem":"sz[eé]p\s(volt|munka)","wordclass":"regex"},{"stem":"ez\s(lesz\s)?az","wordclass":"regex"}],
+		"user_love"			: [{"stem":"szeretlek"},{"stem":"szeretsz engem"},{"stem":"tetszek neked"},{"stem":"tetszel nekem","without":[{"stem":"nem"}]},{"stem":"tetszek neked"},{"stem":"szerelmes.+bel[eé]d","wordclass":"regex"},{"stem":"bel[eé]d.+szerettem","wordclass":"regex"}],
+		"user_flirting"		: [{"stem":"(mi|milyen|ruha).+van\s+rajtad","wordclass":"regex"},{"stem":"(meg)?(basz|dug)(unk|n[aá]lak)","wordclass":"regex"},{"stem":"sz?ex(e[lt].*)?","wordclass":"regex"}],
+		"user_bored"		: [{"stem":"un(atkoz)?(om|unk)","wordclass":"regex"}],
+		"user_happy"		: [{"stem":"j[oó](\sa\s)?kedvem(\svan)?","wordclass":"regex","without":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"jól vagyok","without":[{"stem":"nincs"},{"stem":"nem"}]}],
+		"user_sad"			: [{"stem":"j[oó](\sa\s)?kedvem(\svan)?","wordclass":"regex","with":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"szomorú","wordclass":"adjective","with":[{"stem":"vagyok"}]},{"stem":"nem\s+(vagyok|[eé]rzem).+j[oó]l","wordclass":"regex"}]
 	}
