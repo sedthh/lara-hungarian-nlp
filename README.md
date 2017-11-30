@@ -236,10 +236,13 @@ print(match_common)
 
 | Collection | Matches the following | Possible intents returned |
 | ---         | ---     | ---     |
-| `lara.entities.common()` | Common entities for Chatbot conversations | `yes, no, hi, bye, thx, pls, command, question, conditional, profanity` |
-| `lara.entities.commands()` | Common menu commands for Chatbot conversations (might give false positives if used out of context) | `ok, cancel, next, back, save, open, delete, exit, options, menu, login, logout, error` |
+| `lara.entities.common()` | Common entities for Chatbot conversations | `yes, no, hi, bye, thx, pls, welks, sorry, lol, command, question, conditional, profanity` |
+| `lara.entities.commands()` | Common menu commands for Chatbot conversations | `ok, cancel, next, back, save, open, delete, exit, options, menu, login, logout, error` |
 | `lara.entities.counties()` | Hungarian counties and county seats | `bacs-kiskun, baranya, bekes, borsod-abauj-zemplen, csongrad, fejer, gyor-moson-sopron, hajdu-bihar, heves, jasz-nagykun-szolnok, komarom-esztergom, nograd, pest, somogy, szabolcs-szatmar-bereg, tolna, vas, veszprem, zala` |
 | `lara.entities.dow()` | Days of the week. Will also match `hetvege` or `hetkoznap` when matching a day. | `ma, holnap, holnaputan, tegnap, tegnapelott, hetfo, kedd, szerda, csutortok, pentek, szombat, vasarnap, hetkoznap, hetvege` |
+| `lara.entities.smalltalk()` | Common small talk topics | `turing_test, well_done, i_love_you, i_am_flirting, about_you, about_creator, about_look, about_family, about_age, are_you_human, lets_be_friends, how_are_you, i_am_bored, i_am_happy, i_am_sad, talk_about_weather, talk_about_news, tell_a_joke` |
+
+Some named entities (common, commands and smalltalk) might give false positive if used out of context. It is recommended that you build your Chatbot in a way, that reacting to more important intents have a higher priority. 
 
 ###### NLP functions
 
@@ -335,11 +338,17 @@ Special thanks to [Peter Varo](https://github.com/petervaro) for formatting guid
 Created in collaboration with the [Institute of Advanced Studies, Kőszeg](http://iask.hu/) and [Kitchen Budapest](http://kibu.hu)
 
 #### Known applications
-Feel free to add your own projects to this list if you've found **Lara** useful.
+Feel free to add your own Chatbot solutions to the following list, because
 
+![every civilization was built off the back of a disposable workforce](http://data.whicdn.com/images/286443751/original.gif)
+
+But I can only make so many.
+
+Recent projects based on **Lara**:
 - Hungarian "Napirajz" Chatbot for Facebook Messenger: https://www.facebook.com/NapirajzBot/
 - Online News Monitoring in Hungarian Language for visualizing quantity of articles on the immigrant crisis
 - Used to develop the AI for Training2038: http://kibu.hu/en/news/training-2038
+
 
 #### To do list
 - Add more word classes (including: numerals nad pronouns).

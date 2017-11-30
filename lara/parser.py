@@ -259,9 +259,9 @@ class Intents:
 				pattern		= '('+re.escape(item[select+'stem'])+item[select+'affix']+')'
 				if item['wordclass'] == 'noun':
 					if is_clean:
-						pattern	+= r'{1,2}a?i?n?([aeiou]?[djknmrst])?([abjhkntv]?[aeiou]?[lgkntz]?)?'
+						pattern	+= r'{1,2}a?i?n?([aeiou]?[djknmrst])?([abjhkntv]?[aeiou]?[lgkntz]?)?([ae][kt])?'
 					else:
-						pattern	+= r'{1,2}a?i?n?([aáeéioóöőuúü]?[djknmrst])?([abjhkntv]?[aáeéioóöőuúü]?[lgkntz]?)?'
+						pattern	+= r'{1,2}a?i?n?([aáeéioóöőuúü]?[djknmrst])?([abjhkntv]?[aáeéioóöőuúü]?[lgkntz]?)?([ae][kt])?'
 				elif item['wordclass'] == 'adjective':
 					if is_clean:
 						pattern	+= r'([aeo]?s)?([ae]?b*)([ae]?k)?(([aeiou]?[dklmnt])?([aeiou]?[klnt]?)?)'
