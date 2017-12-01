@@ -240,7 +240,7 @@ print(match_common)
 | `lara.entities.commands()` | Common menu commands for Chatbot conversations | `ok, cancel, next, back, save, open, delete, exit, options, menu, login, logout, error` |
 | `lara.entities.counties()` | Hungarian counties and county seats | `bacs-kiskun, baranya, bekes, borsod-abauj-zemplen, csongrad, fejer, gyor-moson-sopron, hajdu-bihar, heves, jasz-nagykun-szolnok, komarom-esztergom, nograd, pest, somogy, szabolcs-szatmar-bereg, tolna, vas, veszprem, zala` |
 | `lara.entities.dow()` | Days of the week. Will also match `hetvege` or `hetkoznap` when matching a day. | `ma, holnap, holnaputan, tegnap, tegnapelott, hetfo, kedd, szerda, csutortok, pentek, szombat, vasarnap, hetkoznap, hetvege` |
-| `lara.entities.smalltalk()` | Common small talk topics | `well_done, user_love, user_flirting, user_bored, user_happy, user_sad` |
+| `lara.entities.smalltalk()` | Common small talk topics | `well_done, user_love, user_flirting, user_bored, user_happy, user_sad, about_you, about_creator` |
 
 Some named entities (common, commands and smalltalk) might give false positive if used out of context. It is recommended that you build your Chatbot in a way, that reacting to more important intents have a higher priority. 
 

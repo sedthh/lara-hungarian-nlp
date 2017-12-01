@@ -87,5 +87,7 @@ def smalltalk():
 		"user_flirting"		: [{"stem":"(mi|milyen|ruha).+van\s+rajtad","wordclass":"regex"},{"stem":"(meg)?(basz|dug)(unk|n[aá]lak)","wordclass":"regex"},{"stem":"sz?ex(e[lt].*)?","wordclass":"regex"}],
 		"user_bored"		: [{"stem":"un(atkoz)?(om|unk)","wordclass":"regex"}],
 		"user_happy"		: [{"stem":"j[oó](\sa\s)?kedvem(\svan)?","wordclass":"regex","without":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"jól vagyok","without":[{"stem":"nincs"},{"stem":"nem"}]}],
-		"user_sad"			: [{"stem":"j[oó](\sa\s)?kedvem(\svan)?","wordclass":"regex","with":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"szomorú","wordclass":"adjective","with":[{"stem":"vagyok"}]},{"stem":"nem\s+(vagyok|[eé]rzem).+j[oó]l","wordclass":"regex"}]
+		"user_sad"			: [{"stem":"j[oó](\sa\s)?kedvem(\svan)?","wordclass":"regex","with":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"szomorú","wordclass":"adjective","with":[{"stem":"vagyok"}]},{"stem":"nem\s+(vagyok|[eé]rzem).+j[oó]l","wordclass":"regex"}],
+		"about_you"			: [{"stem":"(mes[eé]lj|besz[eé]lj)(en)?.+mag(ad|[aá])r[oó]l","wordclass":"regex"},{"stem":"mutatkoz+([aá]l|on)?\s+be","wordclass":"regex"},{"stem":"mutasd\s.+magad(at)?","wordcalss":"regex"},{"stem":"(ki(\s|\sa\s.+)vagy te|te ki(\s|\sa\s.+)vagy)","wordclass":"regex"}],
+		"about_creator"		: [{"stem":"ki\s(a\s)?(k[eé]sz[ií]t([oöő]d|ett)|gazd[aá]d|programoz([oó]d|ott)|hozott.+l[eé]tre)","wordclass":"regex"},{"stem":"hol\s(k[eé]sz[uü]lt[eé]l|k[eé]sz[ií]tettek|hoztak.+l[eé]tre)","wordclass":"regex"}]		
 	}
