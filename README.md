@@ -48,9 +48,9 @@ A **Lara** egy magyar nyelvű, alacsony számítási igényű szövegfeldolgozó
 ```python
 import lara
 alma_intents	= {
-	"alma"			: [{"stem":"alma","wordclass":"noun"}],
-	"szed"			: [{"stem":"szed","wordclass":"verb"}],
-	"piros"			: [{"stem":"piros","wordclass":"adjective"}]
+	"alma"		: [{"stem":"alma","wordclass":"noun"}],
+	"szed"		: [{"stem":"szed","wordclass":"verb"}],
+	"piros"		: [{"stem":"piros","wordclass":"adjective"}]
 }
 alma_test		= lara.parser.Intents(alma_intents)
 print(alma_test.match_all_intents("Mikor szedjük le a pirosabb almákat?"))
@@ -80,7 +80,7 @@ import lara
 hasonul_intents	= {
 	"enni"		: [{"stem":"esz","wordclass":"verb","match_stem":False}, {"stem":"en","wordclass":"verb","match_stem":False}]
 }
-hasonul_test	= lara.parser.Intents(hasonul_intents)
+hasonul_test		= lara.parser.Intents(hasonul_intents)
 print(hasonul_test.match_all_intents("Tőmorfémák: esz, en.")) # nem veszi figyelembe
 print(hasonul_test.match_all_intents("Eszel valamit?"))
 print(hasonul_test.match_all_intents("Azt nem lehet megenni."))
