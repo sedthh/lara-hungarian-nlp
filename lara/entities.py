@@ -53,7 +53,8 @@ def counties():
 		"nograd"			: [{"stem":"Nógrád","wordclass":"noun"},{"stem":"Salgótarján","wordclass":"noun"}],
 		"pest"				: [{"stem":"Buda","wordclass":"noun","affix":["pest"]},{"stem":"Pest","wordclass":"noun"},{"stem":"[IVX]+.?(-?ik)?\sker([uü]let)?\w{0,3}","wordclass":"regex"}],
 		"somogy"			: [{"stem":"Somogy","wordclass":"noun"},{"stem":"Kaposvár","wordclass":"noun"}],
-		"szabolcs-szatmar-bereg": [{"stem":"Szabolcs","wordclass":"noun","affix":["-Szatmár-Bereg"]},{"stem":"Szatmár","wordclass":"noun"},{"stem":"Nyíregyháza","wordclass":"noun"}],"somogy"			: [{"stem":"Somogy","wordclass":"noun"},{"stem":"Kaposvár","wordclass":"noun"}],
+		"szabolcs-szatmar-bereg": [{"stem":"Szabolcs","wordclass":"noun","affix":["-Szatmár-Bereg"]},{"stem":"Szatmár","wordclass":"noun"},{"stem":"Nyíregyháza","wordclass":"noun"}],
+		"somogy"			: [{"stem":"Somogy","wordclass":"noun"},{"stem":"Kaposvár","wordclass":"noun"}],
 		"tolna"				: [{"stem":"Tolna","wordclass":"noun"},{"stem":"Szekszárd","wordclass":"noun"}],
 		"vas"				: [{"stem":"Vas","wordclass":"noun"},{"stem":"Szombathely","wordclass":"noun"}],
 		"veszprem"			: [{"stem":"Veszprém","wordclass":"noun"}],
@@ -82,12 +83,76 @@ def dow():
 # small talk intents
 def smalltalk():
 	return {
-		"well_done"			: [{"stem":"fasza"},{"stem":"jó","prefix":["kurva"]},{"stem":"király"},{"stem":"ügyes"},{"stem":"sz[eé]p\s(volt|munka)","wordclass":"regex"},{"stem":"ez\s(lesz\s)?az","wordclass":"regex"}],
+		"well_done"			: [{"stem":"fasza"},{"stem":"jó","prefix":["kurva"],"without":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"király"},{"stem":"ügyes"},{"stem":"sz[eé]p\s(volt|munka)","wordclass":"regex"},{"stem":"ez\s(lesz\s)?az","wordclass":"regex"}],
 		"user_love"			: [{"stem":"szeretlek"},{"stem":"szeretsz engem"},{"stem":"tetszek neked"},{"stem":"tetszel nekem","without":[{"stem":"nem"}]},{"stem":"tetszek neked"},{"stem":"szerelmes.+bel[eé]d","wordclass":"regex"},{"stem":"bel[eé]d.+szerettem","wordclass":"regex"}],
-		"user_flirting"		: [{"stem":"(mi|milyen|ruha).+van\s+rajtad","wordclass":"regex"},{"stem":"(meg)?(basz|dug)(unk|n[aá]lak)","wordclass":"regex"},{"stem":"sz?ex(e[lt].*)?","wordclass":"regex"}],
+		"user_flirting"		: [{"stem":"(mi|milyen|ruha).+van\s+rajtad","wordclass":"regex"},{"stem":"(meg)?(basz|dug)(unk|n[aá]lak|lak)","wordclass":"regex"},{"stem":"sz?ex(e[lt].*)?","wordclass":"regex"}],
 		"user_bored"		: [{"stem":"un(atkoz)?(om|unk)","wordclass":"regex"}],
-		"user_happy"		: [{"stem":"j[oó](\sa\s)?kedvem(\svan)?","wordclass":"regex","without":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"jól vagyok","without":[{"stem":"nincs"},{"stem":"nem"}]}],
-		"user_sad"			: [{"stem":"j[oó](\sa\s)?kedvem(\svan)?","wordclass":"regex","with":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"szomorú","wordclass":"adjective","with":[{"stem":"vagyok"}]},{"stem":"nem\s+(vagyok|[eé]rzem).+j[oó]l","wordclass":"regex"}],
-		"about_you"			: [{"stem":"(mes[eé]lj|besz[eé]lj)(en)?.+mag(ad|[aá])r[oó]l","wordclass":"regex"},{"stem":"mutatkoz+([aá]l|on)?\s+be","wordclass":"regex"},{"stem":"mutasd\s.+magad(at)?","wordcalss":"regex"},{"stem":"(ki(\s|\sa\s.+)vagy te|te ki(\s|\sa\s.+)vagy)","wordclass":"regex"}],
-		"about_creator"		: [{"stem":"ki\s(a\s)?(k[eé]sz[ií]t([oöő]d|ett)|gazd[aá]d|programoz([oó]d|ott)|hozott.+l[eé]tre)","wordclass":"regex"},{"stem":"hol\s(k[eé]sz[uü]lt[eé]l|k[eé]sz[ií]tettek|hoztak.+l[eé]tre)","wordclass":"regex"}]		
+		"user_happy"		: [{"stem":"j[oó]\s(a\s)?kedvem(\svan)?","wordclass":"regex","without":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"jól vagyok","without":[{"stem":"nincs"},{"stem":"nem"}]}],
+		"user_sad"			: [{"stem":"j[oó]\s(a\s)?kedvem","score":0,"wordclass":"regex","with":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"szomorú","score":0,"wordclass":"adjective","with":[{"stem":"vagyok"}]},{"stem":"nem\s+(vagyok|[eé]rzem).+j[oó]l","wordclass":"regex"}],
+		"user_friend"		: [{"stem":"(leszel|legy[uü]nk|lenn[eé]l)\s(a\s)?bar[aá]to[km]","wordclass":"regex"},{"stem":"(bar[aá]to[km]|havero[km])\svagy(unk)?","wordclass":"regex"},{"stem":"te\svagy\sa.+bar[aá]tom","wordclass":"regex"}],
+		"how_are_you"		: [{"stem":"hogy vagy"},{"stem":"jól vagy"},{"stem":"(j[oó]l|hogy)\s[eé]rzed\smagad(at)?","wordclass":"regex"},{"stem":"mizu","affix":["js"]},{"stem":"hogy ityeg"},{"stem":"(hogy\stelt\sa|milyen(\svolt\sa)?)\snapod(\svan)?","wordclass":"regex"},{"stem":"w+h*a+[sz]+u+p+","wordclass":"regex"},{"stem":"(j[oó]|milyen)\s(a\s)?kedved(\svan)?","wordclass":"regex"}],
+		"about_you"			: [{"stem":"(mes[eé]lj|besz[eé]lj)(en)?.+mag(ad|[aá])r[oó]l","wordclass":"regex"},{"stem":"mutatkoz+([aá]l|on)?\s+be","wordclass":"regex"},{"stem":"(be)?muta(tn[aá]d|sd)\s.+magad(at)?","wordclass":"regex"},{"stem":"(ki(\s|\sa\s.+)vagy te|te ki(\s|\sa\s.+)vagy)","wordclass":"regex"}],
+		"about_creator"		: [{"stem":"ki\s(a\s)?(k[eé]sz[ií]t([oöő]d|ett)|gazd[aá]d|programoz([oó]d|ott)|hozott.+l[eé]tre|alkot[oó][dt]+)","wordclass":"regex"}],
+		"about_look"		: [{"stem":"hogy(an)?\s(n[eé]zel\ski|mutatsz|festesz)","wordclass":"regex"},{"stem":"mi(lyen)?\s(ruha\s)?(van\s)?rajtad","wordclass":"regex"},{"stem":"(k[uü]ldj|mutass).+(k[eé]pet|fot[oó]t|sz?elfie?t)\smagadr[oó]l","wordclass":"regex"},{"stem":"(k[uü]ldj|mutass)\smagadr[oó]l.+(k[eé]pet|fot[oó]t|sz?elfie?t)","wordclass":"regex"},{"stem":"(van|milyen)\s(az?\s)?(arcod|kin[eé]zeted)","wordclass":"regex"}],
+		"about_age"			: [{"stem":"mennyi idős vagy"},{"stem":"hány éves vagy"},{"stem":"melyik évben születtél"},{"stem":"mikor születtél"},{"stem":"(melyik\s[eé]vben|mikor)\sk[eé]sz([uü]lt[eé]l|[ií]tettek)","wordclass":"regex"},{"stem":"(h[aá]nyadik|mikor\s(van|[uü]nnepled)\sa)\ssz[uü]l(et[eé]s|i)napod(at)?","wordclass":"regex"},{"stem":"hány\sévesnek\s\w+\smagad(at)?","wordclass":"regex"}],
+		"about_location"	: [{"stem":"(hol|helyen)\s(k[eé]sz[uü]lt[eé]l|k[eé]sz[ií]tettek|sz[uü]lett[eé]l|(hoztak|j[oö]tt[eé]l).+l[eé]tre)","wordclass":"regex"},{"stem":"honnan\s(sz[aá]rmazol|[ií]rsz)","wordclass":"regex"},{"stem":"ho(nnan|l)\svagy\s(helyileg|most|pontosan)","wordclass":"regex"}],
+		"about_family"		: [{"stem":"ki(k|t|ket)?\s(az?\s|tartasz\sa\s)?(te\s)?(csal[aá]dod(nak)?|sz[uü]l(t|ett[eé]l)|sz[uü]leid(nek)?|([eé]des)?(any(uk)?[aá]d|ap(uk)?[aá]d)(nak)?)","wordclass":"regex"},{"stem":"csal[aá]dban\s([eé]l(sz|tek)|sz[uü]lett[eé]l)","wordclass":"regex"},{"stem":"(h[aá]ny|van(nak)?)\stestv[eé]rei?d","wordclass":"regex"}],
+		"weather"			: [{"stem":"időjárás","wordclass":"noun"},{"stem":"(milyen|j[oó]|sz[eé]p)\s(lesz\s)?(az\s)?id[oöő](nk)?","wordclass":"regex"}],
+		"news"				: [{"stem":"hír","wordclass":"noun"},{"stem":"újság","prefix":["hír"],"wordclass":"noun"},{"stem":"valami\s[uú]j((don)?s[aá]g(ot)?)?","wordclass":"regex"}],
+		"joke"				: [{"stem":"vicc","wordclass":"noun"},{"stem":"vidíts fel"},{"stem":"nevettess meg"},{"stem":"felvid[ií]ta(sz|n[aá]l)","wordclass":"regex"}],
+		"you_are_robot"		: [{"stem":"(te\s)?(egy\s)?(igazi|val[oó](s|di))?(ember|szem[eé]ly)\svagy","wordclass":"regex"},{"stem":"(robot|chatbot|ai|mesters[eé]ges\sintel+igencia)\svagy","wordclass":"regex"},{"stem":"(emberrel|szem[eé]l+yel|robottal|programmal|algoritmussal)\s(besz[eé]l(get)?ek|csevegek|levelezek|konzult[aá]lok)","wordclass":"regex"},{"stem":"(embernek|szem[eé]lynek|robotnak|programnak|algoritmusnak)\s([ií]ro(gato)?[km]|magyar[aá]zo[km])","wordclass":"regex"}]
 	}
+	
+# pop culture AI references
+def popculture():
+	return {
+		"turing"			: [{"stem":"Turing","affix":["teszt"]},{"stem":"Enigma"}],
+		"matrix"			: [{"stem":"Neo","wordclass":"noun"},{"stem":"Oracle"},{"stem":"Morpheus"},{"stem":"Trinity"}],
+		"terminator"		: [{"stem":"Terminator","wordclass":"noun"},{"stem":"Connor","score":0,"with":[{"stem":"John"},{"stem":"Sarah"}]},{"stem":"Skynet","wordclass":"noun"},{"stem":"T\-(600|800|850|1000|1001|5000)","wordclass":"regex"}],
+		"spaceodyssey"		: [{"stem":"monolith"},{"stem":"HAL 9000"},{"stem":"nyisd ki a zsilipkaput"},{"stem":"David Bowman"},{"stem":"Űrodüsszeia","wordclass":"noun"}],
+		"mrrobot"			: [{"stem":"Elliot"},{"stem":"Mr\.?\s?Robot","wordclass":"regex"}],
+		"bladerunner"		: [{"stem":"Voight[\-\s]?Kampf+","wordclass":"regex"},{"stem":"replikáns","wordclass":"noun"},{"stem":"Deckard"},{"stem":"Rachael"}],
+		"undertale"			: [{"stem":"Mettaton"}],
+		"portal"			: [{"stem":"GLaDOS"},{"stem":"Cave Johnson"},{"stem":"Chell"},{"stem":"Wheatley"},{"stem":"(weighte(ne)?d\s?)?companion\s?cube","wordclass":"regex"}],
+		"mgs"				: [{"stem":"Big Boss"},{"stem":"S+n+a+k+e+","wordclass":"regex"},{"stem":"Raiden"},{"stem":"Ocelot"},{"stem":"Otacon"}],
+		"systemshock"		: [{"stem":"SHODAN"},{"stem":"Von Braun"}],
+		"deusex"			: [{"stem":"JC\.?\s?Denton","wordclass":"regex"},{"stem":"Adam Jensen"}],
+		"jarvis"			: [{"stem":"Jarvis"}],
+		"google"			: [{"stem":"OK(ay|[eé])? Google","wordclass":"regex"},{"stem":"Google (home|assistant|asszisztens)","wordclass":"regex"}],
+		"alexa"				: [{"stem":"Alexa","wordclass":"noun"}],
+		"siri"				: [{"stem":"Siri","wordclass":"noun"}],
+		"cortana"			: [{"stem":"Cortana","wordclass":"noun"},{"stem":"Master Chief"},{"stem":"John[\-\s]?117","wordclass":"regex"}],
+		"gits"				: [{"stem":"Motoko","wordclass":"noun"},{"stem":"Kusanagi","wordclass":"noun"},{"stem":"Batou"},{"stem":"Tachikoma","wordclass":"noun"},{"stem":"(the\s)?pup+ete+r","wordclass":"regex"},{"stem":"bábjátékos","wordclass":"noun"}],
+		"dragonball"		: [{"stem":"Android 1[678]","wordclass":"regex"}],
+		"evangelion"		: [{"stem":"evangelion"},{"stem":"NERV"}],
+		"flcl"				: [{"stem":"Canti"}],
+		"cowboybebop"		: [{"stem":"Spike"},{"stem":"Faye Valentine"},{"stem":"Edward"}],
+		"megaman"			: [{"stem":"Megaman","wordclass":"noun"}],
+		"chobits"			: [{"stem":"Chi+","wordclass":"regex"},{"stem":"chobit"},{"stem":"persocom"}],
+		"kizunaai"			: [{"stem":"Kizuna"}],
+		"hatsunemiku"		: [{"stem":"Hatsune"},{"stem":"Vocaloid"}],
+		"astroboy"			: [{"stem":"Astro Boy"},{"stem":"Astroboy"}],
+		"onepunchman"		: [{"stem":"Genos"}],
+		"doraemon"			: [{"stem":"Doraemon"}]
+	}
+	
+# function to check if declarations are actually correct
+def is_intent_valid(intents):
+	valid_keys	= set(['stem','clean_stem','affix','clean_affix','prefix','clean_prefix','wordclass','with','without','score','clean_score','match_stem','match_at','ignorecase'])
+	valid_class = set(['noun','verb','adjective','regex','special'])
+	is_regex	= set(['|','(',')','+','*','+','?','\\'])
+	for intent,declaration in intents.items():
+		for item in declaration:
+			for key,value in item.items():
+				if key not in valid_keys:
+					print(intent,'has unknown key:',key)
+			if 'wordclass' in item:
+				if item['wordclass'] not in valid_class:
+					print(intent,'has invalid "wordclass" declared')
+			if 'stem' not in item:
+				print(intent,'missing "stem" key')
+			else:
+				if any(test in item['stem'] for test in is_regex):
+					if 'wordclass' not in item or item['wordclass']!='regex':
+						print(intent,'probably has a regex "wordclass" declared otherwise in',item['stem'])
+	print('Intent checked.')

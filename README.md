@@ -1,4 +1,4 @@
-**LARA** is a lightweight Python3 NLP library for ChatBots written in Hungarian language. The parser Class is capable of matching inflected forms of keywords in text messages written in hungarian. **Lara** also comes with a collection of common NLP functions for text processing.
+**LARA** is a lightweight Python3 NLP library for ChatBots written in Hungarian language. The parser Class is capable of matching inflected forms of keywords in text messages written in hungarian. **Lara** also comes with a collection of common NLP functions for text processing and understands common small talk topics for Chatbot interactions.
 
 # Table of contents
 
@@ -63,7 +63,7 @@ print(alma_test.match_all_intents("Mikor szedjük le a pirosabb almákat?"))
 import lara
 busz_intents	= {
 	"palyaudvar"	: [{"stem":"pályaudvar","wordclass":"noun","prefix":["busz"]}],
-	"auto"			: [{"stem":"autó","wordclass":"noun","affix":["busz"]}],
+	"auto"		: [{"stem":"autó","wordclass":"noun","affix":["busz"]}],
 	"szinten_jo"	: [{"stem":"pálya","wordclass":"noun","prefix":["busz"],"affix":["udvar"]}]
 }
 busz_test		= lara.parser.Intents(busz_intents)
@@ -161,7 +161,7 @@ Az alábbi szófajok adhatók meg a `wordclass` változóban:
 | `noun` | Főnevek esetén alkalmazandó. |
 | `verb` | Igék esetén alkalmazandó. Alapértelmezetten a gyakori igekötők automatikusan hozzáadódnak a 'prefix' listához. |
 | `adjective` | Melléknevek esetén alkalmazandó. Alapértelmezetten a 'leg' és 'legesleg' fokozások hozzáadódnak a 'prefix' listához. |
-| `regex` | Saját reguláris kifejezések megadásához használható. Ebben az esetben nem ajánlott további tulajdonságok definiálása. Alapértelmezetten nem tesz különbséget a kis-, és nagybetűk között | 
+| `regex` | Saját reguláris kifejezések megadásához használható (r'\b' kapcsolók közé fog kerülni a stringként megadott definíció). Ebben az esetben nem ajánlott további tulajdonságok definiálása. Alapértelmezetten nem tesz különbséget a kis-, és nagybetűk között. | 
 
 Az NLTK tagsetjével való kompatibilitás megőrzéséhez ADJ, NOUN és VERB érétékek is megadhatóak.
 
@@ -176,6 +176,7 @@ A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan
 
 | Tulajdonság | Alapértelmezett érték | Magyarázat |
 | ---         | ---     | ---     |
+| `clean_stem` | `stem` alapján automatikusan generált | **Tisztított** szótő, ami megkönnyíti egyes esetekben a találatot. A `clean_score` az erre való találat esetén nő. |
 | `score` | 1 | Minden **alapértelemzett** találat esetén a megadott értékkel növeli meg az intenció pontszámát. Egy intencióra, ha egyszerre létezik **alapértelmezett** és **tisztított** találat, akkor a `score` és a `clean_score` értékét kapja az intenció. |
 | `clean_score` |  `score` értéke | Minden **tisztított** találat esetén a megadott értékkel növeli meg az intenció pontszámát. Egy intencióra, ha egyszerre létezik **alapértelmezett** és **tisztított** találat, akkor a `score` és a `clean_score` értékét kapja az intenció. |
 | `prefix` |  `wordclass` beállításoktól függ | Az elfogadott előtagok string **list**ája. |
@@ -241,8 +242,9 @@ print(match_common)
 | `lara.entities.counties()` | Hungarian counties and county seats | `bacs-kiskun, baranya, bekes, borsod-abauj-zemplen, csongrad, fejer, gyor-moson-sopron, hajdu-bihar, heves, jasz-nagykun-szolnok, komarom-esztergom, nograd, pest, somogy, szabolcs-szatmar-bereg, tolna, vas, veszprem, zala` |
 | `lara.entities.dow()` | Days of the week. Will also match `hetvege` or `hetkoznap` when matching a day. | `ma, holnap, holnaputan, tegnap, tegnapelott, hetfo, kedd, szerda, csutortok, pentek, szombat, vasarnap, hetkoznap, hetvege` |
 | `lara.entities.smalltalk()` | Common small talk topics | `well_done, user_love, user_flirting, user_bored, user_happy, user_sad, about_you, about_creator` |
+| `lara.entities.popculture()` | Common cyberpunk/android/robot/AI pop culture references | `turing, matrix, terminator, spaceodyssey, mrrobot, bladerunner, undertale, portal, mgs, systemshock, deusex, jarvis, google, alexa, siri, cortana, gits, dragonball, evangelion, flcl, cowboybebop, megaman, chobits, kizunaai, hatsunemiku, astroboy, onepunchman, doraemon` |
 
-Some named entities (common, commands and smalltalk) might give false positive if used out of context. It is recommended that you build your Chatbot in a way, that reacting to more important intents have a higher priority. 
+Some named entities (commands and smalltalk) might give false positive if used out of context. It is recommended that you build your Chatbot in a way, that reacting to more important intents have a higher priority. 
 
 ###### NLP functions
 
@@ -313,7 +315,7 @@ Note that number of returned stems might be larger than the actual number of wor
 ```python
 import pandas as pd
 df			= pd.read_csv('example.csv',sep=';',header=0,names=["stem","wordclass","intent"])
-csv_intents	= {}	# you can also use existing dictionary of intents to extend them
+csv_intents		= {}	# you can also use existing dictionary of intents to extend them
 for index, row in df.iterrows():
 	lara.parser.intents_from_csv(row,csv_intents)
 print(csv_intents)
@@ -328,7 +330,7 @@ Setting multiple properties for intents can be useful in detecting patterns:
 - Both "prefix"es and "affix"es can be set at the same time.
 - In case inflection would alter a word's "stem", try defining the altered form as another possible Intent **list** element, with the "match_stem" property set to **False**. This way the defined "stem" would only be matched if inflected.  
 - If it is unclear wether or not an iflected word form would be matched by the given definitions, it is always a good idea to manually test it first.
-- If you use **Lara** for feature extraction, it is recommended to retrain your models after updating the library to a newer version.
+- If you use **Lara** for feature extraction, it is recommended to retrain your machine learning models after updating the library to a newer version.
 
 ## Misc
 Initial work: **Richard Nagyfi**, 2016
@@ -340,7 +342,7 @@ Created in collaboration with the [Institute of Advanced Studies, Kőszeg](http:
 #### Known applications
 Feel free to add your own Chatbot solutions to the following list, because
 
-![every civilization was built off the back of a disposable workforce](https://github.com/sedthh/lara-hungarian-nlp/blob/master/bladerunner.gif)
+![Every civilization was built off the back of a disposable workforce... But I can only make so many.](https://github.com/sedthh/lara-hungarian-nlp/blob/master/bladerunner.gif)
 
 Recent projects based on **Lara**:
 - Hungarian "Napirajz" Chatbot for Facebook Messenger: https://www.facebook.com/NapirajzBot/
@@ -354,6 +356,7 @@ Recent projects based on **Lara**:
 - Implement furhter NLTK functions aimed for the hungarian language.
 - Rewrite regular expressions in a way that autoamtic POS-tagging would be possible in hungarian.
 - Create dictionaries to enable sentiment analysis in hungarian.
+- Allow using emojis in "stem" declaration
 - Do proper unit testing and replace test.py
 
 This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details

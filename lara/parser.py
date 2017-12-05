@@ -254,7 +254,7 @@ class Intents:
 			if is_clean:
 				select		= 'clean_'
 			if item['wordclass'] == 'regex':
-				pattern		= r''+item[select+'stem']+item[select+'affix']
+				pattern		= r'\b'+item[select+'stem']+item[select+'affix']+r'\b'
 			else:
 				pattern		= '('+re.escape(item[select+'stem'])+item[select+'affix']+')'
 				if item['wordclass'] == 'noun':
