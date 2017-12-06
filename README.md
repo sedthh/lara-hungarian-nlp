@@ -53,7 +53,7 @@ alma_intents	= {
 	"piros"		: [{"stem":"piros","wordclass":"adjective"}]
 }
 alma_test		= lara.parser.Intents(alma_intents)
-print(alma_test.match_all_intents("Mikor szedjük le a pirosabb almákat?"))
+print(alma_test.match("Mikor szedjük le a pirosabb almákat?"))
  
 >>> {'alma': 1, 'szed': 2, 'piros': 2}
 ```
@@ -69,8 +69,8 @@ busz_intents	= {
 	"szinten_jo"	: [{"stem":"pálya","wordclass":"noun","prefix":["busz"],"affix":["udvar"]}]
 }
 busz_test		= lara.parser.Intents(busz_intents)
-print(busz_test.match_all_intents("Lassan beérünk az autóval a pályaudvarra."))
-print(busz_test.match_all_intents("Lassan beérünk az autóbusszal a buszpályaudvarra."))
+print(busz_test.match("Lassan beérünk az autóval a pályaudvarra."))
+print(busz_test.match("Lassan beérünk az autóbusszal a buszpályaudvarra."))
  
 >>> {'palyaudvar': 2, 'auto': 2, 'szinten_jo': 2}
 >>> {'palyaudvar': 2, 'auto': 1, 'szinten_jo': 2}
@@ -83,9 +83,9 @@ hasonul_intents	= {
 	"enni"		: [{"stem":"esz","wordclass":"verb","match_stem":False}, {"stem":"en","wordclass":"verb","match_stem":False}]
 }
 hasonul_test		= lara.parser.Intents(hasonul_intents)
-print(hasonul_test.match_all_intents("Tőmorfémák: esz, en.")) # nem veszi figyelembe
-print(hasonul_test.match_all_intents("Eszel valamit?"))
-print(hasonul_test.match_all_intents("Azt nem lehet megenni."))
+print(hasonul_test.match("Tőmorfémák: esz, en.")) # nem veszi figyelembe
+print(hasonul_test.match("Eszel valamit?"))
+print(hasonul_test.match("Azt nem lehet megenni."))
  
 >>> {}
 >>> {'enni': 2}
@@ -100,13 +100,13 @@ egyutt_intents	= {
 				"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]}, {"stem":"meleg","wordclass":"adjective"}]}]
 }
 egyutt_test		= lara.parser.Intents(egyutt_intents)
-print(egyutt_test.match_all_intents("Jó.")) # nem veszi figyelembe
-print(egyutt_test.match_all_intents("Meleg van."))	# nem veszi figyelembe
-print(egyutt_test.match_all_intents("Milyen az időjárás?"))	# nem veszi figyelembe
-print(egyutt_test.match_all_intents("Jó meleg van."))
-print(egyutt_test.match_all_intents("Jó az idő."))
-print(egyutt_test.match_all_intents("Jó meleg az idő."))  # dupla pont
-print(egyutt_test.match_all_intents("Jó meleg az időjárás.")) # dupla pont
+print(egyutt_test.match("Jó.")) # nem veszi figyelembe
+print(egyutt_test.match("Meleg van."))	# nem veszi figyelembe
+print(egyutt_test.match("Milyen az időjárás?"))	# nem veszi figyelembe
+print(egyutt_test.match("Jó meleg van."))
+print(egyutt_test.match("Jó az idő."))
+print(egyutt_test.match("Jó meleg az idő."))  # dupla pont
+print(egyutt_test.match("Jó meleg az időjárás.")) # dupla pont
 >>> {}
 >>> {}
 >>> {}
@@ -125,10 +125,10 @@ kulon_intents	= {
 				"without":[{"stem":"este","wordclass":"noun"}, {"stem":"esté","match_stem":False,"wordclass":"noun"}]}]
 }
 kulon_test		= lara.parser.Intents(kulon_intents)
-print(kulon_test.match_all_intents("Jó."))  # nem veszi figyelembe
-print(kulon_test.match_all_intents("Jó meleg az időjárás."))  # dupla pont
-print(kulon_test.match_all_intents("Jó estét!"))  # nem veszi figyelembe
-print(kulon_test.match_all_intents("Jó meleg esténk van!")) # szintén nem veszi figyelembe
+print(kulon_test.match("Jó."))  # nem veszi figyelembe
+print(kulon_test.match("Jó meleg az időjárás."))  # dupla pont
+print(kulon_test.match("Jó estét!"))  # nem veszi figyelembe
+print(kulon_test.match("Jó meleg esténk van!")) # szintén nem veszi figyelembe
 >>> {}
 >>> {'jobb_ido': 4}
 >>> {}
@@ -143,8 +143,8 @@ fals_pozitiv	= {
 	"hibasan"	: [{"stem":"alma","wordclass":"noun"}],
 }
 hibas_test		= lara.parser.Intents(fals_pozitiv)
-print(hibas_test.match_all_intents("Gyönyörű dolog a szerelem!")) # elfogadja hibásan
-print(hibas_test.match_all_intents("Ezt is elfogadja találatként: Almainüdböz"))  # elfogadja hibásan
+print(hibas_test.match("Gyönyörű dolog a szerelem!")) # elfogadja hibásan
+print(hibas_test.match("Ezt is elfogadja találatként: Almainüdböz"))  # elfogadja hibásan
 >>> {'megszerel': 2}
 >>> {'hibasan': 2}
 ```
@@ -203,11 +203,11 @@ example	= lara.parser.Intents()
 
 | Function | Description |
 | ---         | ---     |
-| `example.add_intents(new_intents={})` | Add a dictionary of intents to the existing dictionary of intents. Duplicates will be discarded. |
-| `example.match_all_intents(text="...")` | Find matching intents in a given string. Returns dictionary with intent:score pairs for all intents where score is more than 0. |
-| `example.match_all_intents_as_set(text="...")` | Same as above but returns a set of matched Intents instead. |
-| `example.match_best_intents(text="...",[n=1])`  | Returns a dictinoary with n largest score intent:score pairs. If less than n intents were found, returns them all. |
-| `example.raw_intents(new_intents)` | For optimization purposes only. Replaces all current intents with a dictionary of new intents, without further processing them. NOTE: this function should only be used with previously generated (cached) intents with all necessary variables already created by the class itself. Accepts dictionary of full intents, string of full intents and existing Intent class instances. |
+| `example.add(new_intents={})` | Add a dictionary of intents to the existing dictionary of intents. Duplicates will be discarded. |
+| `example.match(text="...")` | Find matching intents in a given string. Returns dictionary with intent:score pairs for all intents where score is more than 0. |
+| `example.match_as_set(text="...")` | Same as above but returns a set of matched Intents instead. |
+| `example.match_best(text="...",[n=1])`  | Returns a dictinoary with n largest score intent:score pairs. If less than n intents were found, returns them all. |
+| `example.raw(new_intents)` | For optimization purposes only. Replaces all current intents with a dictionary of new intents, without further processing them. NOTE: this function should only be used with previously generated (cached) intents with all necessary variables already created by the class itself. Accepts dictionary of full intents, string of full intents and existing Intent class instances. |
 
 The constructor also accepts instances.
 ```python
@@ -215,9 +215,9 @@ The constructor also accepts instances.
 		self.intents	= {}
 		if new_intents:
 			if is_raw:
-				self.raw_intents(new_intents)
+				self.raw(new_intents)
 			else:
-				self.add_intents(new_intents)
+				self.add(new_intents)
 ```
 
 Function str(), repr(), len() and logical operators eq (==), ne (!=) and addition (+) are also available.
@@ -231,7 +231,7 @@ You can add further entities (dictionary of intents) to an existing Intent: `exa
 or you can just check for matches without having to create your own Intent class instance:
 
 ```python
-match_common	= lara.parser.match_intents_as_set(lara.entities.common(), "Köszönöm szépen!")
+match_common	= lara.parser.Intents(lara.entities.common()).match_as_set("Köszönöm szépen!")
 print(match_common)
 	
 >>> {"thx"}
@@ -319,7 +319,7 @@ import pandas as pd
 df			= pd.read_csv('example.csv',sep=';',header=0,names=["stem","wordclass","intent"])
 csv_intents		= {}	# you can also use existing dictionary of intents to extend them
 for index, row in df.iterrows():
-	lara.parser.intents_from_csv(row,csv_intents)
+	lara.parser.row_as_intent(row,csv_intents)
 print(csv_intents)
 
 >>> {'gyumolcs': [{'stem': 'körte', 'wordclass': 'noun'}, {'prefix': ['sárga'], 'stem': 'barack', 'wordclass': 'noun'}, {'prefix': ['arany', 'zöld'], 'stem': 'alma', 'wordclass': 'noun'}, {'affix': ['lé'], 'stem': 'narancs', 'wordclass': 'noun'}, {'prefix': ['indián', 'fekete'], 'affix': ['szörp'], 'stem': 'meggy', 'wordclass': 'noun'}]}
@@ -359,6 +359,6 @@ Recent projects based on **Lara**:
 - Rewrite regular expressions in a way that autoamtic POS-tagging would be possible in hungarian.
 - Create dictionaries to enable sentiment analysis in hungarian.
 - Allow using emojis in "stem" declaration
-- Do proper unit testing and replace test.py
+- Create unit tests
 
 This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details

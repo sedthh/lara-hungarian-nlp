@@ -15,9 +15,9 @@ class Intents:
 		self.intents	= {}
 		if new_intents:
 			if is_raw:
-				self.raw_intents(new_intents)
+				self.raw(new_intents)
 			else:
-				self.add_intents(new_intents)
+				self.add(new_intents)
 
 	##### DATA MODEL #####
 	def __repr__(self):
@@ -43,16 +43,16 @@ class Intents:
 		if other:
 			tmp = Intents(self.intents)
 			if self.__class__.__name__ == other.__class__.__name__:
-				tmp.add_intents(other.intents)
+				tmp.add(other.intents)
 			elif isinstance(other,dict):
-				tmp.add_intents(other)
+				tmp.add(other)
 			return tmp
 		return self
 	
 	##### CLASS FUNCTIONS #####
 				
 	# Add dict of intents
-	def add_intents(self, new_intents={}):
+	def add(self, new_intents={}):
 		for key, value in new_intents.items():
 			if key not in self.intents:
 				self.intents[key]	= []
@@ -63,7 +63,7 @@ class Intents:
 						self.intents[key].append(item)
 	
 	# Add raw intents without further optimization
-	def raw_intents(self, new_intents):
+	def raw(self, new_intents):
 		if new_intents:
 			if isinstance(new_intents, str):
 				new_intents	= json.loads(new_intents)
@@ -76,6 +76,11 @@ class Intents:
 	
 	# Add default values and fill in optional paramteres for a single intent
 	def _fix_intent(self, item):
+		if 'stem' not in item:
+			raise KeyError('Intent declaration missing compulsory "stem" key.')
+		if not item['stem'] or not isinstance(item['stem'], str):
+			raise ValueError('Invalid value for "stem".')
+		
 		prefixes		= ("abba","alá","át","be","bele","benn","el","ellen","elő","fel","föl","hátra","hozzá","ide","ki","körül","le","meg","mellé","neki","oda","össze","rá","szét","túl","utána","vissza")
 		clean_prefixes	= ("aba","ala","at","be","bele","ben","el","elen","elo","fel","fol","hatra","hoza","ide","ki","korul","le","meg","mele","neki","oda","osze","ra","szet","tul","utana","visza")
 		
@@ -83,11 +88,11 @@ class Intents:
 			item['wordclass']		= 'special'
 		elif item['wordclass'] not in ('noun','verb','adjective','regex','special'):
 			if item['wordclass']=='ADJ':
-				item['wordclass']='adjective'
+				item['wordclass']	= 'adjective'
 			elif isinstance(item['wordclass'],str) and item['wordclass'].lower() in ('noun','verb'):
-				item['wordclass']=item['wordclass'].lower()
+				item['wordclass']	= item['wordclass'].lower()
 			else:
-				item['wordclass']		= 'special'
+				item['wordclass']	= 'special'
 		if 'clean_stem' not in item:
 			if item['wordclass'] == 'regex':
 				item['clean_stem']	= item['stem']
@@ -184,7 +189,7 @@ class Intents:
 		return item
 	
 	# Get all matches from text
-	def match_all_intents(self, text=""):
+	def match(self, text=""):
 		if text:
 			score		= self._get_all_score(text,self.intents)
 			final_score	= {}
@@ -196,9 +201,9 @@ class Intents:
 			return {}
 	
 	# Get set of matches from text
-	def match_all_intents_as_set(self, text=""):
+	def match_as_set(self, text=""):
 		if text:
-			matches	= self.match_all_intents(text)
+			matches	= self.match(text)
 			return set(list(matches.keys()))
 		return set([])
 	
@@ -306,9 +311,9 @@ class Intents:
 		return (False,0)
 		
 	# Get N best matching intents with the highest value
-	def match_best_intent(self, text, n=1):
+	def match_best(self, text, n=1):
 		if text:
-			score	= self.match_all_intents(text)
+			score	= self.match(text)
 			if score:
 				best_candidates	= sorted(score, key=score.get, reverse=True)
 				best_candidates	= best_candidates[:(min(len(best_candidates),n))]
@@ -316,21 +321,7 @@ class Intents:
 		return {}
 			
 ##### FUNCTIONS OUTSIDE OF CLASS #####
-def match_intents(fast_intent, text=""):
-	if text:
-		if isinstance(fast_intent,dict):
-			fast_intent=Intents(fast_intent)
-		if fast_intent.__class__.__name__=='Intents':
-			return fast_intent.match_all_intents(text)
-	return {}
-
-def match_intents_as_set(fast_intent, text=""):
-	if text:
-		matches	= match_intents(fast_intent,text)
-		return set(list(matches.keys()))
-	return set([])
-	
-def intents_from_csv(row,data={}):
+def row_as_intent(row,data={}):
 	if isinstance(row, list):
 		if len(row)>2:
 			row={
