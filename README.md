@@ -207,6 +207,7 @@ example	= lara.parser.Intents()
 | `example.match(text="...")` | Find matching intents in a given string. Returns dictionary with intent:score pairs for all intents where score is more than 0. |
 | `example.match_as_set(text="...")` | Same as above but returns a set of matched Intents instead. |
 | `example.match_best(text="...",[n=1])`  | Returns a dictinoary with n largest score intent:score pairs. If less than n intents were found, returns them all. |
+| `example.clean(text="...")` | Removes matched parts of given string and returns an Intent free string. This feature is in beta. |
 | `example.raw(new_intents)` | For optimization purposes only. Replaces all current intents with a dictionary of new intents, without further processing them. NOTE: this function should only be used with previously generated (cached) intents with all necessary variables already created by the class itself. Accepts dictionary of full intents, string of full intents and existing Intent class instances. |
 
 The constructor also accepts instances.

@@ -200,6 +200,12 @@ class Intents:
 		else:
 			return {}
 	
+	def clean(self, text=""):
+		if text:
+			return self._get_clean_text(text,self.intents)
+		else:
+			return ""
+	
 	# Get set of matches from text
 	def match_as_set(self, text=""):
 		if text:
@@ -207,6 +213,20 @@ class Intents:
 			return set(list(matches.keys()))
 		return set([])
 	
+	# Get score for intents in text
+	def _get_clean_text(self, text, intents):
+		text		= lara.nlp.trim(text)
+		clean_text	= lara.nlp.strip_accents(lara.nlp.remove_double_letters(text)) #.lower()
+		fix_text	= text
+		if text:
+			for key, value in intents.items():
+				for item in self.intents[key]:
+					if 'stem' in item:
+						fix_text		= self._find_intent(fix_text,item,False,True)
+					if 'clean_stem' in item:
+						fix_text		= self._find_intent(fix_text,item,True,True)
+		return fix_text
+			
 	# Get score for intents in text
 	def _get_all_score(self, text, intents):
 		text		= lara.nlp.trim(text)
@@ -254,13 +274,13 @@ class Intents:
 		return score
 	
 	# Find an intent in text
-	def _find_intent(self, text, item, is_clean=False):
+	def _find_intent(self, text, item, is_clean=False, delete=False):
 		if text:		
 			select		= ''
 			if is_clean:
 				select		= 'clean_'
 			if item['wordclass'] == 'regex':
-				pattern		= r'\b'+item[select+'stem']+item[select+'affix']+r'\b'
+				pattern		= r''+item[select+'stem']+item[select+'affix']
 			else:
 				pattern		= '('+re.escape(item[select+'stem'])+item[select+'affix']+')'
 				if item['wordclass'] == 'noun':
@@ -281,33 +301,41 @@ class Intents:
 			
 			if item['match_at'] == 'regex':
 				if item['ignorecase']:
-					matches	= re.compile(r''+item[select+'prefix']+pattern,re.IGNORECASE).findall(text)
+					matches	= re.compile(r'\b('+item[select+'prefix']+pattern+r')\b',re.IGNORECASE).findall(text)
 				else:
-					matches	= re.compile(r''+item[select+'prefix']+pattern).findall(text)
+					matches	= re.compile(r'\b('+item[select+'prefix']+pattern+r')\b').findall(text)
 			elif item['match_at'] == 'start':
 				if item['ignorecase']:
-					matches	= re.compile(r'(^|[,.!?]|(\b[éé]s)|(\bvagy)|(\bhogy))\W?'+item[select+'prefix']+pattern+r'\b',re.IGNORECASE).findall(text)
+					matches	= re.compile(r'((^|[,.!?]|(\b[éé]s)|(\bvagy)|(\bhogy))\W?'+item[select+'prefix']+pattern+r')\b',re.IGNORECASE).findall(text)
 				else:
-					matches	= re.compile(r'(^|[,.!?]|(\b[éé]s)|(\bvagy)|(\bhogy))\W?'+item[select+'prefix']+pattern+r'\b').findall(text)
+					matches	= re.compile(r'((^|[,.!?]|(\b[éé]s)|(\bvagy)|(\bhogy))\W?'+item[select+'prefix']+pattern+r')\b').findall(text)
 			elif item['match_at'] == 'end':
 				if item['ignorecase']:
-					matches	= re.compile(r'\b'+item[select+'prefix']+pattern+r'((\W*$)|[,.?!]+)',re.IGNORECASE).findall(text)
+					matches	= re.compile(r'\b('+item[select+'prefix']+pattern+r'((\W*$)|[,.?!]+))',re.IGNORECASE).findall(text)
 				else:
-					matches	= re.compile(r'\b'+item[select+'prefix']+pattern+r'((\W*$)|[,.?!]+)').findall(text)
+					matches	= re.compile(r'\b('+item[select+'prefix']+pattern+r'((\W*$)|[,.?!]+))').findall(text)
 			else:
 				if item['ignorecase']:
-					matches	= re.compile(r'\b'+item[select+'prefix']+pattern+r'\b',re.IGNORECASE).findall(text)
+					matches	= re.compile(r'\b('+item[select+'prefix']+pattern+r')\b',re.IGNORECASE).findall(text)
 				else:
-					matches	= re.compile(r'\b'+item[select+'prefix']+pattern+r'\b').findall(text)
-			
+					matches	= re.compile(r'\b('+item[select+'prefix']+pattern+r')\b').findall(text)
+					
 			if matches:
-				if not item['match_stem']:
-					stem_matches	= re.compile(r'\b'+re.escape(item[select+'stem'])+r'\b',re.IGNORECASE).findall(text)
-					if stem_matches:
-						if len(matches) <= len(stem_matches):
-							return (False, 0)
-						return (True,(len(matches)-len(stem_matches))*item[select+'score'])
-				return (True,len(matches)*item[select+'score'])
+				if delete:
+					tmp	= text
+					for match in matches:
+						tmp	= re.sub(r'\b('+re.escape(match[0])+r')\b', '', tmp, flags=re.IGNORECASE)
+					return tmp
+				else:	
+					if not item['match_stem']:
+						stem_matches	= re.compile(r'\b'+re.escape(item[select+'stem'])+r'\b',re.IGNORECASE).findall(text)
+						if stem_matches:
+							if len(matches) <= len(stem_matches):
+								return (False, 0)
+							return (True,(len(matches)-len(stem_matches))*item[select+'score'])
+					return (True,len(matches)*item[select+'score'])
+		if delete:
+			return text
 		return (False,0)
 		
 	# Get N best matching intents with the highest value
@@ -331,6 +359,7 @@ def row_as_intent(row,data={}):
 			}
 		else:
 			raise KeyError('Rows provided as lists should at least be 3 long.')
+	row['intent']	= row['intent'].strip()
 	if 'stem' in row and 'wordclass' in row and 'intent' in row:
 		if row['intent']:
 			if row['intent'] not in data:
@@ -339,7 +368,7 @@ def row_as_intent(row,data={}):
 				# check if parenthesis and other special characters add up
 				if len(re.findall('\(',row['stem'])) == len(re.findall('\)',row['stem'])):
 					intent	= {}
-					options	= re.findall('^(\([\w\|]*\))?(\w+)(\([\w\|]*\))?$',row['stem'])
+					options	= re.findall('^(\([\w\|]*\))?([\w\s\-\.]+)(\([\w\|]*\))?$',row['stem'])
 					if options:				
 						if options[0][1]:
 							if options[0][0]:

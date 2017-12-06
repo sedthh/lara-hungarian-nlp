@@ -73,5 +73,8 @@ if __name__ == "__main__":
 	print(hibas_test.match("Gyönyörű dolog a szerelem!"))	# elfogadja hibásan
 	print(hibas_test.match("Ezt is elfogadja találatként: Almainüdböz"))	# elfogadja hibásan
 
-	match_common	= lara.parser.Intents(lara.entities.common()).match_as_set("Köszönöm szépen!")
+	match_common	= lara.parser.Intents(lara.entities.common()).match_as_set("Köszönöm szépen a segítséget!")
 	print(match_common)
+	
+	clean_common	= lara.parser.Intents(lara.entities.common()).clean("Köszönöm szépen a segítséget!")
+	print(lara.nlp.trim(clean_common))
