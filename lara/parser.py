@@ -147,12 +147,7 @@ class Intents:
 				item['affix']		= r'('+('|'.join(item['affix']))+')?'
 			else:
 				item['affix']		= r''+(item['affix'])
-			
-		if 'score' not in item:
-			item['score']		= 1
-		if 'clean_score' not in item:
-			item['clean_score']	= item['score']
-		
+					
 		if 'match_stem' not in item:
 			item['match_stem']	= True
 		if 'match_at' not in item or item['match_at'] not in ('regex','start','end','any'):
@@ -162,6 +157,8 @@ class Intents:
 			item['ignorecase']	= True
 		
 		if 'with' in item:
+			if 'score' not in item:
+				item['score']		= 0
 			new_items	= []
 			for sub_item in item['with']:
 				sub_item	= self._fix_intent(sub_item)
@@ -170,6 +167,8 @@ class Intents:
 			item['with']	= new_items[:]
 		else:
 			item['with']	= []
+			if 'score' not in item:
+				item['score']		= 1
 		if 'without' in item:
 			new_items	= []
 			for sub_item in item['without']:
@@ -180,6 +179,8 @@ class Intents:
 		else:
 			item['without']	= []		
 		
+		if 'clean_score' not in item:
+				item['clean_score']	= item['score']
 		return item
 	
 	# Get all matches from text

@@ -179,7 +179,7 @@ A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan
 | Tulajdonság | Alapértelmezett érték | Magyarázat |
 | ---         | ---     | ---     |
 | `clean_stem` | `stem` alapján automatikusan generált | **Tisztított** szótő, ami megkönnyíti egyes esetekben a találatot. A `clean_score` az erre való találat esetén nő. |
-| `score` | 1 | Minden **alapértelemzett** találat esetén a megadott értékkel növeli meg az intenció pontszámát. Egy intencióra, ha egyszerre létezik **alapértelmezett** és **tisztított** találat, akkor a `score` és a `clean_score` értékét kapja az intenció. |
+| `score` | 1 (0 ha `with` elem is definiálva van) | Minden **alapértelemzett** találat esetén a megadott értékkel növeli meg az intenció pontszámát. Egy intencióra, ha egyszerre létezik **alapértelmezett** és **tisztított** találat, akkor a `score` és a `clean_score` értékét kapja az intenció. |
 | `clean_score` |  `score` értéke | Minden **tisztított** találat esetén a megadott értékkel növeli meg az intenció pontszámát. Egy intencióra, ha egyszerre létezik **alapértelmezett** és **tisztított** találat, akkor a `score` és a `clean_score` értékét kapja az intenció. |
 | `prefix` |  `wordclass` beállításoktól függ | Az elfogadott előtagok string **list**ája. |
 | `clean_prefix` |  `wordclass` beállításoktól függ, egyéni `prefix` megadása esetén alapértelmezetten az egyéni `prefix` **list**ából generálódik | Az elfogadott **tisztított** előtagok string **list**ája. |
@@ -187,8 +187,8 @@ A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan
 | `clean_affix` |  [], egyéni `affix` megadása esetén alapértelmezetten az egyéni `affix` **list**ából generálódik | Az elfogadott **tisztított** utótagok string **list**ája. Összetett szavaknál használandó. |
 | `match_stem` |  True | **Boolean** érték, ami azt adja meg, hogy a  `stem ` változóban megadott morfémát önmagában állva is elfogadja-e az osztály találatként. **False** esetén csak a ragozott alakokat, "affix"-szel álló alakokat és "prefix"-szel álló alakokat fogad el. |
 | `match_at` |  "any" vagy `wordlcass`:"regex" esetén "regex" | Elfogadott értékek: "regex","start","end" és "any". "start" esetén *mondatrészek* elején fogadja el az intenciót találatként. "end" esetén *mondatrészek* végén fogadja el az intenciót találatként. Tehát sem a "start" sem az "end" nem a szövegben elfoglalt pozíció, hanem a szövegben elfoglalt logikai pozíció alapján próbál találatokat adni. |
-| `with` | [] | További intenció **dictionary**k definiálhatóak az együttjárások pontozásához. Csak egy mélységig ellenőriz az osztály, tehát az itt deklarált további intenciók `with` tulajdonságait már nem veszi figyelembe pontozásnál. |
-| `without` | [] | További intenció **dictionary**k definiálhatóak, amelyek megtalálásakor a tulajdonos intenció nem kap pontot. |
+| `with` | [] | További intenció **dictionary**k definiálhatóak az együttjárások pontozásához. Csak egy mélységig ellenőriz az osztály, tehát az itt deklarált további intenciók `with` tulajdonságait már nem veszi figyelembe pontozásnál. Amennyiben az eredeti `stem` nem lett megtalálva, az itt megtalált, további `stem` deklarációk sem lesznek figyelembe véve. |
+| `without` | [] | További intenció **dictionary**k definiálhatóak, amelyek megtalálásakor a tulajdonos intenció nem kap pontot (függetlenül attól, hogy milyen értékű `score` volt hozzá beállítva). Szintén csak egy mélységig ellenőriz. |
 | `ignorecase` | True | Figyelmen kívül hagyja-e a kis-, és nagybetűk közötti különbséget a `stem` változóban. Hasznos tulajdonnevek vagy mozaikszavak megadásánál. |
 
 #### Functions
@@ -243,7 +243,7 @@ print(match_common)
 | `lara.entities.commands()` | Common menu commands for Chatbot conversations | `ok, cancel, next, back, save, open, delete, exit, options, menu, login, logout, error` |
 | `lara.entities.counties()` | Hungarian counties and county seats | `bacs-kiskun, baranya, bekes, borsod-abauj-zemplen, csongrad, fejer, gyor-moson-sopron, hajdu-bihar, heves, jasz-nagykun-szolnok, komarom-esztergom, nograd, pest, somogy, szabolcs-szatmar-bereg, tolna, vas, veszprem, zala` |
 | `lara.entities.dow()` | Days of the week. Will also match `hetvege` or `hetkoznap` when matching a day. | `ma, holnap, holnaputan, tegnap, tegnapelott, hetfo, kedd, szerda, csutortok, pentek, szombat, vasarnap, hetkoznap, hetvege` |
-| `lara.entities.smalltalk()` | Common small talk topics | `well_done, user_love, user_flirting, user_bored, user_happy, user_sad, about_you, about_creator` |
+| `lara.entities.smalltalk()` | Common small talk topics | `well_done, user_love, user_flirting, user_bored, user_happy, user_sad, user_friend, how_are_you, about_you, about_creator, about_look, about_age, about_location, about_family, are_you_a_robot, can_you_hear_me, weather, news, joke` |
 | `lara.entities.popculture()` | Common cyberpunk/Sci-Fi android/robot/AI pop culture references | `turing, matrix, terminator, mrrobot, bladerunner, spaceodyssey, starwars, drwho, undertale, portal, mgs, systemshock, deusex, jarvis, google, alexa, siri, cortana, gits, dragonball, evangelion, flcl, cowboybebop, megaman, chobits, kizunaai, hatsunemiku, astroboy, onepunchman, doraemon` |
 
 Some named entities (commands and smalltalk) might give false positive if used out of context. It is recommended that you build your Chatbot in a way, that reacting to more important intents have a higher priority. 
