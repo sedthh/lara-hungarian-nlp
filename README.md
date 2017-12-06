@@ -1,4 +1,4 @@
-**LARA** is a lightweight Python3 NLP library for ChatBots written in Hungarian language. The parser Class is capable of matching inflected forms of keywords in text messages written in hungarian. **Lara** also comes with a collection of common NLP functions for text processing and understands common small talk topics for Chatbot interactions.
+**Lara** is a lightweight Python3 NLP library for ChatBots written in Hungarian language. The parser Class is capable of matching inflected forms of keywords in text messages written in hungarian. **Lara** also comes with a collection of common NLP functions for text processing and can identify common small talk topics for Chatbot interactions.
 
 # Table of contents
 
@@ -57,6 +57,8 @@ print(alma_test.match_all_intents("Mikor szedjük le a pirosabb almákat?"))
  
 >>> {'alma': 1, 'szed': 2, 'piros': 2}
 ```
+
+*A pontozásnál az 'alma' csak 1 pontot kapott, ugyanis nem a megadott szótövet sikerült megtalálni, hanem annak egy megváltozott formáját. A pontozás működéséről és megváltoztatásáról bővebben lejjebb.*
 
 *A szótövek mellett elő-, és utótagok is definiálhatók lista elemként. Igék (verb) definiálása esetén az alapértelmezett előtagok a gyakori igekötők.*
 ```python
@@ -242,7 +244,7 @@ print(match_common)
 | `lara.entities.counties()` | Hungarian counties and county seats | `bacs-kiskun, baranya, bekes, borsod-abauj-zemplen, csongrad, fejer, gyor-moson-sopron, hajdu-bihar, heves, jasz-nagykun-szolnok, komarom-esztergom, nograd, pest, somogy, szabolcs-szatmar-bereg, tolna, vas, veszprem, zala` |
 | `lara.entities.dow()` | Days of the week. Will also match `hetvege` or `hetkoznap` when matching a day. | `ma, holnap, holnaputan, tegnap, tegnapelott, hetfo, kedd, szerda, csutortok, pentek, szombat, vasarnap, hetkoznap, hetvege` |
 | `lara.entities.smalltalk()` | Common small talk topics | `well_done, user_love, user_flirting, user_bored, user_happy, user_sad, about_you, about_creator` |
-| `lara.entities.popculture()` | Common cyberpunk/android/robot/AI pop culture references | `turing, matrix, terminator, spaceodyssey, mrrobot, bladerunner, undertale, portal, mgs, systemshock, deusex, jarvis, google, alexa, siri, cortana, gits, dragonball, evangelion, flcl, cowboybebop, megaman, chobits, kizunaai, hatsunemiku, astroboy, onepunchman, doraemon` |
+| `lara.entities.popculture()` | Common cyberpunk/Sci-Fi android/robot/AI pop culture references | `turing, matrix, terminator, mrrobot, bladerunner, spaceodyssey, starwars, drwho, undertale, portal, mgs, systemshock, deusex, jarvis, google, alexa, siri, cortana, gits, dragonball, evangelion, flcl, cowboybebop, megaman, chobits, kizunaai, hatsunemiku, astroboy, onepunchman, doraemon` |
 
 Some named entities (commands and smalltalk) might give false positive if used out of context. It is recommended that you build your Chatbot in a way, that reacting to more important intents have a higher priority. 
 
