@@ -256,19 +256,19 @@ def is_gibberish(text=''):
 def strip_context(text, context="search", including=None):
 	if text:
 		if context=='search':
-			exclude		= re.compile(r'\b([ae](z([eo]k)?|([eo]k)?r+[ea])?|milyen|mennyi|mikor|hol|merre|hova|[mk]i(vel|nek|t|k(et)?)?|mi?[eé]rt|r[aá]|egy|meg|[bk]e|nekem|hogy(an)?|(sz[oó])?cikk\w*|oldal\w*|[ií]r\w*|kapcsolat(os(an)?|ban)|sz[oó]l[oó]?|keres\w*|n[eé]z[zd]|mutas(s[aá]?[dl]?)|alapj[aá]n|mond[dj]?|t[oö]ltse?d?|hoz([zd]|z[aá][dl])|nyis(s[aá]?[dls])|megnyit\w*|(el)?olvas\w*|szeretn[eé]\w*|k[eé]r(ni|l?e[km])|(meg)?n[eé]z\w*|k[oö]z[oö]?t+|k[oö]s+z(i|[oö]n[oö]m)?|fel)\b', re.IGNORECASE)
+			exclude		= re.compile(r'\b([ae](z([eo]k)?|([eo]k)?r+[ea])?|milyen|mennyi|mikor|hol|merre|hova|[mk]i(vel|nek|t|k(et)?)?|mi?[eé]rt|r[aá]|egy|meg|[bk]e|nekem|hogy(an)?|(sz[oó])?cikk\w*|oldal\w*|[ií]r\w*|kapcsolat(os(an)?|ban)|sz[oó]l[oó]?|keres\w*|n[eé]z[zd]|mutas(s[aá]?[dl]?)|alapj[aá]n|mond[dj]?|t[oö]ltse?d?|hoz([zd]|z[aá][dl])|nyis(s[aá]?[dls])|megnyit\w*|(el)?olvas\w*|szeretn[eé]\w*|k[eé]r(ni|l?e[km])|(meg)?n[eé]z\w*|k[oö]z[oö]?t+|k[oö]s+z(i|[oö]n[oö]m)?|fel|[eé]?s)\b', re.IGNORECASE)
 			text		= exclude.sub('',text)
 		elif context=='request':
-			exclude		= re.compile(r'\b([ae](z([eo]k)?a?t?|([eo]k)r+[ae])?|a?m?[ieo]ly[ae]\w+|a?mi(kor)?|a?hol|hogy|van(nak)?|[mk]i(vel|nek|[eé]rt|t|k(et)?)?|r[aá]|egy|meg|be|kell(ene)?|k[eé]ne|szeretn[eé][km]|k[eé]rn?([eé][km]|i)?|ad[dj]([aá][dl])?|nekem|van|csak|k[uü]ld[dj]?[eé]?[dl]?|mond\w*|[ae]bb[ae]n?|l[eé]gy([eé]l)?\s?sz[ií](ves)?|l[eé]cci|azt[aá]n|vagy|m[aá]sik(at)?|lesz|legyen|lenne|valami(lyen)?|sz[uü]ks[eé]g(em)?|ink[aá]bb|akkor|volt|amiben|keres\w+)\b', re.IGNORECASE)
+			exclude		= re.compile(r'\b([ae](z([eo]k)?a?t?|([eo]k)r+[ae])?|a?m?[ieo]ly[ae]\w+|a?mi(kor)?|a?hol|hogy|van(nak)?|[mk]i(vel|nek|[eé]rt|t|k(et)?)?|r[aá]|egy|meg|be|kell(ene)?|k[eé]ne|szeretn[eé][km]|k[eé]rn?([eé][km]|i)?|ad[dj]([aá][dl])?|nekem|van|csak|k[uü]ld[dj]?[eé]?[dl]?|mond\w*|[ae]bb[ae]n?|l[eé]gy([eé]l)?\s?sz[ií](ves)?|l[eé]cci|azt[aá]n|vagy|m[aá]sik(at)?|lesz|legyen|lenne|valami(lyen)?|sz[uü]ks[eé]g(em)?|ink[aá]bb|akkor|volt|amiben|keres\w+|[eé]?s)\b', re.IGNORECASE)
 			text		= exclude.sub('',text)
 		elif context=='mail':
-			exclude		= re.compile(r'\b(szia|szervusz|[uü]dv([oö]zö?l(et(tel|em)?|[oö]m)?)?|(sz[eé]p\s?)?(j[oó]\s?)?(reggelt|napot|est[eé]t)|k[ií]v[aá]nok|nevem|h[ií]vnak|vagy(ok|unk)?|szeret(n[eé][km]|t[uü]n?k|n[eé]nk|tem)|(meg)?k[eé]r(dez(ni)?|ni|n[eé]m)|k[eé]rd[eé]s(t|ei[km]?|sel|e[km]+el)?|[eé]rdekl[oöő]d(ni|[oö][km]|n[eé]k)|[eé]rdekel(ne)?|v[aá]r(o[mk]|unk|juk)?|tisztelt|kedves|v[aá]lasz(ol(ni|t|tak)?|uk(at)?|t)?|[ae]z([eé]rt)?|[ae]zz[ae]l|[ae]bb[ae]n|(a)?miatt|abb[oó]l|[io]lyan(kor)?|lehet(ne)?|lenne|lesz|tenni|teend[oő](m|nk)?|mert|(a)?hogy(an)?|[uü]gyben|kapcsolat(ban|os|osan)|(meg)?tudn[aái][kl]?(nak)?|tan[aá]cs(uk)?(ra|[aáo]t)|k[oö]sz(i|n[oö]m|nj[uü]k|nettel)?|volt|[ae]kkor|ink[aá]bb|[ae]rr[ae]|l[eé]gy(en)|sz[ií]ves(en)?|l[eé]cci|azt[aá]n|valami(lyen)?|sz[uü]ks[eé]g(e[ms?])?|(meg|el)?mond(ja|an[aá]|ani)?|probl[eé]m[aá](m|val)?|teend[oöő](m|nk)?|sajnos|seg[ií]t(s[eé]g([eé]?re)?|en[ei])?|mivel|van|[ae]z?|[ae]zt|meg|[ií]gy|mit?|volna|[eé]s|egy|[io]tt)\b', re.IGNORECASE)
+			exclude		= re.compile(r'\b(szia|szervusz|[uü]dv([oö]zö?l(et(tel|em)?|[oö]m)?)?|(sz[eé]p\s?)?(j[oó]\s?)?(reggelt|napot|est[eé]t)|k[ií]v[aá]nok|nevem|h[ií]vnak|vagy(ok|unk)?|szeret(n[eé][km]|t[uü]n?k|n[eé]nk|tem)|(meg)?k[eé]r(dez(ni)?|n[eéi]m?)|k[eé]rd[eé]s(t|ei[km]?|sel|e[km]+el)?|[eé]rdekl[oöő]d(ni|[oö][km]|n[eé]k)|[eé]rdekel(ne)?|v[aá]r(o[mk]|unk|juk)?|tisztelt|kedves|v[aá]lasz(ol(ni|t|tak)?|uk(at)?|t)?|[ae]z([eé]rt)?|[ae]zz[ae]l|[ae]bb[ae]n|(a)?miatt|abb[oó]l|[io]lyan(kor)?|le(het)?(n+e)?|lesz|tenni|teend[oő](m|nk)?|te(het|gy)(n?[eé]n?k|[uü]nk)|mert|(a)?hogy(an)?|[uü]gyben|kapcsolat(ban|os|osan)|(meg)?tudn[aái][kl]?(nak)?|tan[aá]cs(uk)?(ra|[aáo]t)|k[oö]sz(i|n[oö]m|nj[uü]k|nettel)?|volt|[ae]kkor|ink[aá]bb|[ae]rr[ae]|l[eé]gy(en)|sz[ií]ves(en)?|l[eé]cci|azt[aá]n|valami(lyen)?|sz[uü]ks[eé]g(e[ms?])?|(meg|el)?mond(ja|an[aá]|ani)?|probl[eé]m[aá](m|val)?|teend[oöő](m|nk)?|sajnos|seg[ií]t(s[eé]g([eé]?re)?|en[ei])?|mivel|van|[ae]z?|[ae]zt|meg|[ií]gy|mit?|volna|[eé]?s|egy|[io]tt)\b', re.IGNORECASE)
 			text		= exclude.sub('',text)
 		if including:
-			exclude		= re.compile(r''+including, re.IGNORECASE)
+			exclude		= re.compile(r'\b('+including+r')\b', re.IGNORECASE)
 			text		= exclude.sub('',text)
 		text	= remove_punctuation(text)
-		leftover= [r'a',r'az',r'egy',r'es',r'és',r'hogy']
+		leftover= [r'a',r'az',r'egy',r'es',r'és',r's',r'hogy']
 		for twice in range(2):
 			for item in leftover:
 				text	= re.compile(r'\b'+item+r'\s+'+item+r'\b', re.IGNORECASE).sub(item, text)
