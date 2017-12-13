@@ -13,7 +13,7 @@
 		2. [Named entities](#named-entities)
 		3. [NLP functions](#nlp-functions)
 		3. [Stemmer functions](#stemmer-functions)
-		4. [Generating intents](#generating-intents)
+		4. [Other functions](#other-functions)
 		5. [Tips and tricks](#tips-and-tricks)
 3. [Misc.](#misc)
 	1. [Known applications](#known-applications)
@@ -193,8 +193,8 @@ A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan
 | `without` | [] | További intenció **dictionary**k definiálhatóak, amelyek megtalálásakor a tulajdonos intenció nem kap pontot (függetlenül attól, hogy milyen értékű `score` volt hozzá beállítva). Szintén csak egy mélységig ellenőriz. |
 | `ignorecase` | True | Figyelmen kívül hagyja-e a kis-, és nagybetűk közötti különbséget a `stem` változóban. Hasznos tulajdonnevek vagy mozaikszavak megadásánál. |
 | `boundary` | True (`wordclass`:"emoji" esetén False) | Ritka esetekben, speciális "regex" stem deklarálásánál lehet hasznos: ha True, akkor a deklarációt r'\b' kapcsolók közé teszi automatikusan, egyébként nem teszi hozzá a plusz reguláris kifejezést. |
-| `pattern` | Cache a beállítások alapján | Ez az érték automatikusan generálódik az összes eddigi változó alapján. Nem megadható. |
-| `clean_pattern` | Cache a beállítások alapján | Ez az érték automatikusan generálódik az összes eddigi változó alapján. Nem megadható. |
+| `pattern` | Gyorsítótárazott minta a beállítások alapján | Ez az érték automatikusan generálódik az összes eddigi változó alapján. Nem megadható. |
+| `clean_pattern` | Gyorsítótárazott minta a beállítások alapján | Ez az érték automatikusan generálódik az összes eddigi változó alapján. Nem megadható. |
 
 #### Functions
 **The rest of the functions will be explained in english.**
@@ -251,7 +251,7 @@ print(match_common)
 | `lara.entities.dow()` | Days of the week. Will also match `hetvege` or `hetkoznap` when matching a day. | `ma, holnap, holnaputan, tegnap, tegnapelott, hetfo, kedd, szerda, csutortok, pentek, szombat, vasarnap, hetkoznap, hetvege` |
 | `lara.entities.smalltalk()` | Common small talk topics | `well_done, user_love, user_flirting, user_bored, user_happy, user_sad, user_friend, how_are_you, about_name, about_you, about_creator, about_look, about_age, about_location, about_family, are_you_a_robot, can_you_hear_me, weather, news, joke` |
 | `lara.entities.popculture()` | Common cyberpunk/Sci-Fi android/robot/AI pop culture references | `turing, matrix, terminator, mrrobot, bladerunner, spaceodyssey, starwars, drwho, undertale, portal, mgs, systemshock, deusex, jarvis, google, alexa, siri, cortana, gits, dragonball, evangelion, flcl, cowboybebop, megaman, chobits, kizunaai, hatsunemiku, astroboy, onepunchman, doraemon` |
-| `lara.entities.emoji()` | Common smiles and emojis translated to the type of feelings they represent | `happy, sad, like, dislike, love, wow, angry, scared, confused` |
+| `lara.entities.emoji()` | Common smileys and emojis translated to the type of feelings they represent | `happy, sad, like, dislike, love, wow, angry, scared, confused` |
 
 Some named entities (commands and smalltalk) might give false positive if used out of context. It is recommended that you build your Chatbot in a way, that reacting to more important intents have a higher priority. 
 
@@ -309,9 +309,13 @@ print(tippmix.stemmer(text))
 
 Note that number of returned stems might be larger than the actual number of words in the text, as the stemmer aslo separates certain adverb particles. 
 
-###### Generating intents
+###### Other functions
 
-**Lara** also comes with a built in function to automatically generate parser declarations from CSV files. You can declare stems, wordclasses excluding "regex" or "emoji", and the intent itself. You can also declare possible "affix"es and "prefix"es by putting | separated words in parenthesis before or after the stem.
+There are a few miscellaneous functions available that could be useful for building Chatbots and language processing. 
+
+######## Generate Intents from CSV
+
+**Lara** allows the automatic generation of Intent objects from CSV files. You can declare stems, wordclasses excluding "regex" or "emoji", and the intent itself. You can also declare possible "affix"es and "prefix"es by putting | separated words in parenthesis before or after the stem.
 
 | stem | wordclass | intent |
 | ---         | ---     | ---     |
@@ -322,14 +326,31 @@ Note that number of returned stems might be larger than the actual number of wor
 | (indián\|fekete)meggy(szörp) | noun | gyumolcs |
 
 ```python
+from lara import magic as magic
 import pandas as pd
 df			= pd.read_csv('example.csv',sep=';',header=0,names=["stem","wordclass","intent"])
 csv_intents		= {}	# you can also use existing dictionary of intents to extend them
 for index, row in df.iterrows():
-	lara.parser.row_as_intent(row,csv_intents)
+	magic.row_as_intent(row,csv_intents)
 print(csv_intents)
 
 >>> {'gyumolcs': [{'stem': 'körte', 'wordclass': 'noun'}, {'prefix': ['sárga'], 'stem': 'barack', 'wordclass': 'noun'}, {'prefix': ['arany', 'zöld'], 'stem': 'alma', 'wordclass': 'noun'}, {'affix': ['lé'], 'stem': 'narancs', 'wordclass': 'noun'}, {'prefix': ['indián', 'fekete'], 'affix': ['szörp'], 'stem': 'meggy', 'wordclass': 'noun'}]}
+```
+
+######## Check if an Intent object has typos
+
+Sometimes it is easy to mistype keys or values when writing Intent objects. The function `lara.magic.validate_intent(intents)` will print out warnings if there is a possibility of inadvertence. This function will not check for typos and linguistic errors among the "stem" values.
+
+######## Fix common hungarian typos
+
+Although the Intent matching algorithm is pretty forgiving, users tend to mistype certain words when communicating with Chatbots. Note that this method simply replaces common typos in a text without taking context into account (some inflected forms of certain words could also be ignored this way). 
+
+```python
+from lara import magic as magic
+text		= 'mien igaz töllem'
+print(magic.spell_checker(text))
+
+>>> milyen igaz tőlem
 ```
 
 ###### Tips and tricks
