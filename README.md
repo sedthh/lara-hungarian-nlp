@@ -13,7 +13,7 @@
 		2. [Named entities](#named-entities)
 		3. [NLP functions](#nlp-functions)
 		3. [Stemmer functions](#stemmer-functions)
-		4. [Other functions](#other-functions)
+		4. [Special functions](#special-functions)
 		5. [Tips and tricks](#tips-and-tricks)
 3. [Misc.](#misc)
 	1. [Known applications](#known-applications)
@@ -309,11 +309,11 @@ print(tippmix.stemmer(text))
 
 Note that number of returned stems might be larger than the actual number of words in the text, as the stemmer aslo separates certain adverb particles. 
 
-###### Other functions
+###### Special functions
 
 There are a few miscellaneous functions available that could be useful for building Chatbots and language processing. 
 
-######## Generate Intents from CSV
+**Generate Intents from CSV**
 
 **Lara** allows the automatic generation of Intent objects from CSV files. You can declare stems, wordclasses excluding "regex" or "emoji", and the intent itself. You can also declare possible "affix"es and "prefix"es by putting | separated words in parenthesis before or after the stem.
 
@@ -337,11 +337,11 @@ print(csv_intents)
 >>> {'gyumolcs': [{'stem': 'körte', 'wordclass': 'noun'}, {'prefix': ['sárga'], 'stem': 'barack', 'wordclass': 'noun'}, {'prefix': ['arany', 'zöld'], 'stem': 'alma', 'wordclass': 'noun'}, {'affix': ['lé'], 'stem': 'narancs', 'wordclass': 'noun'}, {'prefix': ['indián', 'fekete'], 'affix': ['szörp'], 'stem': 'meggy', 'wordclass': 'noun'}]}
 ```
 
-######## Check if an Intent object has typos
+**Check if an Intent object has typos**
 
 Sometimes it is easy to mistype keys or values when writing Intent objects. The function `lara.magic.validate_intent(intents)` will print out warnings if there is a possibility of inadvertence. This function will not check for typos and linguistic errors among the "stem" values.
 
-######## Fix common hungarian typos
+**Fix common hungarian typos**
 
 Although the Intent matching algorithm is pretty forgiving, users tend to mistype certain words when communicating with Chatbots. Note that this method simply replaces common typos in a text without taking context into account (some inflected forms of certain words could also be ignored this way). 
 
