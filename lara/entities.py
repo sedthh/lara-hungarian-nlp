@@ -7,7 +7,7 @@ def common():
 		"no"				: [{"stem":"nem"},{"stem":"ne"},{"stem":"soha"},{"stem":"mégse","affix":["m"]}],
 		"hi" 				: [{"stem":"hi","match_at":"start"},{"stem":"hai","match_at":"start"},{"stem":"szia","match_at":"start","affix":["sztok"]},{"stem":"helló","match_at":"start","affix":["ka"]},{"stem":"szervusz","match_at":"start"},{"stem":"szerbusz","match_at":"start"},{"stem":"szevasz","match_at":"start"},{"stem":"hali","match_at":"start","affix":["hó"]},{"stem":"j[oó]\s?(reggelt|napot|est[eé]t)","wordclass":"regex"}],
 		"bye" 				: [{"stem":"bye","match_at":"end"},{"stem":"viszlát"},{"stem":"viszont látásra"},{"stem":"jó éj","affix":["t","szakát"]},{"stem":"jóéjt"},{"stem":"jóccakát"},{"stem":"mennem kell"}],
-		"thx"				: [{"stem":"k[oö]s+z(i(ke)?|[oö]n[oö]m|[oö]nj[uü]k|[eoö]net|csi|ent+y[uüű])?(\ssz[eé]pen)?","wordclass":"regex"},{"stem":"thx"},{"stem":"thanks?","wordclass":"regex"}],
+		"thx"				: [{"stem":"(k[oö]s+z|k[oösz][oösz][oösz])(i(ke)?|[oö]n[oö]m|[oö]nj[uü]k|[eoö]net|csi|ent+y[uüű])?(\ssz[eé]pen)?","wordclass":"regex"},{"stem":"thx"},{"stem":"thanks?","wordclass":"regex"}],
 		"pls"				: [{"stem":"p+l+[iíea]*[zs]+e*","wordclass":"regex"},{"stem":"l[eé]+c+i+(v+e+s+)?","wordclass":"regex"},{"stem":"l[eé](gy|szel|nn[eé]l).*(kedves|sz[ií](ves)?)","wordclass":"regex"},{"stem":"szeretné(k|m)","wordclass":"regex","without":[{"stem":"(meg)?bocs(i(ka)?|[aá](nat([aá][eé]rt)?|nat[aáo]t?|ss|sson|j?t(ana)?))?","wordclass":"regex"},{"stem":"elnézés","wordclass":"noun","match_stem":False}]},{"stem":"(meg)?k[eé]r(het)?([ln]?[eéi][km]?)","wordclass":"regex","without":[{"stem":"(meg)?bocs(i(ka)?|[aá](nat([aá][eé]rt)?|nat[aáo]t?|ss|sson|j?t(ana)?))?","wordclass":"regex"},{"stem":"elnézés","wordclass":"noun","match_stem":False}]},{"stem":"szeretn[eé]([km]|lek)","wordclass":"regex","without":[{"stem":"(meg)?bocs(i(ka)?|[aá](nat([aá][eé]rt)?|nat[aáo]t?|ss|sson|j?t(ana)?))?","wordclass":"regex"},{"stem":"elnézés","wordclass":"noun","match_stem":False}]}],
 		"welks"				: [{"stem":"nincs mit"},{"stem":"(nagyon\s?)?sz[ií]vesen","wordclass":"regex"},{"stem":"ugyan\,?\shag[gy]\w{1,3}","wordclass":"regex"},{"stem":"hag[gy]\w{1,3}\scsak","wordclass":"regex"},{"stem":"sz[aá]momra.+([oö]r[oö]m|megtiszteltet[eé]s)","wordclass":"regex"}],
 		"sorry"				: [{"stem":"(meg)?bocs(i(ka)?|[aá](nat([aá][eé]rt)?|nat[aáo]t?|ss|sson|j?t(ana)?))?","wordclass":"regex"},{"stem":"elnézés","wordclass":"noun","match_stem":False},{"stem":"sajnál(om|juk)","wordclass":"regex"}],
@@ -22,7 +22,7 @@ def common():
 def commands():
 	return {
 		"ok"				: [{"stem":"ye","affix":["s","ah","p"]},{"stem":"igen"},{"stem":"aha"},{"stem":"ja","affix":["ja","h"]},{"stem":"ok","affix":["é","s","és","sa","ay","ézd"],"without":[{"stem":"nem"}]},{"stem":"úgy","without":[{"stem":"nem"}]},{"stem":"így","without":[{"stem":"nem"}]},{"stem":"jó","wordclass":"adjective","without":[{"stem":"nem"}]}],
-		"cancel"			: [{"stem":"^([ae]z\s)?(\w+\s)?(nem?|no(pe|ne)?)(\s\w+)?(\s\w+)?$","without":[{"stem":"jó"}],"wordclass":"regex"},{"stem":"cancel"},{"stem":"mégse","affix":["m"]},{"stem":"elvetés"},{"stem":"vesd el"}],
+		"cancel"			: [{"stem":"^([ae]z\s)?(\w+\s)?(nem?|no(pe|ne)?)(\s\w+)?(\s\w+)?$","without":[{"stem":"jó"},{"stem":"tud","wordclass":"verb"},{"stem":"sikerül","affix":["t"]}],"wordclass":"regex"},{"stem":"cancel"},{"stem":"mégse","affix":["m"]},{"stem":"elvetés"},{"stem":"vesd el"}],
 		"next"				: [{"stem":"next"},{"stem":"tovább"},{"stem":"előre"},{"stem":"még","wordclass":"regex"},{"stem":"more"},{"stem":"continue"},{"stem":"folytat","wordclass":"verb"},{"stem":"folyta[st]+([ao]?d|ni|ás)?","wordclass":"regex"}],
 		"back"				: [{"stem":"back"},{"stem":"vissza","affix":["lép","lépés"]},{"stem":"hátra"}],
 		"save"				: [{"stem":"save"},{"stem":"ment","wordclass":"verb"},{"stem":"mentés","wordclass":"noun"}],
@@ -85,7 +85,7 @@ def smalltalk():
 	return {
 		"well_done"			: [{"stem":"fasza"},{"stem":"jó","prefix":["kurva"],"without":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"j[oó]l\s?van","wordclass":"regex"},{"stem":"király"},{"stem":"ügyes"},{"stem":"sz[eé]p\s(volt|munka)","wordclass":"regex"},{"stem":"ez\s(lesz\s)?az","wordclass":"regex"}],
 		"user_love"			: [{"stem":"szeretlek"},{"stem":"szeretsz engem"},{"stem":"tetszek neked"},{"stem":"tetszel nekem","without":[{"stem":"nem"}]},{"stem":"tetszek neked"},{"stem":"szerelmes.+bel[eé]d","wordclass":"regex"},{"stem":"bel[eé]d.+szerettem","wordclass":"regex"}],
-		"user_flirting"		: [{"stem":"(mi|milyen|ruha).+van\s+rajtad","wordclass":"regex"},{"stem":"(meg)?(basz|dug)(unk|n[aá]lak|lak)","wordclass":"regex"},{"stem":"sz?ex(e[lt].*)?","wordclass":"regex"}],
+		"user_flirting"		: [{"stem":"(mi|milyen|ruha).+van\s+rajtad","wordclass":"regex"},{"stem":"(meg)?(basz|dug)(unk|n[aá]lak|lak)","wordclass":"regex"},{"stem":"sz?ex(e[lt]\w*)?","wordclass":"regex"}],
 		"user_bored"		: [{"stem":"un(atkoz)?(om|unk)","wordclass":"regex"}],
 		"user_happy"		: [{"stem":"j[oó]\s(a\s)?kedvem(\svan)?","wordclass":"regex","without":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"jól vagyok","without":[{"stem":"nincs"},{"stem":"nem"}]}],
 		"user_sad"			: [{"stem":"j[oó]\s(a\s)?kedvem","wordclass":"regex","with":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"szomorú","wordclass":"adjective","with":[{"stem":"vagyok"}]},{"stem":"nem\s+(vagyok|[eé]rzem).+j[oó]l","wordclass":"regex"}],
