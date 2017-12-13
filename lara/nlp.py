@@ -93,7 +93,7 @@ def find_commands(text):
 		else:
 			return (commands[0],[])
 	return ('',[])
-	
+
 def vowel_harmony(word, vegyes=True):
 	if word:
 		mely	= re.compile('[aáoóuú]', re.IGNORECASE)

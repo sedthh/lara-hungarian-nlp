@@ -163,7 +163,8 @@ Az alábbi szófajok adhatók meg a `wordclass` változóban:
 | `noun` | Főnevek esetén alkalmazandó. |
 | `verb` | Igék esetén alkalmazandó. Alapértelmezetten a gyakori igekötők automatikusan hozzáadódnak a 'prefix' listához. |
 | `adjective` | Melléknevek esetén alkalmazandó. Alapértelmezetten a 'leg' és 'legesleg' fokozások hozzáadódnak a 'prefix' listához. |
-| `regex` | Saját reguláris kifejezések megadásához használható (r'\b' kapcsolók közé fog kerülni a stringként megadott definíció). Ebben az esetben nem ajánlott további tulajdonságok definiálása. Alapértelmezetten nem tesz különbséget a kis-, és nagybetűk között. | 
+| `regex` | Saját reguláris kifejezések megadásához használható (alapértelemzetten r'\b' kapcsolók közé fog kerülni a stringként megadott definíció). Ebben az esetben nem ajánlott további tulajdonságok definiálása. Alapértelmezetten nem tesz különbséget a kis-, és nagybetűk között. | 
+| `emoji` | Emoji esetén alkalmazandó. | 
 
 Az NLTK tagsetjével való kompatibilitás megőrzéséhez ADJ, NOUN és VERB érétékek is megadhatóak.
 
@@ -174,7 +175,8 @@ A **tisztított** formák segítségével egyes, speciális ragozott alakok kön
 
 ###### Other properties
 
-A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan generálódnak. Definiálásuk csak nagyon ritka esetekben indokolt.
+Amennyiben valamelyik tulajdonság (a `stem` kulcson kívül) nincs megadva, a hozzá tartozó alapértelmezett értéket fogja kapni az Intent objektum eleme. 
+A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan generálódnak, definiálásuk csak nagyon ritka esetekben indokolt.
 
 | Tulajdonság | Alapértelmezett érték | Magyarázat |
 | ---         | ---     | ---     |
@@ -190,6 +192,7 @@ A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan
 | `with` | [] | További intenció **dictionary**k definiálhatóak az együttjárások pontozásához. Csak egy mélységig ellenőriz az osztály, tehát az itt deklarált további intenciók `with` tulajdonságait már nem veszi figyelembe pontozásnál. Amennyiben az eredeti `stem` nem lett megtalálva, az itt megtalált, további `stem` deklarációk sem lesznek figyelembe véve. |
 | `without` | [] | További intenció **dictionary**k definiálhatóak, amelyek megtalálásakor a tulajdonos intenció nem kap pontot (függetlenül attól, hogy milyen értékű `score` volt hozzá beállítva). Szintén csak egy mélységig ellenőriz. |
 | `ignorecase` | True | Figyelmen kívül hagyja-e a kis-, és nagybetűk közötti különbséget a `stem` változóban. Hasznos tulajdonnevek vagy mozaikszavak megadásánál. |
+| `boundary` | True (False ha a `wordclass` "emoji") | "regex" stem deklarálásánál lehet hasznos: ha True, akkor a deklarációt r'\b' kapcsolók közé teszi automatikusan, egyébként nem teszi hozzá a plusz reguláris kifejezést. |
 
 #### Functions
 **The rest of the functions will be explained in english.**
@@ -305,7 +308,7 @@ Note that number of returned stems might be larger than the actual number of wor
 
 ###### Generating intents
 
-**Lara** also comes with a built in function to automatically generate parser declarations from CSV files. You can declare stems, wordclasses excluding "regex" and the intent itself. You can also declare possible "affix"es and "prefix"es by putting | separated words in parenthesis before or after the stem.
+**Lara** also comes with a built in function to automatically generate parser declarations from CSV files. You can declare stems, wordclasses excluding "regex" or "emoji", and the intent itself. You can also declare possible "affix"es and "prefix"es by putting | separated words in parenthesis before or after the stem.
 
 | stem | wordclass | intent |
 | ---         | ---     | ---     |
@@ -359,7 +362,6 @@ Recent projects based on **Lara**:
 - Implement furhter NLTK functions aimed for the hungarian language.
 - Rewrite regular expressions in a way that autoamtic POS-tagging would be possible in hungarian.
 - Create dictionaries to enable sentiment analysis in hungarian.
-- Allow using emojis in "stem" declaration
 - Create unit tests
 
 This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details

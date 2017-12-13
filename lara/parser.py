@@ -86,15 +86,15 @@ class Intents:
 		
 		if 'wordclass' not in item:
 			item['wordclass']		= 'special'
-		elif item['wordclass'] not in ('noun','verb','adjective','regex','special'):
+		elif item['wordclass'] not in ('noun','verb','adjective','regex','special','emoji'):
 			if item['wordclass']=='ADJ':
 				item['wordclass']	= 'adjective'
 			elif isinstance(item['wordclass'],str) and item['wordclass'].lower() in ('noun','verb'):
 				item['wordclass']	= item['wordclass'].lower()
 			else:
-				item['wordclass']	= 'special'
+				item['wordclass']	= 'special'		
 		if 'clean_stem' not in item:
-			if item['wordclass'] == 'regex':
+			if item['wordclass'] in ('regex','emoji'):
 				item['clean_stem']	= item['stem']
 				if 'match_at' not in item:
 					item['match_at']	= 'regex'
@@ -160,6 +160,11 @@ class Intents:
 		
 		if 'ignorecase' not in item:
 			item['ignorecase']	= True
+		if 'boundary' not in item:
+			if item['wordclass']=='emoji':
+				item['boundary']	= False
+			else:
+				item['boundary']	= True
 		
 		if 'with' in item:
 			if 'score' not in item:
@@ -279,7 +284,7 @@ class Intents:
 			select		= ''
 			if is_clean:
 				select		= 'clean_'
-			if item['wordclass'] == 'regex':
+			if item['wordclass'] in ('regex','emoji'):
 				pattern		= r''+item[select+'stem']+item[select+'affix']
 			else:
 				pattern		= '('+re.escape(item[select+'stem'])+item[select+'affix']+')'
@@ -299,36 +304,41 @@ class Intents:
 					else:
 						pattern	+= r'{1,2}(h[ae][st])?([eaá]?s{0,2}d?)?(([jntv]|([eo]?g[ae]t+))?(([aeioöuü]n?[dklmt])|(n[aáeéi]k?)|(sz)|[aái])?(t[aáeéou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aáeéou]([dkm]|(t[eéo]k))?)?(tt?)?)|(ni))?'
 			
+			if item['boundary']:
+				boundary	= r'\b'
+			else:
+				boundary	= r''
+				
 			if item['match_at'] == 'regex':
 				if item['ignorecase']:
-					matches	= re.compile(r'\b('+item[select+'prefix']+pattern+r')\b',re.IGNORECASE).findall(text)
+					matches	= re.compile(boundary+r'('+item[select+'prefix']+pattern+r')'+boundary,re.IGNORECASE).findall(text)
 				else:
-					matches	= re.compile(r'\b('+item[select+'prefix']+pattern+r')\b').findall(text)
+					matches	= re.compile(boundary+r'('+item[select+'prefix']+pattern+r')'+boundary).findall(text)
 			elif item['match_at'] == 'start':
 				if item['ignorecase']:
-					matches	= re.compile(r'((^|[,.!?]|(\b[éé]s)|(\bvagy)|(\bhogy))\W?'+item[select+'prefix']+pattern+r')\b',re.IGNORECASE).findall(text)
+					matches	= re.compile(r'((^|[,.!?]|(\b[éé]s)|(\bvagy)|(\bhogy))\W?'+item[select+'prefix']+pattern+r')'+boundary,re.IGNORECASE).findall(text)
 				else:
-					matches	= re.compile(r'((^|[,.!?]|(\b[éé]s)|(\bvagy)|(\bhogy))\W?'+item[select+'prefix']+pattern+r')\b').findall(text)
+					matches	= re.compile(r'((^|[,.!?]|(\b[éé]s)|(\bvagy)|(\bhogy))\W?'+item[select+'prefix']+pattern+r')'+boundary).findall(text)
 			elif item['match_at'] == 'end':
 				if item['ignorecase']:
-					matches	= re.compile(r'\b('+item[select+'prefix']+pattern+r'((\W*$)|[,.?!]+))',re.IGNORECASE).findall(text)
+					matches	= re.compile(boundary+r'('+item[select+'prefix']+pattern+r'((\W*$)|[,.?!]+))',re.IGNORECASE).findall(text)
 				else:
-					matches	= re.compile(r'\b('+item[select+'prefix']+pattern+r'((\W*$)|[,.?!]+))').findall(text)
+					matches	= re.compile(boundary+r'('+item[select+'prefix']+pattern+r'((\W*$)|[,.?!]+))').findall(text)
 			else:
 				if item['ignorecase']:
-					matches	= re.compile(r'\b('+item[select+'prefix']+pattern+r')\b',re.IGNORECASE).findall(text)
+					matches	= re.compile(boundary+r'('+item[select+'prefix']+pattern+r')'+boundary,re.IGNORECASE).findall(text)
 				else:
-					matches	= re.compile(r'\b('+item[select+'prefix']+pattern+r')\b').findall(text)
+					matches	= re.compile(boundary+r'('+item[select+'prefix']+pattern+r')'+boundary).findall(text)
 					
 			if matches:
 				if delete:
 					tmp	= text
 					for match in matches:
-						tmp	= re.sub(r'\b('+re.escape(match[0])+r')\b', '', tmp, flags=re.IGNORECASE)
+						tmp	= re.sub(boundary+r'('+re.escape(match[0])+r')'+boundary, '', tmp, flags=re.IGNORECASE)
 					return tmp
 				else:	
 					if not item['match_stem']:
-						stem_matches	= re.compile(r'\b'+re.escape(item[select+'stem'])+r'\b',re.IGNORECASE).findall(text)
+						stem_matches	= re.compile(boundary+r'('+re.escape(item[select+'stem'])+r')'+boundary,re.IGNORECASE).findall(text)
 						if stem_matches:
 							if len(matches) <= len(stem_matches):
 								return (False, 0)
