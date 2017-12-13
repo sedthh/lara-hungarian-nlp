@@ -193,6 +193,8 @@ A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan
 | `without` | [] | További intenció **dictionary**k definiálhatóak, amelyek megtalálásakor a tulajdonos intenció nem kap pontot (függetlenül attól, hogy milyen értékű `score` volt hozzá beállítva). Szintén csak egy mélységig ellenőriz. |
 | `ignorecase` | True | Figyelmen kívül hagyja-e a kis-, és nagybetűk közötti különbséget a `stem` változóban. Hasznos tulajdonnevek vagy mozaikszavak megadásánál. |
 | `boundary` | True (`wordclass`:"emoji" esetén False) | Ritka esetekben, speciális "regex" stem deklarálásánál lehet hasznos: ha True, akkor a deklarációt r'\b' kapcsolók közé teszi automatikusan, egyébként nem teszi hozzá a plusz reguláris kifejezést. |
+| `pattern` | Cache a beállítások alapján | Ez az érték automatikusan generálódik az összes eddigi változó alapján. Nem megadható. |
+| `clean_pattern` | Cache a beállítások alapján | Ez az érték automatikusan generálódik az összes eddigi változó alapján. Nem megadható. |
 
 #### Functions
 **The rest of the functions will be explained in english.**
@@ -249,7 +251,7 @@ print(match_common)
 | `lara.entities.dow()` | Days of the week. Will also match `hetvege` or `hetkoznap` when matching a day. | `ma, holnap, holnaputan, tegnap, tegnapelott, hetfo, kedd, szerda, csutortok, pentek, szombat, vasarnap, hetkoznap, hetvege` |
 | `lara.entities.smalltalk()` | Common small talk topics | `well_done, user_love, user_flirting, user_bored, user_happy, user_sad, user_friend, how_are_you, about_name, about_you, about_creator, about_look, about_age, about_location, about_family, are_you_a_robot, can_you_hear_me, weather, news, joke` |
 | `lara.entities.popculture()` | Common cyberpunk/Sci-Fi android/robot/AI pop culture references | `turing, matrix, terminator, mrrobot, bladerunner, spaceodyssey, starwars, drwho, undertale, portal, mgs, systemshock, deusex, jarvis, google, alexa, siri, cortana, gits, dragonball, evangelion, flcl, cowboybebop, megaman, chobits, kizunaai, hatsunemiku, astroboy, onepunchman, doraemon` |
-| `lara.entities.emoji()` | Common smiles and emojis translated to the type of feelings they represent | `happy, sad, like, love, wow, angry` |
+| `lara.entities.emoji()` | Common smiles and emojis translated to the type of feelings they represent | `happy, sad, like, dislike, love, wow, angry, scared, confused` |
 
 Some named entities (commands and smalltalk) might give false positive if used out of context. It is recommended that you build your Chatbot in a way, that reacting to more important intents have a higher priority. 
 

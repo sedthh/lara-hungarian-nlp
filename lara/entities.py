@@ -140,15 +140,19 @@ def popculture():
 		"doraemon"			: [{"stem":"Doraemon"}]
 	}
 
-# smiley and emoji references
+# smiley and emoji references ️
 def emoji():
 	return {
-		"happy"				: [{"stem":"[\:\;\=8B]\-*[dp\)\]93]+","wordclass":"regex","boundary":False},{"stem":"[\(\[8]+\-*[\:\;\=8]","wordclass":"regex","boundary":False}],
-		"sad"				: [{"stem":"😢","wordclass":"emoji"},{"stem":"[\:\;\=][\'\,]?\-*[\(\[8]+","wordclass":"regex","boundary":False},{"stem":"[\)\]9]+\-*[\'\,]?[\:\;\=]","wordclass":"regex","boundary":False}],
-		"like"				: [{"stem":"👍","wordclass":"emoji"},{"stem":"(Y)"}],
-		"love"				: [{"stem":"❤️","wordclass":"emoji"},{"stem":"<+3+","wordclass":"regex","boundary":False}],
+		"happy"				: [{"stem":"😉","wordclass":"emoji"},{"stem":"😃","wordclass":"emoji"},{"stem":"😄","wordclass":"emoji"},{"stem":"🙂","wordclass":"emoji"},{"stem":"[\:\;\=8BX]\-*[p\)\]93]+","wordclass":"regex","boundary":False},{"stem":"[\(\[8]+\-*[\:\;\=8X]","wordclass":"regex","boundary":False}],
+		"sad"				: [{"stem":"😭","wordclass":"emoji"},{"stem":"😢","wordclass":"emoji"},{"stem":"[\:\;\=][\'\,]?\-*[\(\[8]+","wordclass":"regex","boundary":False},{"stem":"[\)\]9]+\-*[\'\,]?[\:\;\=]","wordclass":"regex","boundary":False}],
+		"laughing"			: [{"stem":"😀","wordclass":"emoji"},{"stem":"😁","wordclass":"emoji"},{"stem":"😆","wordclass":"emoji"},{"stem":"😝","wordclass":"emoji"},{"stem":"😜","wordclass":"emoji"},{"stem":"[\:\;\=8BX]\-*d[asd]*","wordclass":"regex","boundary":False}],
+		"like"				: [{"stem":"🙌","wordclass":"emoji"},{"stem":"👏","wordclass":"emoji"},{"stem":"💯","wordclass":"emoji"},{"stem":"👌","wordclass":"emoji"},{"stem":"👍","wordclass":"emoji"},{"stem":"(Y)"}],
+		"dislike"			: [{"stem":"💩","wordclass":"emoji"},{"stem":"👎","wordclass":"emoji"},{"stem":"😒","wordclass":"emoji"},{"stem":"🙄","wordclass":"emoji"},{"stem":"🤢","wordclass":"emoji"},{"stem":"☹️","wordclass":"emoji"}],
+		"love"				: [{"stem":"😘","wordclass":"emoji"},{"stem":"😗","wordclass":"emoji"},{"stem":"💋","wordclass":"emoji"},{"stem":"❤️","wordclass":"emoji"},{"stem":"<+3+","wordclass":"regex","boundary":False}],
 		"wow"				: [{"stem":"😯","wordclass":"emoji"},{"stem":"[\:\;\=]\-*o+","wordclass":"regex","boundary":False},{"stem":"o+\-*[\:\;\=]","wordclass":"regex","boundary":False}],
-		"angry"				: [{"stem":"😡","wordclass":"emoji"},{"stem":">+[\:\;\=]\-*[\(\[8]+","wordclass":"regex","boundary":False},{"stem":"[\)\]9]+\-*[\:\;\=]<+","wordclass":"regex","boundary":False}]
+		"angry"				: [{"stem":"😡","wordclass":"emoji"},{"stem":">+[\:\;\=]\-*[\(\[8]+","wordclass":"regex","boundary":False},{"stem":"[\)\]9]+\-*[\:\;\=]<+","wordclass":"regex","boundary":False}],
+		"scared"			: [{"stem":"😱","wordclass":"emoji"},{"stem":"🙀","wordclass":"emoji"},{"stem":"😨","wordclass":"emoji"},{"stem":"d+:","wordclass":"regex","boundary":False}],
+		"confused"			: [{"stem":"😐","wordclass":"emoji"},{"stem":"😕","wordclass":"emoji"},{"stem":"[\:\;\=][\'\,]?\-*[\\\/\|]+","wordclass":"regex","boundary":False},{"stem":"[\\\/\|]+\-*[\'\,]?[\:\;\=]","wordclass":"regex","boundary":False}]
 	}
 	
 # function to check if declarations are actually correct
