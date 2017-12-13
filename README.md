@@ -188,11 +188,11 @@ A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan
 | `affix` |  [] | Az elfogadott utótagok string **list**ája. Összetett szavaknál használandó. Vigyázzunk arra, hogy a **list**ában olyan további elemeket adjunk meg, amelyek nem változtatják meg a szófajt. |
 | `clean_affix` |  [], egyéni `affix` megadása esetén alapértelmezetten az egyéni `affix` **list**ából generálódik | Az elfogadott **tisztított** utótagok string **list**ája. Összetett szavaknál használandó. |
 | `match_stem` |  True | **Boolean** érték, ami azt adja meg, hogy a  `stem ` változóban megadott morfémát önmagában állva is elfogadja-e az osztály találatként. **False** esetén csak a ragozott alakokat, "affix"-szel álló alakokat és "prefix"-szel álló alakokat fogad el. |
-| `match_at` |  "any" vagy `wordlcass`:"regex" esetén "regex" | Elfogadott értékek: "regex","start","end" és "any". "start" esetén *mondatrészek* elején fogadja el az intenciót találatként. "end" esetén *mondatrészek* végén fogadja el az intenciót találatként. Tehát sem a "start" sem az "end" nem a szövegben elfoglalt pozíció, hanem a szövegben elfoglalt logikai pozíció alapján próbál találatokat adni. |
+| `match_at` |  "any" (`wordlcass`:"regex" és `wordlcass`:"emoji" esetén "regex") | Elfogadott értékek: "regex","start","end" és "any". "start" esetén *mondatrészek* elején fogadja el az intenciót találatként. "end" esetén *mondatrészek* végén fogadja el az intenciót találatként. Tehát sem a "start" sem az "end" nem a szövegben elfoglalt pozíció, hanem a szövegben elfoglalt logikai pozíció alapján próbál találatokat adni. |
 | `with` | [] | További intenció **dictionary**k definiálhatóak az együttjárások pontozásához. Csak egy mélységig ellenőriz az osztály, tehát az itt deklarált további intenciók `with` tulajdonságait már nem veszi figyelembe pontozásnál. Amennyiben az eredeti `stem` nem lett megtalálva, az itt megtalált, további `stem` deklarációk sem lesznek figyelembe véve. |
 | `without` | [] | További intenció **dictionary**k definiálhatóak, amelyek megtalálásakor a tulajdonos intenció nem kap pontot (függetlenül attól, hogy milyen értékű `score` volt hozzá beállítva). Szintén csak egy mélységig ellenőriz. |
 | `ignorecase` | True | Figyelmen kívül hagyja-e a kis-, és nagybetűk közötti különbséget a `stem` változóban. Hasznos tulajdonnevek vagy mozaikszavak megadásánál. |
-| `boundary` | True (False ha a `wordclass` "emoji") | "regex" stem deklarálásánál lehet hasznos: ha True, akkor a deklarációt r'\b' kapcsolók közé teszi automatikusan, egyébként nem teszi hozzá a plusz reguláris kifejezést. |
+| `boundary` | True (`wordclass`:"emoji" esetén False) | Ritka esetekben, speciális "regex" stem deklarálásánál lehet hasznos: ha True, akkor a deklarációt r'\b' kapcsolók közé teszi automatikusan, egyébként nem teszi hozzá a plusz reguláris kifejezést. |
 
 #### Functions
 **The rest of the functions will be explained in english.**
@@ -249,6 +249,7 @@ print(match_common)
 | `lara.entities.dow()` | Days of the week. Will also match `hetvege` or `hetkoznap` when matching a day. | `ma, holnap, holnaputan, tegnap, tegnapelott, hetfo, kedd, szerda, csutortok, pentek, szombat, vasarnap, hetkoznap, hetvege` |
 | `lara.entities.smalltalk()` | Common small talk topics | `well_done, user_love, user_flirting, user_bored, user_happy, user_sad, user_friend, how_are_you, about_name, about_you, about_creator, about_look, about_age, about_location, about_family, are_you_a_robot, can_you_hear_me, weather, news, joke` |
 | `lara.entities.popculture()` | Common cyberpunk/Sci-Fi android/robot/AI pop culture references | `turing, matrix, terminator, mrrobot, bladerunner, spaceodyssey, starwars, drwho, undertale, portal, mgs, systemshock, deusex, jarvis, google, alexa, siri, cortana, gits, dragonball, evangelion, flcl, cowboybebop, megaman, chobits, kizunaai, hatsunemiku, astroboy, onepunchman, doraemon` |
+| `lara.entities.emoji()` | Common smiles and emojis translated to the type of feelings they represent | `happy, sad, like, love, wow, angry` |
 
 Some named entities (commands and smalltalk) might give false positive if used out of context. It is recommended that you build your Chatbot in a way, that reacting to more important intents have a higher priority. 
 

@@ -190,7 +190,26 @@ class Intents:
 			item['without']	= []		
 		
 		if 'clean_score' not in item:
-				item['clean_score']	= item['score']
+			item['clean_score']= item['score']
+		
+		# cache pattern
+		if item['wordclass'] in ('regex','emoji'):
+			item['pattern']			= r''+item['stem']+item['affix']
+			item['clean_pattern']	= r''+item['clean_stem']+item['clean_affix']
+		else:
+			item['pattern']			= '('+re.escape(item['stem'])+item['affix']+')'
+			item['clean_pattern']	= '('+re.escape(item['clean_stem'])+item['clean_affix']+')'
+			if item['wordclass'] == 'noun':
+				item['pattern']			+= r'{1,2}a?i?n?([aáeéioóöőuúü]?[djknmrst])?([abjhkntv]?[aáeéioóöőuúü]?[lgkntz]?)?([ae][kt])?'
+				item['clean_pattern']	+= r'{1,2}a?i?n?([aeiou]?[djknmrst])?([abjhkntv]?[aeiou]?[lgkntz]?)?([ae][kt])?'
+			elif item['wordclass'] == 'adjective':
+				item['pattern']			+= r'([aeoó]?s)?([aáeé]?b*)([ae]?k)?(([aáeéioóöőuúü]?[dklmnt])?([aáeéioóöőuúü]?[klnt]?)?)'
+				item['clean_pattern']	+= r'([aeo]?s)?([ae]?b*)([ae]?k)?(([aeiou]?[dklmnt])?([aeiou]?[klnt]?)?)'
+			elif item['wordclass'] == 'verb':
+				item['pattern']			+= r'{1,2}(h[ae][st])?([eaá]?s{0,2}d?)?(([jntv]|([eo]?g[ae]t+))?(([aeioöuü]n?[dklmt])|(n[aáeéi]k?)|(sz)|[aái])?(t[aáeéou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aáeéou]([dkm]|(t[eéo]k))?)?(tt?)?)|(ni))?'
+				item['clean_pattern']	+= r'{1,2}(h[ae][st])?([eaá]?s{0,2}d?)?(([jntv]|([eo]?g[ae]t+))?(([aeiou]n?[dklmt])|(n[aei]k?)|(sz)|[ai])?(t[aeou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aeou]([dkm]|(t[eo]k))?)?(tt?)?)|(ni))?'
+		item['pattern']			= item['prefix']+item['pattern']	
+		item['clean_pattern']	= item['clean_prefix']+item['clean_pattern']
 		return item
 	
 	# Get all matches from text
@@ -281,29 +300,10 @@ class Intents:
 	# Find an intent in text
 	def _find_intent(self, text, item, is_clean=False, delete=False):
 		if text:		
-			select		= ''
 			if is_clean:
 				select		= 'clean_'
-			if item['wordclass'] in ('regex','emoji'):
-				pattern		= r''+item[select+'stem']+item[select+'affix']
 			else:
-				pattern		= '('+re.escape(item[select+'stem'])+item[select+'affix']+')'
-				if item['wordclass'] == 'noun':
-					if is_clean:
-						pattern	+= r'{1,2}a?i?n?([aeiou]?[djknmrst])?([abjhkntv]?[aeiou]?[lgkntz]?)?([ae][kt])?'
-					else:
-						pattern	+= r'{1,2}a?i?n?([aáeéioóöőuúü]?[djknmrst])?([abjhkntv]?[aáeéioóöőuúü]?[lgkntz]?)?([ae][kt])?'
-				elif item['wordclass'] == 'adjective':
-					if is_clean:
-						pattern	+= r'([aeo]?s)?([ae]?b*)([ae]?k)?(([aeiou]?[dklmnt])?([aeiou]?[klnt]?)?)'
-					else:
-						pattern	+= r'([aeoó]?s)?([aáeé]?b*)([ae]?k)?(([aáeéioóöőuúü]?[dklmnt])?([aáeéioóöőuúü]?[klnt]?)?)'
-				elif item['wordclass'] == 'verb':
-					if is_clean:
-						pattern	+= r'{1,2}(h[ae][st])?([eaá]?s{0,2}d?)?(([jntv]|([eo]?g[ae]t+))?(([aeiou]n?[dklmt])|(n[aei]k?)|(sz)|[ai])?(t[aeou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aeou]([dkm]|(t[eo]k))?)?(tt?)?)|(ni))?'
-					else:
-						pattern	+= r'{1,2}(h[ae][st])?([eaá]?s{0,2}d?)?(([jntv]|([eo]?g[ae]t+))?(([aeioöuü]n?[dklmt])|(n[aáeéi]k?)|(sz)|[aái])?(t[aáeéou][dkmt]?(ok)?)?)?((t[ae]t)?(h[ae]t([jnt]?[aáeéou]([dkm]|(t[eéo]k))?)?(tt?)?)|(ni))?'
-			
+				select		= ''	
 			if item['boundary']:
 				boundary	= r'\b'
 			else:
@@ -311,24 +311,24 @@ class Intents:
 				
 			if item['match_at'] == 'regex':
 				if item['ignorecase']:
-					matches	= re.compile(boundary+r'('+item[select+'prefix']+pattern+r')'+boundary,re.IGNORECASE).findall(text)
+					matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary,re.IGNORECASE).findall(text)
 				else:
-					matches	= re.compile(boundary+r'('+item[select+'prefix']+pattern+r')'+boundary).findall(text)
+					matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary).findall(text)
 			elif item['match_at'] == 'start':
 				if item['ignorecase']:
-					matches	= re.compile(r'((^|[,.!?]|(\b[éé]s)|(\bvagy)|(\bhogy))\W?'+item[select+'prefix']+pattern+r')'+boundary,re.IGNORECASE).findall(text)
+					matches	= re.compile(r'((^|[,.!?]|(\b[éé]s)|(\bvagy)|(\bhogy))\W?'+item[select+'pattern']+r')'+boundary,re.IGNORECASE).findall(text)
 				else:
-					matches	= re.compile(r'((^|[,.!?]|(\b[éé]s)|(\bvagy)|(\bhogy))\W?'+item[select+'prefix']+pattern+r')'+boundary).findall(text)
+					matches	= re.compile(r'((^|[,.!?]|(\b[éé]s)|(\bvagy)|(\bhogy))\W?'+item[select+'pattern']+r')'+boundary).findall(text)
 			elif item['match_at'] == 'end':
 				if item['ignorecase']:
-					matches	= re.compile(boundary+r'('+item[select+'prefix']+pattern+r'((\W*$)|[,.?!]+))',re.IGNORECASE).findall(text)
+					matches	= re.compile(boundary+r'('+item[select+'pattern']+r'((\W*$)|[,.?!]+))',re.IGNORECASE).findall(text)
 				else:
-					matches	= re.compile(boundary+r'('+item[select+'prefix']+pattern+r'((\W*$)|[,.?!]+))').findall(text)
+					matches	= re.compile(boundary+r'('+item[select+'pattern']+r'((\W*$)|[,.?!]+))').findall(text)
 			else:
 				if item['ignorecase']:
-					matches	= re.compile(boundary+r'('+item[select+'prefix']+pattern+r')'+boundary,re.IGNORECASE).findall(text)
+					matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary,re.IGNORECASE).findall(text)
 				else:
-					matches	= re.compile(boundary+r'('+item[select+'prefix']+pattern+r')'+boundary).findall(text)
+					matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary).findall(text)
 					
 			if matches:
 				if delete:
