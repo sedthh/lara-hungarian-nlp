@@ -70,11 +70,16 @@ if __name__ == "__main__":
 		"hibasan"	: [{"stem":"alma","wordclass":"noun"}],
 	}
 	hibas_test		= lara.parser.Intents(fals_pozitiv)
-	print(hibas_test.match("Gyönyörű dolog a szerelem!"))	# elfogadja hibásan
+	hibas_test		+= egyutt_test
+	print(hibas_test.match("Gyönyörű dolog a szerelem"))	# elfogadja hibásan
 	print(hibas_test.match("Ezt is elfogadja találatként: Almainüdböz"))	# elfogadja hibásan
 
-	match_common	= lara.parser.Intents(lara.entities.common()).match_as_set("Köszönöm szépen a segítséget!")
+	match_common	= lara.parser.Intents(lara.entities.common()).match_set("Köszönöm szépen a segítséget!")
 	print(match_common)
 	
 	clean_common	= lara.parser.Intents(lara.entities.common()).clean("Köszönöm szépen a segítséget!")
 	print(lara.nlp.trim(clean_common))
+	
+	clean_common	= lara.parser.Intents({"thank":[{"stem":"köszön","wordclass":"verb","without":[{"stem":"szép","wordclass":"adjective"}]}]}).clean("Köszönöm szépen a segítséget!")
+	print(lara.nlp.trim(clean_common))
+	

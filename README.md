@@ -167,33 +167,35 @@ Az alábbi szófajok adhatók meg a `wordclass` változóban:
 
 Az NLTK tagsetjével való kompatibilitás megőrzéséhez ADJ, NOUN és VERB érétékek is megadhatóak.
 
-A találatok finomítása érdekében a szavakból létrejön egy **alapértelmezett** és egy **tisztított** forma is. A **tisztított**forma az **alapértelmezetten** megadott formából jön létre: 
+A találatok finomítása érdekében a szavakból létrejön egy **alapértelmezett** és egy **elgépelt** forma is. Az **elgépelt**forma az **alapértelmezetten** megadott formából jön létre: 
 - Az osztály kicseréli az ékezetes betüket az ékezet nélküli megfelelőire (távolabb->tavolabb).
 - Az egymás után egynél többször megjelenő karakterekből az ismétlődéseket törli (tavolabb->tavolab). 
-A **tisztított** formák segítségével egyes, speciális ragozott alakok könnyebben detektálhatóak. 
+- Engedélyezi két karakter felcserélését, mint helyesírási hibát, amennyiben az nem az első vagy az utolsó karakter (mondani -> modnani).
+- Amennyiben a `stem` szóközt tartalmazott, az egybeírt vagy kötőjellel írt formákat is elfogadja. 
+Az **elgépelt** formák segítségével egyes, speciális ragozott alakok könnyebben detektálhatóak (ékezetessé vált vagy megváltozott szótöveket is detektálhatunk velük). 
 
 ###### Other properties
 
-Amennyiben valamelyik tulajdonság (a `stem` kulcson kívül) nincs megadva, a hozzá tartozó alapértelmezett értéket fogja kapni az Intent objektum eleme. 
-A `clean_` előtagú változók az előtag nélküli párjaikból, automatikusan generálódnak, definiálásuk csak nagyon ritka esetekben indokolt.
+Amennyiben valamelyik tulajdonság (a `stem` kulcson kívül) nincs megadva, a hozzátartozó alapértelmezett értéket fogja kapni az Intents objektum eleme. 
+
+A `typo_` előtagú változók az előtag nélküli párjaikból, automatikusan generálódnak, definiálásuk csak nagyon ritka esetekben indokolt. A `typo_` előtagú változók a gyakori elgépelések (dupla karakterek helyett csak egy gépelése, ékezetek elhagyása, két karakter felcserélése, vagy ragozás folyamán ékezetessé vált szótövek, stb.) esetén is találatot ad(hat)nak.
 
 | Tulajdonság | Alapértelmezett érték | Magyarázat |
 | ---         | ---     | ---     |
-| `clean_stem` | `stem` alapján automatikusan generált | **Tisztított** szótő, ami megkönnyíti egyes esetekben a találatot. A `clean_score` az erre való találat esetén nő. |
-| `score` | 1 (0 ha `with` elem is definiálva van) | Minden **alapértelemzett** találat esetén a megadott értékkel növeli meg az intenció pontszámát. Egy intencióra, ha egyszerre létezik **alapértelmezett** és **tisztított** találat, akkor a `score` és a `clean_score` értékét kapja az intenció. |
-| `clean_score` |  `score` értéke | Minden **tisztított** találat esetén a megadott értékkel növeli meg az intenció pontszámát. Egy intencióra, ha egyszerre létezik **alapértelmezett** és **tisztított** találat, akkor a `score` és a `clean_score` értékét kapja az intenció. |
-| `prefix` |  `wordclass` beállításoktól függ | Az elfogadott előtagok string **list**ája. |
-| `clean_prefix` |  `wordclass` beállításoktól függ, egyéni `prefix` megadása esetén alapértelmezetten az egyéni `prefix` **list**ából generálódik | Az elfogadott **tisztított** előtagok string **list**ája. |
+| `typo_stem` | `stem` alapján automatikusan generált | **Elgépelt** szótő, ami megkönnyíti egyes esetekben a találatot. A `typo_score` az erre való találat esetén nő. |
+| `score` | 1 (0 ha `with` elem is definiálva van) | Minden **alapértelemzett** találat esetén a megadott értékkel növeli meg az intenció pontszámát. Egy intencióra, ha egyszerre található meg **alapértelmezett** és **elgépelt** találat a szövegen belül, akkor kiértékeléskor a `score` és a `typo_score` együttes értékét kapja az intenció. |
+| `typo_score` |  `score` értéke | Minden **elgépelt** találat esetén a megadott értékkel növeli meg az intenció `typo_score` pontszámát. Egy intencióra, ha egyszerre található meg **alapértelmezett** és **elgépelt** találat a szövegen belül, akkor kiértékeléskor a `score` és a `typo_score` együttes értékét kapja az intenció. |
+| `prefix` |  [] (de `wordclass`:"verb" esetén gyakori igekötőket, `wordclass`:"adjective" esetén a leg és legesleg előtagokat fogja tartalmazni) | Keresendő előtagok string **list**ája. Összetett főneveknél is alkalmazható. |
+| `typo_prefix` |  `wordclass` beállításoktól függ, egyéni `prefix` megadása esetén alapértelmezetten az egyéni `prefix` **list**ából generálódik | Keresendő **elgépelt** előtagok string **list**ája. Összetett főneveknél is alkalmazható. |
 | `affix` |  [] | Az elfogadott utótagok string **list**ája. Összetett szavaknál használandó. Vigyázzunk arra, hogy a **list**ában olyan további elemeket adjunk meg, amelyek nem változtatják meg a szófajt. |
-| `clean_affix` |  [], egyéni `affix` megadása esetén alapértelmezetten az egyéni `affix` **list**ából generálódik | Az elfogadott **tisztított** utótagok string **list**ája. Összetett szavaknál használandó. |
-| `match_stem` |  True | **Boolean** érték, ami azt adja meg, hogy a  `stem ` változóban megadott morfémát önmagában állva is elfogadja-e az osztály találatként. **False** esetén csak a ragozott alakokat, "affix"-szel álló alakokat és "prefix"-szel álló alakokat fogad el. |
-| `match_at` |  "any" (`wordlcass`:"regex" és `wordlcass`:"emoji" esetén "regex") | Elfogadott értékek: "regex","start","end" és "any". "start" esetén *mondatrészek* elején fogadja el az intenciót találatként. "end" esetén *mondatrészek* végén fogadja el az intenciót találatként. Tehát sem a "start" sem az "end" nem a szövegben elfoglalt pozíció, hanem a szövegben elfoglalt logikai pozíció alapján próbál találatokat adni. |
+| `typo_affix` |  [], egyéni `affix` megadása esetén alapértelmezetten az egyéni `affix` **list**ából generálódik | Az elfogadott **elgépelt** utótagok string **list**ája. Összetett szavaknál használandó. |
+| `match_stem` |  True | **Boolean** érték, ami azt adja meg, hogy a  `stem` változóban megadott morfémát önmagában állva is elfogadja-e az osztály találatként. **False** esetén csak a ragozott alakokat, "affix"-szel álló alakokat és "prefix"-szel álló alakokat fogad el. |
 | `with` | [] | További intenció **dictionary**k definiálhatóak az együttjárások pontozásához. Csak egy mélységig ellenőriz az osztály, tehát az itt deklarált további intenciók `with` tulajdonságait már nem veszi figyelembe pontozásnál. Amennyiben az eredeti `stem` nem lett megtalálva, az itt megtalált, további `stem` deklarációk sem lesznek figyelembe véve. |
 | `without` | [] | További intenció **dictionary**k definiálhatóak, amelyek megtalálásakor a tulajdonos intenció nem kap pontot (függetlenül attól, hogy milyen értékű `score` volt hozzá beállítva). Szintén csak egy mélységig ellenőriz. |
 | `ignorecase` | True | Figyelmen kívül hagyja-e a kis-, és nagybetűk közötti különbséget a `stem` változóban. Hasznos tulajdonnevek vagy mozaikszavak megadásánál. |
 | `boundary` | True (`wordclass`:"emoji" esetén False) | Ritka esetekben, speciális "regex" stem deklarálásánál lehet hasznos: ha True, akkor a deklarációt r'\b' kapcsolók közé teszi automatikusan, egyébként nem teszi hozzá a plusz reguláris kifejezést. |
 | `pattern` | Gyorsítótárazott minta a beállítások alapján | Ez az érték automatikusan generálódik az összes eddigi változó alapján. Nem megadható. |
-| `clean_pattern` | Gyorsítótárazott minta a beállítások alapján | Ez az érték automatikusan generálódik az összes eddigi változó alapján. Nem megadható. |
+| `typo_pattern` | Gyorsítótárazott minta a beállítások alapján | Ez az érték automatikusan generálódik az összes eddigi változó alapján. Nem megadható. |
 
 #### Functions
 **The rest of the functions will be explained in english.**
@@ -209,7 +211,7 @@ example	= lara.parser.Intents()
 | ---         | ---     |
 | `example.add(new_intents={})` | Add a dictionary of intents to the existing dictionary of intents. Duplicates will be discarded. |
 | `example.match(text="...")` | Find matching intents in a given string. Returns dictionary with intent:score pairs for all intents where score is more than 0. |
-| `example.match_as_set(text="...")` | Same as above but returns a set of matched Intents instead. |
+| `example.match_set(text="...")` | Same as above but returns a set of matched Intents instead. |
 | `example.match_best(text="...",[n=1])`  | Returns a dictinoary with n largest score intent:score pairs. If less than n intents were found, returns them all. |
 | `example.clean(text="...")` | Removes matched parts of given string and returns an Intent free string. This feature is in beta. |
 | `example.raw(new_intents)` | For optimization purposes only. Replaces all current intents with a dictionary of new intents, without further processing them. NOTE: this function should only be used with previously generated (cached) intents with all necessary variables already created by the class itself. Accepts dictionary of full intents, string of full intents and existing Intent class instances. |
@@ -236,7 +238,7 @@ You can add further entities (dictionary of intents) to an existing Intent: `exa
 or you can just check for matches without having to create your own Intent class instance:
 
 ```python
-match_common	= lara.parser.Intents(lara.entities.common()).match_as_set("Köszönöm szépen!")
+match_common	= lara.parser.Intents(lara.entities.common()).match_set("Köszönöm szépen!")
 print(match_common)
 	
 >>> {"thx"}
