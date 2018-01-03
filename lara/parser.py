@@ -253,6 +253,7 @@ class Intents:
 		if text:
 			for key, value in self.intents.items():
 				ignore	= False
+				allow	= -1
 				for item in self.intents[key]:
 					if 'without' in item and len(item['without']):
 						for without in item['without']:
@@ -260,7 +261,15 @@ class Intents:
 								ignore	= True
 							elif 'typo_stem' in without and self._match_pattern(typo_text,without,True)[0]:
 								ignore	= True
-				if not ignore:
+					if 'with' in item and len(item['with']):
+						if allow == -1:
+							allow	= 0
+						for with_ in item['with']:
+							if 'stem' in with_ and self._match_pattern(text,with_)[0]:
+								allow	= 1
+							elif 'typo_stem' in with_ and self._match_pattern(typo_text,with_,True)[0]:
+								allow	= 1
+				if not ignore and allow in (-1,1):
 					for item in self.intents[key]:
 						if 'stem' in item:
 							fix_text		= self._match_pattern(fix_text,item,False,True)

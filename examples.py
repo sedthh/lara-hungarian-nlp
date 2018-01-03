@@ -42,7 +42,7 @@ if __name__ == "__main__":
 	print(hasonul_test.match("Azt nem lehet megenni."))
 	
 	egyutt_intents	= {
-		"jo_ido"	: [{"stem":"jó","wordclass":"adjective","score":0,
+		"jo_ido"	: [{"stem":"jó","wordclass":"adjective",
 						"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}]}]
 	}
 	egyutt_test		= lara.parser.Intents(egyutt_intents)
@@ -55,9 +55,9 @@ if __name__ == "__main__":
 	print(egyutt_test.match("Jó meleg az időjárás."))		# dupla pont
 
 	kulon_intents	= {
-		"jobb_ido"	: [{"stem":"jó","wordclass":"adjective","score":0,
+		"jobb_ido"	: [{"stem":"jó","wordclass":"adjective",
 						"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}],
-						"without":[{"stem":"este","wordclass":"noun"},{"stem":"esté","match_stem":False,"wordclass":"noun"}]}]
+						"without":[{"stem":"este","wordclass":"noun"}]}]
 	}
 	kulon_test		= lara.parser.Intents(kulon_intents)
 	print(kulon_test.match("Jó."))							# nem veszi figyelembe
@@ -70,7 +70,6 @@ if __name__ == "__main__":
 		"hibasan"	: [{"stem":"alma","wordclass":"noun"}],
 	}
 	hibas_test		= lara.parser.Intents(fals_pozitiv)
-	hibas_test		+= egyutt_test
 	print(hibas_test.match("Gyönyörű dolog a szerelem"))	# elfogadja hibásan
 	print(hibas_test.match("Ezt is elfogadja találatként: Almainüdböz"))	# elfogadja hibásan
 
@@ -81,5 +80,8 @@ if __name__ == "__main__":
 	print(lara.nlp.trim(clean_common))
 	
 	clean_common	= lara.parser.Intents({"thank":[{"stem":"köszön","wordclass":"verb","without":[{"stem":"szép","wordclass":"adjective"}]}]}).clean("Köszönöm szépen a segítséget!")
+	print(lara.nlp.trim(clean_common))
+	
+	clean_common	= lara.parser.Intents({"thank":[{"stem":"köszön","wordclass":"verb","with":[{"stem":"segítség","wordclass":"noun"}],"without":[{"stem":"ronda","wordclass":"adjective"}]}]}).clean("Köszönöm szépen a segítséget!")
 	print(lara.nlp.trim(clean_common))
 	

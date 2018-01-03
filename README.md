@@ -95,7 +95,7 @@ print(hasonul_test.match("Azt nem lehet megenni."))
 ```python
 import lara
 egyutt_intents	= {
-	"jo_ido"	: [{"stem":"jó","wordclass":"adjective","score":0,
+	"jo_ido"	: [{"stem":"jó","wordclass":"adjective",
 				"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]}, {"stem":"meleg","wordclass":"adjective"}]}]
 }
 egyutt_test		= lara.parser.Intents(egyutt_intents)
@@ -119,9 +119,9 @@ print(egyutt_test.match("Jó meleg az időjárás.")) # dupla pont
 ```python
 import lara
 kulon_intents	= {
-	"jobb_ido"	: [{"stem":"jó","wordclass":"adjective","score":0,
+	"jobb_ido"	: [{"stem":"jó","wordclass":"adjective",
 				"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]}, {"stem":"meleg","wordclass":"adjective"}],
-				"without":[{"stem":"este","wordclass":"noun"}, {"stem":"esté","match_stem":False,"wordclass":"noun"}]}]
+				"without":[{"stem":"este","wordclass":"noun"}]}]
 }
 kulon_test		= lara.parser.Intents(kulon_intents)
 print(kulon_test.match("Jó."))  # nem veszi figyelembe
@@ -209,11 +209,11 @@ example	= lara.parser.Intents()
 
 | Function | Description |
 | ---         | ---     |
-| `example.add(new_intents={})` | Add a dictionary of intents to the existing dictionary of intents. Duplicates will be discarded. |
-| `example.match(text="...")` | Find matching intents in a given string. Returns dictionary with intent:score pairs for all intents where score is more than 0. |
+| `example.match(text="...")` | Find matching intents in a given string. Returns dictionary with `"intent" : score` pairs for all intents where score is more than 0. |
 | `example.match_set(text="...")` | Same as above but returns a set of matched Intents instead. |
-| `example.match_best(text="...",[n=1])`  | Returns a dictinoary with n largest score intent:score pairs. If less than n intents were found, returns them all. |
-| `example.clean(text="...")` | Removes matched parts of given string and returns an Intent free string. This feature is in beta. |
+| `example.match_best(text="...",[n=1])`  | Returns a dictionary with n largest score `"intent" : score` pairs. If less than n intents were found, returns them all. |
+| `example.clean(text="...")` | Removes matched parts of given string and returns an Intent free string. Takes "with" and "without" settings into account, but "score" settings has no effect on it. |
+| `example.add(new_intents={})` | Add a dictionary of intents to the existing dictionary of intents. Duplicates will be discarded. |
 | `example.raw(new_intents)` | For optimization purposes only. Replaces all current intents with a dictionary of new intents, without further processing them. NOTE: this function should only be used with previously generated (cached) intents with all necessary variables already created by the class itself. Accepts dictionary of full intents, string of full intents and existing Intent class instances. |
 
 The constructor also accepts instances.
