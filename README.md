@@ -215,6 +215,7 @@ example	= lara.parser.Intents()
 | `example.clean(text="...")` | Removes matched parts of given string and returns an Intent free string. Takes "with" and "without" settings into account, but "score" settings has no effect on it. Intents declared in "with" are not removed by the function when matched. |
 | `example.add(new_intents={})` | Add a dictionary of intents to the existing dictionary of intents. Duplicates will be discarded. |
 | `example.raw(new_intents)` | For optimization purposes only. Replaces all current intents with a dictionary of new intents, without further processing them. NOTE: this function should only be used with previously generated (cached) intents with all necessary variables already created by the class itself. Accepts dictionary of full intents, string of full intents and existing Intent class instances. |
+| `example.flush()` | For optimization purposes only. Empties the cache of found Intents. |
 
 The constructor also accepts instances.
 ```python

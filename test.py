@@ -198,13 +198,49 @@ def test_parser_match(intent,text,match):
 		[
 			['capital','lower','any']
 		]
+	),
+	(
+		{
+			"szoto"		: [{"stem":"töv","wordclass":"noun","match_stem":False,"prefix":["szó"]}],
+			"ragoz"		: [{"stem":"ragozatlan","wordclass":"adjective","match_stem":False}],
+			"talal"		: [{"stem":"talál","wordclass":"verb","match_stem":False}],
+			"talan"		: [{"stem":"TALÁN","wordclass":"verb","match_stem":False,"ignorecase":False}]
+		},
+		[
+			"Szótövet RAGOZATLANUL nem talál meg. TALÁN így?"
+		],
+		[
+			['szoto','ragoz']
+		]
 	)
 ])
-def test_parser_set(intent,text,match):
+def test_parser_match_set(intent,text,match):
 	test	= parser.Intents(intent)
 	for i in range(len(text)):
 		result	= test.match_set(text[i])
 		assert set(match[i]) == result
+
+@pytest.mark.parametrize("intent,text,best", [
+	(	
+		{
+			"kave"			: [{"stem":"kávé","wordclass":"noun","affix":["gép"]}],
+			"takarit"		: [{"stem":"takarít","wordclass":"verb"}]
+		},
+		[
+			"Valakinek ki kellene takarítani a kávégépet. Tegnap is én takarítottam ki.",
+			"Kávé kávét kávénk kávém. Takarít."
+		],
+		[
+			{'takarit': 4},
+			{'kave': 8, 'takarit': 2},
+		]
+	),
+])
+def test_parser_match_best(intent,text,best):
+	test	= parser.Intents(intent)
+	for i in range(len(text)):
+		result	= test.match_best(text[i],i+1)
+		assert best[i] == result
 		
 @pytest.mark.parametrize("intents,text,cleaned", [
 	(

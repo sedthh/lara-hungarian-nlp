@@ -2,6 +2,7 @@
 
 import re
 import json
+import hashlib
 
 import lara.nlp
 
@@ -14,8 +15,10 @@ class Intents:
 	typo_pattern_noun	= r'(?i)a?i?n?(?:[aeiou]?[djknmrst])?(?:[abjhkntv]?[aeiou]?[lgkntz]?)?(?:[ae][kt])?'
 	pattern_adj			= r'(?i)(?:[aeoóöő]?s)?(?:[aáeéoó]?b{0,2})(?:[ae]?[nk])?(?:(?:[aáeéioóöőuúü]?[dklmnt])?(?:[aáeéioóöőuúü]?[klnt]?)?)'
 	typo_pattern_adj	= r'(?i)(?:[aeo]?s)?(?:[aeo]?b?)(?:[ae]?[nk])?(?:(?:[aeiou]?[dklmnt])?(?:[aeiou]?[klnt]?)?)'
-	pattern_verb		= r'(?i)(?:h[ae][st])?(?:[eaá]?s{0,2}d?)?(?:(?:[jntv]|[eo]?g[ae]t+)?(?:[aeioöuü]n?[dklmt]|n[aáeéi]k?|sz|[aái])?(?:t[aáeéou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aáeéou](?:[dkm]|t[eéo]k)?)?t*)|ni)?'
-	typo_pattern_verb	= r'(?i)(?:h[ae][st])?(?:[eaá]?s?d?)?(?:(?:[jntv]|[eo]?g[ae]t)?(?:[aeiou]n?[dklmt]|n[aei]k?|sz|[ai])?(?:t[aeou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aeou](?:[dkm]|t[eo]k)?)?t?)|ni)?'
+	pattern_verb		= r'(?i)(?:h[ae][st])?(?:[eaá]?s{0,2}d?|[aáeéo]tt)?(?:(?:[jntv]|[eo]?g[ae]t+)?(?:[aeioöuü]n?[dklmt]|n[aáeéi]k?|sz|[aái])?(?:t[aáeéou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aáeéou](?:[dkm]|t[eéo]k)?)?t*)|[aáeé]?z?ni)?'
+	typo_pattern_verb	= r'(?i)(?:h[ae][st])?(?:[eaá]?s?d?|[aeo]t)?(?:(?:[jntv]|[eo]?g[ae]t)?(?:[aeiou]n?[dklmt]|n[aei]k?|sz|[ai])?(?:t[aeou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aeou](?:[dkm]|t[eo]k)?)?t?)|[ae]?z?ni)?'
+	
+	cache				= {}
 	
 	##### CONSTRUCTOR #####
 	def __init__(self, new_intents={}, is_raw=False):		
@@ -57,7 +60,7 @@ class Intents:
 		return self
 	
 	##### CLASS FUNCTIONS #####
-				
+	
 	# Add dict of intents
 	def add(self, new_intents={}):
 		for key, value in new_intents.items():
@@ -80,6 +83,10 @@ class Intents:
 				self.intents	= new_intents.copy()
 			else:
 				raise ValueError('Unsupported value: %s' % (new_intents))
+	
+	# Clean cache
+	def flush(self):
+		Intents.cache	= {}
 	
 	# Add default values and fill in optional parameters for a single intent
 	def _generate(self, item):
@@ -345,17 +352,27 @@ class Intents:
 				boundary	= r'\b'
 			else:
 				boundary	= r''
-				
-			if item['wordclass'] in ('regex','emoji'):
-				if item['ignorecase']:
-					matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary,re.IGNORECASE).findall(text)
-				else:
-					matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary).findall(text)
+
+			t_hash			= hashlib.sha1(text.encode("utf-8"))
+			i_hash			= hashlib.sha1((boundary+item[select+'pattern']).encode("utf-8"))				
+			if t_hash in Intents.cache and i_hash in Intents.cache[t_hash]:
+				matches	= Intents.cache[t_hash][i_hash]			
 			else:
-				if item['ignorecase']:
-					matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary,re.IGNORECASE).findall(text)
+				if item['wordclass'] in ('regex','emoji'):
+					if item['ignorecase']:
+						matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary,re.IGNORECASE).findall(text)
+					else:
+						matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary).findall(text)
 				else:
-					matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary).findall(text)
+					if item['ignorecase']:
+						matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary,re.IGNORECASE).findall(text)
+					else:
+						matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary).findall(text)
+				if t_hash not in Intents.cache:
+					Intents.cache[t_hash]			= {}
+					Intents.cache[t_hash][i_hash]	= matches
+				else:
+					Intents.cache[t_hash][i_hash]	= matches
 					
 			if matches:
 				if delete:
@@ -368,7 +385,10 @@ class Intents:
 					return tmp
 				else:	
 					if not item['match_stem']:
-						stem_matches	= re.compile(boundary+r'('+re.escape(item[select+'stem'])+r')'+boundary,re.IGNORECASE).findall(text)
+						if item['ignorecase']:
+							stem_matches	= re.compile(boundary+r'('+re.escape(item[select+'stem'])+r')'+boundary,re.IGNORECASE).findall(text)
+						else:
+							stem_matches	= re.compile(boundary+r'('+re.escape(item[select+'stem'])+r')'+boundary).findall(text)
 						if stem_matches:
 							if len(matches) <= len(stem_matches):
 								return (False, 0)
@@ -378,7 +398,7 @@ class Intents:
 			return text
 		return (False,0)
 		
-	# Get N best matching intents with the highest value
+	# Returns dictionary with N best matching intents with the highest value
 	def match_best(self, text, n=1):
 		if text:
 			score	= self.match(text)
