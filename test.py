@@ -1,8 +1,46 @@
 # -*- coding: UTF-8 -*-
 
-from lara import parser
+from lara import nlp, parser
 import pytest
 
+@pytest.mark.parametrize("intents,text,match", [
+	(	
+		[
+			{
+				"alma"			: [{"stem":"alma","wordclass":"noun"}],
+				"szed"			: [{"stem":"szed","wordclass":"verb"}]
+			},
+			{
+				"piros"			: [{"stem":"piros","wordclass":"adjective"}]
+			},
+			{
+				"zold"			: [{"stem":"zöld","wordclass":"adjective"}]
+			},
+		],
+		[
+			"Már a zöld almákat is szedjem le, vagy cask a pirosakat?",
+			"Már a zöld almákat is szedjem le, vagy cask a pirosakat?",
+			"Már a zöld almákat is szedjem le, vagy cask a pirosakat?",
+			"Már a zöld almákat is szedjem le, vagy cask a pirosakat?"
+		],
+		[
+			{'alma': 1, 'szed': 2},
+			{'alma': 1, 'szed': 2, 'piros': 2},
+			{'alma': 1, 'szed': 2, 'piros': 2, 'zold': 2},
+			{'alma': 1, 'szed': 2, 'piros': 2, 'zold': 2}
+		]
+	),
+])
+def test_parser_add(intents,text,match):
+	test	= []
+	test.append(parser.Intents(intents[0]))
+	test.append(test[0]+parser.Intents(intents[1]))
+	test.append(test[1]+intents[2])
+	test.append(parser.Intents(str(test[2]),True))
+	for i in range(len(text)):
+		result	= test[i].match(text[i])
+		assert match[i] == result
+		
 @pytest.mark.parametrize("intent,text,match", [
     (	
 		{
@@ -132,3 +170,79 @@ def test_parser_match(intent,text,match):
 	for i in range(len(text)):
 		result	= test.match(text[i])
 		assert match[i] == result
+
+@pytest.mark.parametrize("intent,text,match", [
+	(
+		{
+			"change"	: [{"stem":"szép","wordclass":"adjective"}],
+			"typo"		: [{"stem":"görbe","wordclass":"adjective"}],
+			"fail"		: [{"stem":"kék","wordclass":"adjective"}]
+		},
+		[
+			"Szebb sárga bögre göbre bögre."
+		],
+		[
+			['change','typo']
+		]
+	),
+	(
+		{
+			"capital"	: [{"stem":"NAGY","wordclass":"adjective","ignorecase":False}],
+			"lower"		: [{"stem":"kicsi","wordclass":"adjective","ignorecase":False}],
+			"any"		: [{"stem":"VáLtAkOzÓ","wordclass":"adjective","ignorecase":True}],
+			"acr"		: [{"stem":"KFT","ignorecase":False}]
+		},
+		[
+			"legesLEGNAGYobb kicsiNEK vÁlTaKoZó szöveg kft"
+		],
+		[
+			['capital','lower','any']
+		]
+	)
+])
+def test_parser_set(intent,text,match):
+	test	= parser.Intents(intent)
+	for i in range(len(text)):
+		result	= test.match_set(text[i])
+		assert set(match[i]) == result
+		
+@pytest.mark.parametrize("intents,text,cleaned", [
+	(
+		[
+			{
+				"thanks"	: [{"stem":"köszön","wordclass":"verb"}]
+			},
+			{
+				"thanks"	: [{"stem":"köszön","wordclass":"verb","without":[{"stem":"szép","wordclass":"adjective"}]}]
+			},
+			{
+				"thanks"	: [{"stem":"köszön","wordclass":"verb","with":[{"stem":"nagy","wordclass":"adjective"}]}]
+			},
+			{
+				"thanks"	: [{"stem":"köszön","wordclass":"verb","with":[{"stem":"kicsi","wordclass":"adjective"}]}]
+			},
+			{
+				"thanks"	: [{"stem":"köszön","wordclass":"verb","with":[{"stem":"nagy","wordclass":"adjective"}],"without":[{"stem":"szép","wordclass":"adjective"}]}]
+			}
+		],
+		[
+			"Nagyon szépen köszönöm a teszteket!",
+			"Nagyon szépen köszönöm a teszteket!",
+			"Nagyon szépen köszönöm a teszteket!",
+			"Nagyon szépen köszönöm a teszteket!",
+			"Nagyon szépen köszönöm a teszteket!"
+		],
+		[
+			"Nagyon szépen a teszteket!",
+			"Nagyon szépen köszönöm a teszteket!",
+			"Nagyon szépen a teszteket!",
+			"Nagyon szépen köszönöm a teszteket!",
+			"Nagyon szépen köszönöm a teszteket!"
+		]
+	)
+])
+def test_parser_clean(intents,text,cleaned):
+	for i in range(len(intents)):
+		test	= parser.Intents(intents[i])
+		result	= nlp.trim(test.clean(text[i]))
+		assert cleaned[i] == result

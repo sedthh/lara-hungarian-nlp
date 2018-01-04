@@ -8,14 +8,14 @@ import lara.nlp
 class Intents:
 		
 	# STATIC REGULAR EXPRESSIONS
-	prefixes			= r'(?:'+('|'.join(["abba","alá","át","be","bele","benn","el","ellen","elő","fel","föl","hátra","hozzá","ide","ki","körül","le","meg","mellé","neki","oda","össze","rá","szét","túl","utána","vissza"]))+')?'
-	typo_prefixes		= r'(?:'+('|'.join(["aba","ala","at","be","bele","ben","el","elen","elo","fel","fol","hatra","hoza","ide","ki","korul","le","meg","mele","neki","oda","osze","ra","szet","tul","utana","visza"]))+')?'
-	pattern_noun		= r'{1,2}a?i?n?(?:[aáeéioóöőuúü]?[djknmrst])?(?:[abjhkntv]?[aáeéioóöőuúü]?[lgkntz]?)?(?:[ae][kt])?'
-	typo_pattern_noun	= r'{1,2}a?i?n?(?:[aeiou]?[djknmrst])?(?:[abjhkntv]?[aeiou]?[lgkntz]?)?(?:[ae][kt])?'
-	pattern_adj			= r'(?:[aeoóöő]?s)?(?:[aáeé]?b*)(?:[ae]?[nk])?(?:(?:[aáeéioóöőuúü]?[dklmnt])?(?:[aáeéioóöőuúü]?[klnt]?)?)'
-	typo_pattern_adj	= r'(?:[aeo]?s)?(?:[ae]?b?)(?:[ae]?[nk])?(?:(?:[aeiou]?[dklmnt])?(?:[aeiou]?[klnt]?)?)'
-	pattern_verb		= r'{1,2}(?:h[ae][st])?(?:[eaá]?s{0,2}d?)?(?:(?:[jntv]|[eo]?g[ae]t+)?(?:[aeioöuü]n?[dklmt]|n[aáeéi]k?|sz|[aái])?(?:t[aáeéou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aáeéou](?:[dkm]|t[eéo]k)?)?t*)|ni)?'
-	typo_pattern_verb	= r'{1,2}(?:h[ae][st])?(?:[eaá]?s{0,2}d?)?(?:(?:[jntv]|[eo]?g[ae]t)?(?:[aeiou]n?[dklmt]|n[aei]k?|sz|[ai])?(?:t[aeou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aeou](?:[dkm]|t[eo]k)?)?t?)|ni)?'
+	prefixes			= r'(?:(?i)'+('|'.join(["abba","alá","át","be","bele","benn","el","ellen","elő","fel","föl","hátra","hozzá","ide","ki","körül","le","meg","mellé","neki","oda","össze","rá","szét","túl","utána","vissza"]))+')?'
+	typo_prefixes		= r'(?:(?i)'+('|'.join(["aba","ala","at","be","bele","ben","el","elen","elo","fel","fol","hatra","hoza","ide","ki","korul","le","meg","mele","neki","oda","osze","ra","szet","tul","utana","visza"]))+')?'
+	pattern_noun		= r'(?i)a?i?n?(?:[aáeéioóöőuúü]?[djknmrst])?(?:[abjhkntv]?[aáeéioóöőuúü]?[lgkntz]?)?(?:[ae][kt])?'
+	typo_pattern_noun	= r'(?i)a?i?n?(?:[aeiou]?[djknmrst])?(?:[abjhkntv]?[aeiou]?[lgkntz]?)?(?:[ae][kt])?'
+	pattern_adj			= r'(?i)(?:[aeoóöő]?s)?(?:[aáeéoó]?b{0,2})(?:[ae]?[nk])?(?:(?:[aáeéioóöőuúü]?[dklmnt])?(?:[aáeéioóöőuúü]?[klnt]?)?)'
+	typo_pattern_adj	= r'(?i)(?:[aeo]?s)?(?:[aeo]?b?)(?:[ae]?[nk])?(?:(?:[aeiou]?[dklmnt])?(?:[aeiou]?[klnt]?)?)'
+	pattern_verb		= r'(?i)(?:h[ae][st])?(?:[eaá]?s{0,2}d?)?(?:(?:[jntv]|[eo]?g[ae]t+)?(?:[aeioöuü]n?[dklmt]|n[aáeéi]k?|sz|[aái])?(?:t[aáeéou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aáeéou](?:[dkm]|t[eéo]k)?)?t*)|ni)?'
+	typo_pattern_verb	= r'(?i)(?:h[ae][st])?(?:[eaá]?s?d?)?(?:(?:[jntv]|[eo]?g[ae]t)?(?:[aeiou]n?[dklmt]|n[aei]k?|sz|[ai])?(?:t[aeou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aeou](?:[dkm]|t[eo]k)?)?t?)|ni)?'
 	
 	##### CONSTRUCTOR #####
 	def __init__(self, new_intents={}, is_raw=False):		
@@ -105,11 +105,11 @@ class Intents:
 		
 		if 'prefix' not in item:
 			if item['wordclass']	== 'verb':
-				item['prefix']		= r''+Intents.prefixes
-				item['typo_prefix']	= r''+Intents.typo_prefixes
+				item['prefix']		= r'(?i)'+Intents.prefixes
+				item['typo_prefix']	= r'(?i)'+Intents.typo_prefixes
 			elif item['wordclass']	== 'adjective':
-				item['prefix']		= r'(?:leg(?:esleg)?)?'
-				item['typo_prefix']	= r'(?:leg(?:esleg)?)?'
+				item['prefix']		= r'(?i)(?:leg(?:esleg)?)?'
+				item['typo_prefix']	= r'(?i)(?:leg(?:esleg)?)?'
 			else:
 				item['prefix']		= r''
 				item['typo_prefix']	= r''
@@ -149,7 +149,7 @@ class Intents:
 				else:
 					item['typo_affix']	= r''+(item['typo_affix'])
 			if isinstance(item['affix'],list):
-				item['affix']		= r'(?:'+('|'.join(item['affix']))+')?'
+				item['affix']		= r'(?:'+('|'.join([affix+'{1,2}' for affix in item['affix']]))+')?'
 			else:
 				item['affix']		= r''+(item['affix'])
 					
@@ -194,17 +194,28 @@ class Intents:
 			item['pattern']			= r''+item['stem']+item['affix']
 			item['typo_pattern']	= r''+item['typo_stem']+item['typo_affix']
 		else:
-			item['pattern']			= r'(?:'+re.escape(item['stem'])+item['affix']+')'
+			
+			item['pattern']			= r'(?:'+re.escape(item['stem'])+r'{1,2}'+item['affix']+r')'
 			scramble				= item['typo_stem']
 			if len(scramble)>3:
 				typo		= [scramble[1:-1]]
 				for i in range(len(scramble)-3):
 					typo.append(re.escape(scramble[1:i+1]+scramble[i+2]+scramble[i+1]+scramble[i+3:-1]))
-				scramble	= re.escape(scramble[0])+'(?:'+('|'.join(typo))+')'+re.escape(scramble[-1])
+				is_consonant= lara.nlp.is_consonant(scramble[-1])
+				scramble	= re.escape(scramble[0])+'(?:'+('|'.join(typo))+')(?:'+re.escape(scramble[-1])
+				scramble	= '[\s\-]?'.join(scramble.split('\ '))
+				if item['wordclass'] == 'adjective' and is_consonant:
+					scramble	+= '|[bB])'
+				else:
+					scramble	+=')'
 			else:
 				scramble				= re.escape(scramble)
-			scramble	= '[\s\-]?'.join(scramble.split('\ '))
+				scramble	= '[\s\-]?'.join(scramble.split('\ '))
 			item['typo_pattern']	= r'(?:'+scramble+item['typo_affix']+')'
+			if not item['ignorecase']:
+				item['pattern']			= r'(?s)'+item['pattern']
+				item['typo_pattern']	= r'(?s)'+item['typo_pattern']
+				
 			if item['wordclass'] == 'noun':
 				item['pattern']			+= Intents.pattern_noun
 				item['typo_pattern']	+= Intents.typo_pattern_noun
@@ -217,6 +228,8 @@ class Intents:
 				
 		item['pattern']			= item['prefix']+item['pattern']	
 		item['typo_pattern']	= item['typo_prefix']+item['typo_pattern']
+		if item['wordclass']=='adjective':
+			print(item['typo_pattern'])
 		return item
 	
 	# Get all matches from text
