@@ -235,8 +235,7 @@ class Intents:
 				
 		item['pattern']			= item['prefix']+item['pattern']	
 		item['typo_pattern']	= item['typo_prefix']+item['typo_pattern']
-		if item['wordclass']=='adjective':
-			print(item['typo_pattern'])
+
 		return item
 	
 	# Get all matches from text
@@ -354,7 +353,7 @@ class Intents:
 				boundary	= r''
 
 			t_hash			= hashlib.sha1(text.encode("utf-8"))
-			i_hash			= hashlib.sha1((boundary+item[select+'pattern']).encode("utf-8"))				
+			i_hash			= hashlib.sha1((boundary+item[select+'pattern']+boundary).encode("utf-8"))				
 			if t_hash in Intents.cache and i_hash in Intents.cache[t_hash]:
 				matches	= Intents.cache[t_hash][i_hash]			
 			else:
