@@ -111,7 +111,7 @@ def popculture():
 	return {
 		"turing"			: [{"stem":"Turing","affix":["teszt"]},{"stem":"Enigma"}],
 		"matrix"			: [{"stem":"Neo","wordclass":"noun"},{"stem":"Oracle"},{"stem":"Morpheus"},{"stem":"Trinity"}],
-		"terminator"		: [{"stem":"Terminator","wordclass":"noun"},{"stem":"Connor","with":[{"stem":"John"},{"stem":"Sarah"}]},{"stem":"Skynet","wordclass":"noun"},{"stem":"T\-(600|800|850|1000|1001|5000)","wordclass":"regex"}],
+		"terminator"		: [{"stem":"Terminator","wordclass":"noun"},{"stem":"Connor","with":[{"stem":"John"},{"stem":"Sarah"}]},{"stem":"Skynet","wordclass":"noun"},{"stem":"T\-(600|800|850|1000|1001|5000)","wordclass":"regex"},{"stem":"h?asz?ta\s?lr?a\s?vis+z?t?a\,?\sb[aeé]b[iy]","wordclass":"regex"}],
 		"mrrobot"			: [{"stem":"Elliot"},{"stem":"Mr\.?\s?Robot","wordclass":"regex"}],
 		"bladerunner"		: [{"stem":"Voight[\-\s]?Kampf+","wordclass":"regex"},{"stem":"replikáns","wordclass":"noun"},{"stem":"Deckard"},{"stem":"Rachael"}],
 		"starwars"			: [{"stem":"(R2[\-\s]?D2|BB[\-\s]?8|C[\-\s]?3PO)","wordclass":"regex"}],
