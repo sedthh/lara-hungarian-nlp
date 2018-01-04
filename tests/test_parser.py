@@ -1,7 +1,9 @@
 # -*- coding: UTF-8 -*-
 
-from lara import nlp, parser
 import pytest
+import os.path, sys
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+from lara import nlp, parser
 
 @pytest.mark.parametrize("intents,text,match", [
 	(	

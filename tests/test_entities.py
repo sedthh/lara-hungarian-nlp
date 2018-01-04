@@ -1,11 +1,13 @@
 # -*- coding: UTF-8 -*-
 
-import re
+import pytest
+import os.path, sys
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+from lara import entities
 
-# function to check if declarations are actually correct
 def validate_intent(intents):
-	valid_keys	= set(['stem','clean_stem','affix','clean_affix','prefix','clean_prefix','wordclass','with','without','score','clean_score','match_stem','match_at','ignorecase'])
-	valid_class = set(['noun','verb','adjective','regex','special'])
+	valid_keys	= set(['stem','clean_stem','affix','clean_affix','prefix','clean_prefix','wordclass','with','without','score','clean_score','match_stem','match_at','ignorecase','boundary'])
+	valid_class = set(['noun','verb','adjective','regex','emoji','special'])
 	is_regex	= set(['|','(',')','+','*','+','?','\\'])
 	for intent,declaration in intents.items():
 		for item in declaration:
@@ -21,9 +23,9 @@ def validate_intent(intents):
 				if any(test in item['stem'] for test in is_regex):
 					if 'wordclass' not in item or item['wordclass']!='regex':
 						print(intent,'probably has a regex "wordclass" declared otherwise in',item['stem'])
-	print('Intent checked.')
-	
-# spell checker for most common hungarian typos
-def spell_checker(text):
-	# TODO: actually implement this
-	return text
+
+@pytest.mark.parametrize("entity", [
+    "common","commands","counties","dow","smalltalk","popculture","emoji"
+])
+def test_entities(entity):	
+	eval('validate_intent(entities.'+entity+'())')

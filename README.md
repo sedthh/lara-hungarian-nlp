@@ -248,7 +248,7 @@ print(match_common)
 | Collection | Matches the following | Possible intents returned |
 | ---         | ---     | ---     |
 | `lara.entities.common()` | Common entities for Chatbot conversations | `yes, no, hi, bye, thx, pls, welks, sorry, lol, command, question, conditional, profanity` |
-| `lara.entities.commands()` | Common menu commands for Chatbot conversations | `ok, cancel, next, back, save, open, delete, exit, options, menu, login, logout, error` |
+| `lara.entities.commands()` | Common menu commands for Chatbot conversations | `ok, cancel, next, back, save, open, delete, exit, options, menu, login, logout, error, search` |
 | `lara.entities.counties()` | Hungarian counties and county seats | `bacs-kiskun, baranya, bekes, borsod-abauj-zemplen, csongrad, fejer, gyor-moson-sopron, hajdu-bihar, heves, jasz-nagykun-szolnok, komarom-esztergom, nograd, pest, somogy, szabolcs-szatmar-bereg, tolna, vas, veszprem, zala` |
 | `lara.entities.dow()` | Days of the week. Will also match `hetvege` or `hetkoznap` when matching a day. | `ma, holnap, holnaputan, tegnap, tegnapelott, hetfo, kedd, szerda, csutortok, pentek, szombat, vasarnap, hetkoznap, hetvege` |
 | `lara.entities.smalltalk()` | Common small talk topics | `well_done, user_love, user_flirting, user_bored, user_happy, user_sad, user_friend, how_are_you, about_name, about_you, about_creator, about_look, about_age, about_location, about_family, are_you_a_robot, can_you_hear_me, weather, news, joke` |

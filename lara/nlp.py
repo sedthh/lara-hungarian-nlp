@@ -46,7 +46,7 @@ def remove_html_tags(text, replace=''):
 
 def remove_smileys(text,replace=''):
 	if text:
-		return re.sub(r'([:;]-?[Dd\(\)3]+)\b', replace, text)
+		return re.sub(r'([:;]-?[Dd\(\)3]+)', replace, text)
 	return ''
 
 def find_hashtags(text):
@@ -66,7 +66,7 @@ def find_urls(text):
 	
 def find_smileys(text):
 	if text:
-		return re.compile(r'([:;]-?[Dd\(\)3]+)\b').findall(text)
+		return re.compile(r'([:;]-?[Dd\(\)3]+)').findall(text)
 	return []
 
 def find_dates(text):
@@ -75,7 +75,7 @@ def find_dates(text):
 		matches	= re.compile(r'\b((\d{2})?((\d{2}[\\\/\.\-]){1,2})(\d{2}\b))([aáeéo]n)?\b', re.IGNORECASE).findall(text)
 		for item in matches:
 			results.append(item[0])
-		matches	= re.compile(r'\b((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec)\w{0,7}(\W{1,2}\d{1,2}))\b', re.IGNORECASE).findall(text)
+		matches	= re.compile(r'\b((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec)\w{0,10}(\W{1,2}\d{1,2})?)\b', re.IGNORECASE).findall(text)
 		for item in matches:
 			results.append(item[0])
 	return results
@@ -256,7 +256,7 @@ def is_gibberish(text=''):
 def strip_context(text, context="search", including=None):
 	if text:
 		if context=='search':
-			exclude		= re.compile(r'\b([ae](z([eo]k)?|([eo]k)?r+[ea])?|milyen|mennyi|mikor|hol|merre|hova|[mk]i(vel|nek|t|k(et)?)?|mi?[eé]rt|r[aá]|egy|meg|[bk]e|nekem|hogy(an)?|(sz[oó])?cikk\w*|oldal\w*|[ií]r\w*|kapcsolat(os(an)?|ban)|sz[oó]l[oó]?|keres\w*|n[eé]z[zd]|mutas(s[aá]?[dl]?)|alapj[aá]n|mond[dj]?|t[oö]ltse?d?|hoz([zd]|z[aá][dl])|nyis(s[aá]?[dls])|megnyit\w*|(el)?olvas\w*|szeretn[eé]\w*|k[eé]r(ni|l?e[km])|(meg)?n[eé]z\w*|k[oö]z[oö]?t+|k[oö]s+z(i|[oö]n[oö]m)?|fel|[eé]?s|vala[km]i(lyen|t[oöő]?l?|nek|[kv]el|[eé]rt?)?|olya[nt](okat)?|van|volt|lett|lesz?)\b', re.IGNORECASE)
+			exclude		= re.compile(r'\b([ae](z([eo]k)?|([eo]k)?r+[ea])?|milyen|mennyi|mikor|hol|merre|hova|[mk]i(vel|nek|t|k(et)?)?|mi?[eé]rt|r[aá]|egy|meg|[bk]e|nekem|hogy(an)?|(sz[oó])?cikk\w*|oldal\w*|[ií]r\w*|kapcsolat(os(an)?|ban)|sz[oó]l[oó]?|keres\w*|n[eé]z[zd]|mutas(s[aá]?[dl]?)|alapj[aá]n|mond[dj]?|t[oö]ltse?d?|hoz([zd]|z[aá][dl])|nyis(s[aá]?[dls])|megnyit\w*|(el)?olvas\w*|szeretn[eé]\w*|k[eé]r(ni|l?e[km])|(meg)?n[eé]z\w*|k[oö]z[oö]?t+|k[oö]s+z(i|[oö]n[oö]m)?|fel|[eé]?s|vala[km]i(lyen|t[oöő]?l?|nek|[kv]el|[eé]rt?)?|olya[nt](okat)?|van|volt|lett|les+z|kell(ene)?)\b', re.IGNORECASE)
 			text		= exclude.sub('',text)
 		elif context=='request':
 			exclude		= re.compile(r'\b([ae](z([eo]k)?a?t?|([eo]k)r+[ae])?|a?m?[ieo]ly[ae]\w+|a?mi(kor)?|a?hol|hogy|van(nak)?|[mk]i(vel|nek|[eé]rt|t|k(et)?)?|r[aá]|egy|meg|be|kell(ene)?|k[eé]ne|szeretn[eé][km]|k[eé]rn?([eé][km]|i)?|ad[dj]([aá][dl])?|nekem|van|csak|k[uü]ld[dj]?[eé]?[dl]?|mond\w*|[ae]bb[ae]n?|l[eé]gy([eé]l)?\s?sz[ií](ves)?|l[eé]cci|azt[aá]n|vagy|m[aá]sik(at)?|lesz|legyen|[bl]enne|vala[km]i(lyen|t[oöő]?l?|nek|[kv]el|[eé]rt?)?|sz[uü]ks[eé]g(em)?|ink[aá]bb|akkor|volt|amiben?|keres\w+|[eé]?s|[ae]rr[ae]|is)\b', re.IGNORECASE)
@@ -280,11 +280,11 @@ def remove_stopwords(text,negation=True):
 	if text:
 		stopwords	= ['a', 'ahogy', 'ahol', 'aki', 'akik', 'akkor', 'alatt', 'által', 'altal', 'általában', 'altalaban', 'amely', 'amelyek', 'amelyekben', 'amelyeket', 'amelyet', 'amelynek', 'ami', 'amit', 'amolyan', 'amíg', 'amig', 'amikor', 'át', 'at', 'abban', 'ahhoz', 'annak', 'arra', 'arról', 'arrol', 'az', 'azok', 'azon', 'azt', 'azzal', 'azért', 'azert', 'aztán', 'aztan', 'azután', 'azutan', 'azonban', 'bár', 'bar', 'be', 'belül', 'belul', 'benne', 'cikk', 'cikkek', 'cikkeket', 'csak', 'de', 'e', 'eddig', 'egész', 'egesz', 'egy', 'egyes', 'egyetlen', 'egyéb', 'egyeb', 'egyik', 'egyre', 'ekkor', 'el', 'elég', 'eleg', 'ellen', 'elő', 'elo', 'először', 'eloszor', 'előtt', 'elott', 'első', 'elso', 'én', 'en', 'éppen', 'eppen', 'ebben', 'ehhez', 'emilyen', 'ennek', 'erre', 'ez', 'ezt', 'ezek', 'ezen', 'ezzel', 'ezért', 'ezert', 'és', 'es', 'fel', 'felé', 'fele', 'hiszen', 'hogy', 'hogyan', 'igen', 'így', 'igy', 'illetve', 'ill.', 'ill', 'ilyen', 'ilyenkor', 'ison', 'ismét', 'ismet', 'itt', 'jó', 'jo', 'jól', 'jol', 'jobban', 'kell', 'kellett', 'keresztül', 'keresztul', 'keressünk', 'keressunk', 'ki', 'kívül', 'kivul', 'között', 'kozott', 'közül', 'kozul', 'legalább', 'legalabb', 'lehet', 'lehetett', 'legyen', 'lenne', 'lenni', 'lesz', 'lett', 'maga', 'magát', 'magat', 'majd', 'majd', 'már', 'mar', 'más', 'mas', 'másik', 'masik', 'meg', 'még', 'meg', 'mellett', 'mert', 'mely', 'melyek', 'mi', 'mit', 'míg', 'mig', 'miért', 'miert', 'milyen', 'mikor', 'minden', 'mindent', 'mindenki', 'mindig', 'mint', 'mintha', 'mivel', 'most', 'nagy', 'nagyobb', 'nagyon', 'néha', 'neha', 'nekem', 'neki', 'néhány', 'nehany', 'nélkül', 'nelkul', 'nincs', 'olyan', 'ott', 'össze', 'ossze', 'ő', 'o', 'ők', 'ok', 'őket', 'oket', 'pedig', 'persze', 'rá', 'ra', 's', 'saját', 'sajat', 'sok', 'sokat', 'sokkal', 'számára', 'szamara', 'szemben', 'szerint', 'szinte', 'talán', 'talan', 'tehát', 'tehat', 'teljes', 'tovább', 'tovabb', 'továbbá', 'tovabba', 'több', 'tobb', 'úgy', 'ugy', 'ugyanis', 'új', 'uj', 'újabb', 'ujabb', 'újra', 'ujra', 'után', 'utan', 'utána', 'utana', 'utolsó', 'utolso', 'vagy', 'vagyis', 'valaki', 'valami', 'valamint', 'való', 'valo', 'vagyok', 'van', 'vannak', 'volt', 'voltam', 'voltak', 'voltunk', 'vissza', 'vele', 'viszont', 'volna']
 		for stopword in stopwords:
-			text	= re.compile(r'\b'+stopword+'\b', re.IGNORECASE).sub('', text)
+			text	= re.sub(r'\b'+stopword+r'\b', '', text, flags=re.I)
 		if negation:
 			nowords		= ['ne','nem','se','sem','semmi','hanem']
 			for noword in nowords:
-				text	= re.compile(r'\b'+noword+'\b', re.IGNORECASE).sub('', text)
+				text	= re.sub(r'\b'+noword+r'\b', '', text, flags=re.I)
 		return text
 	return ''
 

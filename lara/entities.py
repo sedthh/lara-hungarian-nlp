@@ -31,9 +31,10 @@ def commands():
 		"exit"				: [{"stem":"exit"},{"stem":"quit"},{"stem":"esc","affix":["ape"]},{"stem":"kilép","wordclass":"verb"},{"stem":"l[eé]pj?([eé][dln])?.+?ki","wordclass":"regex"}],
 		"options"			: [{"stem":"options"},{"stem":"beállít","wordclass":"verb"},{"stem":"[aá]ll[ií]ts.+?be","wordclass":"regex"}],
 		"menu"				: [{"stem":"menü","prefix":["main","fő","al","legördülő"],"wordclass":"noun"}],
-		"login"				: [{"stem":"login"},{"stem":"log in"},{"stem":"belép","prefix":[],"wordclass":"verb"},{"stem":"bejelentkez","prefix":[],"wordclass":"verb"},{"stem":"l[eé]p.+?be","wordclass":"regex"},{"stem":"jelentkez.+?be","wordclass":"regex"}],
-		"logout"			: [{"stem":"logout"},{"stem":"log out"},{"stem":"kilép","prefix":[],"wordclass":"verb"},{"stem":"kijelentkez","prefix":[],"wordclass":"verb"},{"stem":"l[eé]p.+?ki","wordclass":"regex"},{"stem":"jelentkez.+?ki","wordclass":"regex"}],
-		"error"				: [{"stem":"error","wordclass":"noun"},{"stem":"hiba","wordclass":"noun"},{"stem":"rossz","wordclass":"adjective"},{"stem":"nem (siker[uü]lt|j[oó]l?|m[uüű]k[oö]d(ik|[oö]tt)|ment)(\s\w)?(\s\w)?$","wordclass":"regex"}]
+		"login"				: [{"stem":"login"},{"stem":"log in"},{"stem":"belép","prefix":[],"wordclass":"verb"},{"stem":"bejelentkez","prefix":[],"wordclass":"verb"},{"stem":"l[eé]p.+?\sbe","wordclass":"regex"},{"stem":"jelentkez.+?\sbe","wordclass":"regex"}],
+		"logout"			: [{"stem":"logout"},{"stem":"log out"},{"stem":"kilép","prefix":[],"wordclass":"verb"},{"stem":"kijelentkez","prefix":[],"wordclass":"verb"},{"stem":"l[eé]p.+?\ski","wordclass":"regex"},{"stem":"jelentkez.+?\ski","wordclass":"regex"}],
+		"error"				: [{"stem":"error","wordclass":"noun"},{"stem":"hiba","wordclass":"noun"},{"stem":"rossz","wordclass":"adjective"},{"stem":"nem (siker[uü]lt|j[oó]l?|m[uüű]k[oö]d(ik|[oö]tt)|ment)(\s\w)?(\s\w)?$","wordclass":"regex"}],
+		"search"			: [{"stem":"keres","wordclass":"verb"},{"stem":"find"},{"stem":"találd meg"}]
 	}
 	
 # hungarian counties and county seats
@@ -83,7 +84,7 @@ def dow():
 # small talk intents
 def smalltalk():
 	return {
-		"well_done"			: [{"stem":"fasza"},{"stem":"jó","prefix":["kurva"],"without":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"j[oó]l\s?van","wordclass":"regex"},{"stem":"király"},{"stem":"ügyes"},{"stem":"sz[eé]p\s(volt|munka)","wordclass":"regex"},{"stem":"ez\s(lesz\s)?az","wordclass":"regex"},{"stem":"👍","wordclass":"emoji"},{"stem":"(Y)"}],
+		"well_done"			: [{"stem":"fasza"},{"stem":"jó","prefix":["kurva"],"without":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"j[oó]l\s?van","wordclass":"regex"},{"stem":"király"},{"stem":"ügyes"},{"stem":"sz[eé]p\s(volt|munka)","wordclass":"regex"},{"stem":"ez\s(lesz\s)?az","wordclass":"regex"},{"stem":"👍","wordclass":"emoji"},{"stem":"\(Y\)","wordclass":"regex"}],
 		"user_love"			: [{"stem":"szeretlek"},{"stem":"szeretsz engem"},{"stem":"tetszek neked"},{"stem":"tetszel nekem","without":[{"stem":"nem"}]},{"stem":"tetszek neked"},{"stem":"szerelmes.+?bel[eé]d","wordclass":"regex"},{"stem":"bel[eé]d.+?szerettem","wordclass":"regex"}],
 		"user_flirting"		: [{"stem":"(mi|milyen|ruha).+?van\s+rajtad","wordclass":"regex"},{"stem":"(meg)?(basz|dug)(unk|n[aá]lak|lak)","wordclass":"regex"},{"stem":"sz?ex(e[lt]\w*)?","wordclass":"regex"}],
 		"user_bored"		: [{"stem":"un(atkoz)?(om|unk)","wordclass":"regex"}],
@@ -146,7 +147,7 @@ def emoji():
 		"happy"				: [{"stem":"😉","wordclass":"emoji"},{"stem":"😃","wordclass":"emoji"},{"stem":"😄","wordclass":"emoji"},{"stem":"🙂","wordclass":"emoji"},{"stem":"[\:\;\=8BX]\-*[p\)\]93]+","wordclass":"regex","boundary":False},{"stem":"[\(\[8]+\-*[\:\;\=8X]","wordclass":"regex","boundary":False}],
 		"sad"				: [{"stem":"😭","wordclass":"emoji"},{"stem":"😢","wordclass":"emoji"},{"stem":"[\:\;\=][\'\,]?\-*[\(\[8]+","wordclass":"regex","boundary":False},{"stem":"[\)\]9]+\-*[\'\,]?[\:\;\=]","wordclass":"regex","boundary":False}],
 		"laughing"			: [{"stem":"😀","wordclass":"emoji"},{"stem":"😁","wordclass":"emoji"},{"stem":"😆","wordclass":"emoji"},{"stem":"😝","wordclass":"emoji"},{"stem":"😜","wordclass":"emoji"},{"stem":"[\:\;\=8BX]\-*d[asd]*","wordclass":"regex","boundary":False}],
-		"like"				: [{"stem":"🙌","wordclass":"emoji"},{"stem":"👏","wordclass":"emoji"},{"stem":"💯","wordclass":"emoji"},{"stem":"👌","wordclass":"emoji"},{"stem":"👍","wordclass":"emoji"},{"stem":"(Y)"}],
+		"like"				: [{"stem":"🙌","wordclass":"emoji"},{"stem":"👏","wordclass":"emoji"},{"stem":"💯","wordclass":"emoji"},{"stem":"👌","wordclass":"emoji"},{"stem":"👍","wordclass":"emoji"},{"stem":"\(Y\)","wordclass":"regex"}],
 		"dislike"			: [{"stem":"💩","wordclass":"emoji"},{"stem":"👎","wordclass":"emoji"},{"stem":"😒","wordclass":"emoji"},{"stem":"🙄","wordclass":"emoji"},{"stem":"🤢","wordclass":"emoji"},{"stem":"☹️","wordclass":"emoji"}],
 		"love"				: [{"stem":"😘","wordclass":"emoji"},{"stem":"😗","wordclass":"emoji"},{"stem":"💋","wordclass":"emoji"},{"stem":"❤️","wordclass":"emoji"},{"stem":"<+3+","wordclass":"regex","boundary":False}],
 		"wow"				: [{"stem":"😯","wordclass":"emoji"},{"stem":"[\:\;\=]\-*o+","wordclass":"regex","boundary":False},{"stem":"o+\-*[\:\;\=]","wordclass":"regex","boundary":False}],

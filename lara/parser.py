@@ -21,7 +21,7 @@ class Intents:
 	cache				= {}
 	
 	##### CONSTRUCTOR #####
-	def __init__(self, new_intents={}, is_raw=False):		
+	def __init__(self, new_intents={}, is_raw=False):	
 		self.intents	= {}
 		if new_intents:
 			if is_raw:
@@ -263,7 +263,7 @@ class Intents:
 			return self._get_clean_text(text)
 		else:
 			return ""
-	
+		
 	# Returns text without the inflected forms of matched intents
 	def _get_clean_text(self, text):
 		text		= lara.nlp.trim(text)

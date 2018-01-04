@@ -1,6 +1,10 @@
 # -*- coding: UTF-8 -*-
 
+import os.path, sys
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 import lara
+
+''' Examples found in README.md'''
 
 if __name__ == "__main__":
 	alma_intents	= {
@@ -78,10 +82,4 @@ if __name__ == "__main__":
 	
 	clean_common	= lara.parser.Intents(lara.entities.common()).clean("Köszönöm szépen a segítséget!")
 	print(lara.nlp.trim(clean_common))
-	
-	clean_common	= lara.parser.Intents({"thank":[{"stem":"köszön","wordclass":"verb","without":[{"stem":"szép","wordclass":"adjective"}]}]}).clean("Köszönöm szépen a segítséget!")
-	print(lara.nlp.trim(clean_common))
-	
-	clean_common	= lara.parser.Intents({"thank":[{"stem":"köszön","wordclass":"verb","with":[{"stem":"segítség","wordclass":"noun"}],"without":[{"stem":"ronda","wordclass":"adjective"}]}]}).clean("Köszönöm szépen a segítséget!")
-	print(lara.nlp.trim(clean_common))
-	
+		
