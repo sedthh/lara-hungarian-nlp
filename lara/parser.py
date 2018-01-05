@@ -478,7 +478,7 @@ class Extract:
 	# extract list of http://urls/ from text	
 	def urls(self):
 		if self.text:
-			return re.compile(r'\b((?:https?\:[\/\\]{2}(?:w{3}\.)?|(?:w{3}\.))(?:[\w\d_\-]+\.\w{2,})(?:[\/\\](?:[\w\d\-_]+[\/\\]?)*)?(?:\?[^\s]+)?(?:\#[^\s]+)?)', re.IGNORECASE).findall(self.text)
+			return re.compile(r'\b((?:https?\:[\/\\]{2}(?:w{3}\.)?|(?:w{3}\.))(?:[\w\d_\-]+\.\w{2,})(?:[\/\\](?:[\w\d\-_]+[\/\\]?)*)?(?:\?[^\s]*)?(?:\#[^\s]+)?)', re.IGNORECASE).findall(self.text)
 		return []
 		
 	# extract list of smileys :) from text

@@ -306,13 +306,14 @@ def test_parser_intents_clean(intents,text,cleaned):
 @pytest.mark.parametrize("info", [
 	(
 		{
-			"text"	: "teszt szöveg"			
+			"text"		: "teszt szöveg"			
 		}
 	),
 	(
 		{
-			"text"	: "teszt szöveg https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-			"urls"	: ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"]
+			"text"		: "teszt szöveg https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+			"urls"		: ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"],
+			"smileys"	: ["=d"]
 		}
 	)
 ])
