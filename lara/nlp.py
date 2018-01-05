@@ -49,51 +49,6 @@ def remove_smileys(text,replace=''):
 		return re.sub(r'([:;]-?[Dd\(\)3]+)', replace, text)
 	return ''
 
-def find_hashtags(text):
-	if text:
-		return ['#{0}'.format(hashtag) for hashtag in re.compile(r'\B#([\w0-9_\-\']+)\b').findall(text)]
-	return []
-	
-def find_mentions(text):
-	if text:
-		return ['@{0}'.format(mention) for mention in re.compile(r'\B@([\w0-9_\-\'\.]+)\b').findall(text)]
-	return []
-	
-def find_urls(text):
-	if text:
-		return re.compile(r'\b(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})', re.IGNORECASE).findall(text)
-	return []
-	
-def find_smileys(text):
-	if text:
-		return re.compile(r'([:;]-?[Dd\(\)3]+)').findall(text)
-	return []
-
-def find_dates(text):
-	results	= []
-	if text:		
-		matches	= re.compile(r'\b((\d{2})?((\d{2}[\\\/\.\-]){1,2})(\d{2}\b))([aáeéo]n)?\b', re.IGNORECASE).findall(text)
-		for item in matches:
-			results.append(item[0])
-		matches	= re.compile(r'\b((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec)\w{0,10}(\W{1,2}\d{1,2})?)\b', re.IGNORECASE).findall(text)
-		for item in matches:
-			results.append(item[0])
-	return results
-	
-def find_currencies(text):
-	if text:
-		return [item[0] for item in re.compile(r'(((\$|€|£|￥)\s?(\d([\s\.,]\d)?)+)|((\d([\s\.,]\d)?)+\s?(\.\-|\$|€|£|￥|huf\b|ft\b|forint\w*|doll[aá]r\w*|eur[oó]\w*)))', re.IGNORECASE).findall(text)]
-	return []
-	
-def find_commands(text):
-	if text and text[0] == '/':
-		commands				= (trim(str(text[1:]))).split(" ")
-		if len(commands)>1:
-			return (commands[0],commands[1:])
-		else:
-			return (commands[0],[])
-	return ('',[])
-
 def vowel_harmony(word, vegyes=True):
 	if word:
 		mely	= re.compile('[aáoóuú]', re.IGNORECASE)
@@ -205,7 +160,7 @@ def tokenizer(text):
 def is_gibberish(text=''):
 	length	= float(len(text))
 	if length>6:
-		if find_urls(text):
+		if re.compile(r'\b(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})', re.IGNORECASE).findall(text):
 			return False
 		for char in text:
 			if char>='0' and char<='9':
@@ -251,7 +206,7 @@ def is_gibberish(text=''):
 		if redflags>1:
 			return True
 	return False
-	
+
 #TODO: more contexts
 def strip_context(text, context="search", including=None):
 	if text:

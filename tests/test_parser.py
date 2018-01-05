@@ -33,7 +33,7 @@ from lara import nlp, parser
 		]
 	),
 ])
-def test_parser_add(intents,text,match):
+def test_parser_intents_add(intents,text,match):
 	test	= []
 	test.append(parser.Intents(intents[0]))
 	test.append(test[0]+parser.Intents(intents[1]))
@@ -178,7 +178,7 @@ def test_parser_add(intents,text,match):
 		]
 	),
 ])
-def test_parser_match(intent,text,match):
+def test_parser_intents_match(intent,text,match):
 	test	= parser.Intents(intent)
 	for i in range(len(text)):
 		result	= test.match(text[i])
@@ -231,7 +231,7 @@ def test_parser_match(intent,text,match):
 		]
 	)
 ])
-def test_parser_match_set(intent,text,match):
+def test_parser_intents_match_set(intent,text,match):
 	test	= parser.Intents(intent)
 	for i in range(len(text)):
 		result	= test.match_set(text[i])
@@ -256,7 +256,7 @@ def test_parser_match_set(intent,text,match):
 		]
 	),
 ])
-def test_parser_match_best(intent,text,best):
+def test_parser_intents_match_best(intent,text,best):
 	test	= parser.Intents(intent)
 	for i in range(len(text)):
 		result	= test.match_best(text[i],i+1)
@@ -297,8 +297,31 @@ def test_parser_match_best(intent,text,best):
 		]
 	)
 ])
-def test_parser_clean(intents,text,cleaned):
+def test_parser_intents_clean(intents,text,cleaned):
 	for i in range(len(intents)):
 		test	= parser.Intents(intents[i])
 		result	= nlp.trim(test.clean(text[i]))
 		assert cleaned[i] == result
+		
+@pytest.mark.parametrize("info", [
+	(
+		{
+			"text"	: "teszt szöveg"			
+		}
+	),
+	(
+		{
+			"text"	: "teszt szöveg https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+			"urls"	: ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"]
+		}
+	)
+])
+def test_parser_extract(info):
+	test	= parser.Extract(info['text'])
+	check	= ['hashtags','mentions','urls','smileys','dates','currencies','emojis']
+	for item in check:
+		result	= eval('test.'+item+'()')
+		if item in info:
+			assert set(info[item]) == set(result)
+		else:
+			assert not result

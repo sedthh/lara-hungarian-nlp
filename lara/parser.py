@@ -23,6 +23,8 @@ class Intents:
 	##### CONSTRUCTOR #####
 	def __init__(self, new_intents={}, is_raw=False):	
 		self.intents	= {}
+		if not isinstance(new_intents, str) and not isinstance(new_intents, dict) and self.__class__.__name__ == new_intents.__class__.__name__:
+			raise ValueError('Unsupported value for Intents.')
 		if new_intents:
 			if is_raw:
 				self.raw(new_intents)
@@ -418,4 +420,122 @@ class Intents:
 				best_candidates	= best_candidates[:(min(len(best_candidates),n))]
 				return {item:score[item] for item in best_candidates}
 		return {}
+
+class Extract:
+	
+	##### CONSTRUCTOR #####
+	def __init__(self, text=''):	
+		if not isinstance(text, str):
+			raise ValueError('Constructor only accepts strings.')
+		elif text:
+			self.text	= text
+
+	##### DATA MODEL #####
+	def __repr__(self):
+		return "<Lara Extract Parser instance at {0}>".format(hex(id(self)))
+		
+	def __str__(self):
+		return self.text
+
+	def __len__(self):		
+		return len(self.text)
+	
+	def __eq__(self, other):
+		if self.__class__.__name__ == other.__class__.__name__:
+			return (self.text==other.text)
+		elif isinstance(other, bool):
+			return (len(self.text)!=0)==other
+		elif isinstance(other, str):
+			return self.text==other
+		return False
+	
+	def __ne__(self, other):
+		return not self.__eq__(other)
+	
+	def __add__(self, other):
+		if other:
+			if self.__class__.__name__ == other.__class__.__name__:
+				self.text	+= other.text
+			elif isinstance(other,str):
+				self.text	+= other
+			return self
+		return self
+	
+	##### CLASS FUNCTIONS #####
+	
+	# extract list #hashtags from text
+	def hashtags(self):
+		if self.text:
+			return ['#{0}'.format(hashtag) for hashtag in re.compile(r'#([\w\d]+(?:[\w\d_\-\']+[\w\d]+)+)\b').findall(self.text)]
+		return []
+	
+	# extract list of @hashtags from text
+	def mentions(self):
+		if self.text:
+			return ['@{0}'.format(mention) for mention in re.compile(r'@([\w\d_]+(?:[\w\d_\-\'\.]+[\w\d_]+)+)\b').findall(self.text)]
+		return []
+	
+	# extract list of http://urls/ from text	
+	def urls(self):
+		if self.text:
+			return re.compile(r'\b((?:https?\:[\/\\]{2}(?:w{3}\.)?|(?:w{3}\.))(?:[\w\d_\-]+\.\w{2,})(?:[\/\\](?:[\w\d\-_]+[\/\\]?)*)?(?:\?[^\s]+)?(?:\#[^\s]+)?)', re.IGNORECASE).findall(self.text)
+		return []
+		
+	# extract list of smileys :) from text
+	def smileys(self):
+		if self.text:
+			return re.compile(r'(?:[\:\;\=]\-*[DdXxCc\|\[\]\(\)3]+[89]?)|(?:[\(\)D\[\]\|]+\-*[\:\;\=])').findall(self.text)
+		return []
+
+	# extract list of common Hungarian date formats from text without further processing them
+	def dates(self):
+		results	= []
+		if self.text:		
+			matches	= re.compile(r'\b((\d{2})?((\d{2}[\\\/\.\-]){1,2})(\d{2}\b))([aáeéo]n)?\b', re.IGNORECASE).findall(self.text)
+			for item in matches:
+				results.append(item[0])
+			matches	= re.compile(r'\b((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec)\w{0,10}(\W{1,2}\d{1,2})?)\b', re.IGNORECASE).findall(self.text)
+			for item in matches:
+				results.append(item[0])
+		return results
+	
+	# extract list of common currencies from text (including $ € £ ￥ and forints)
+	def currencies(self):
+		if self.text:
+			return [item[0] for item in re.compile(r'(((\$|€|£|￥)\s?(\d([\s\.,]\d)?)+)|((\d([\s\.,]\d)?)+\s?(\.\-|\$|€|£|￥|huf\b|ft\b|forint\w*|doll[aá]r\w*|eur[oó]\w*)))', re.IGNORECASE).findall(self.text)]
+		return []
+	
+	# extract commands and arguments from text: "/help lara" will return ('help',['lara'])
+	def commands(self):
+		if self.text and self.text[0] == '/':
+			commands				= (trim(str(self.text[1:]))).split(" ")
+			if len(commands)>1:
+				return (commands[0],commands[1:])
+			else:
+				return (commands[0],[])
+		return ('',[])
+	
+	# extract list of emojis from text
+	def emojis(self):
+		if self.text:
+			emoji_pattern = re.compile("["
+					   u"\U0001F600-\U0001F64F"  # emoticons
+					   u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+					   u"\U0001F680-\U0001F6FF"  # transport & map symbols
+					   u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+					   "]", flags=re.UNICODE)
+			return emoji_pattern.findall(self.text)
+		return []
+	
+	# returns the approx. number of words in text	
+	def number_of_words(self):
+		if self.text:
+			return len(self.tokens())
+		return 0
+
+	# tokenizes text
+	def tokenizer(self):
+		if self.text:
+			return lara.nlp.tokenizer(self.text)
+		return []
 	
