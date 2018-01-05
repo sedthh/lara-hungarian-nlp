@@ -26,4 +26,6 @@ if __name__ == "__main__":
 	print(important_match)
 	print(locaiton_match)
 	
-	# check documentation if it's unclear why the scores are doubled
+	# A kapott pontok azért duplák, mert mind a helyes, 
+	# mind a lehetséges "elgépelt" formákat megtalálta a szövegben az Intents()
+	# Ennek működéséről a dokumentációban olvashatsz többet.

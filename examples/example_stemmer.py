@@ -16,23 +16,23 @@ if __name__ == "__main__":
 		maradt az elemző előtt. 
 	'''
 	
-	# Generate bigrams from words in text
+	# A szöveg szavaiból bigramokat generál
 	tokens	= nlp.tokenizer(text)
 	bigrams = nlp.ngram(tokens,2)
 	print(bigrams)
 	
-	# Stem words and generate bigrams
+	# A szöveg szavait stemmeli és ezekből bigramokat generál
 	stems	= tippmix.stemmer(text)
 	bigrams = nlp.ngram(stems,2)
 	print(bigrams)
 	
-	# Generates bigrams from text after stopwords are removed
+	# A szöveg szavaiból bigramokat generál, miután eltávolította a stopszavakat
 	text	= nlp.remove_stopwords(text)
 	tokens	= nlp.tokenizer(text)
 	bigrams = nlp.ngram(tokens,2)
 	print(bigrams)
 	
-	# Stems remaining words and generates bigrams
+	# A stopszavak eltávolítása után megmaradt szavakat stemmeli és ezekből generál bigramokat
 	stems	= tippmix.stemmer(text)
 	bigrams = nlp.ngram(stems,2)
 	print(bigrams)
