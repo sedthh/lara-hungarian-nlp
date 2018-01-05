@@ -17,7 +17,7 @@ from lara import nlp, parser
 			},
 			{
 				"zold"			: [{"stem":"zöld","wordclass":"adjective"}]
-			},
+			}
 		],
 		[
 			"Már a zöld almákat is szedjem le, vagy cask a pirosakat?",
@@ -165,7 +165,18 @@ def test_parser_add(intents,text,match):
 			{'megszerel': 2},
 			{'hibasan': 2}
 		]
-	)
+	),
+	(
+		{
+			"float"	: [{"stem":"a","score":.75},{"stem":"b","score":.6,"typo_score":1}],
+		},
+		[
+			"a b c"
+		],
+		[
+			{'float': 3.1},
+		]
+	),
 ])
 def test_parser_match(intent,text,match):
 	test	= parser.Intents(intent)
@@ -209,10 +220,14 @@ def test_parser_match(intent,text,match):
 			"talan"		: [{"stem":"TALÁN","wordclass":"verb","match_stem":False,"ignorecase":False}]
 		},
 		[
-			"Szótövet RAGOZATLANUL nem talál meg. TALÁN így?"
+			"SZÓTÖVEK SZÓTÖVEK SZÓTÖVEK",
+			"Szótövet RAGOZATLANUL nem talál meg. TALÁN így?",
+			"Ebben semmi sincs"
 		],
 		[
-			['szoto','ragoz']
+			['szoto'],
+			['szoto','ragoz'],
+			[]
 		]
 	)
 ])
@@ -226,15 +241,18 @@ def test_parser_match_set(intent,text,match):
 	(	
 		{
 			"kave"			: [{"stem":"kávé","wordclass":"noun","affix":["gép"]}],
-			"takarit"		: [{"stem":"takarít","wordclass":"verb"}]
+			"takarit"		: [{"stem":"takarít","wordclass":"verb"}],
+			"sehol"			: [{"stem":"sehol"}]
 		},
 		[
 			"Valakinek ki kellene takarítani a kávégépet. Tegnap is én takarítottam ki.",
+			"Kávé kávét kávénk kávém. Takarít.",
 			"Kávé kávét kávénk kávém. Takarít."
 		],
 		[
 			{'takarit': 4},
 			{'kave': 8, 'takarit': 2},
+			{'kave': 8, 'takarit': 2}
 		]
 	),
 ])

@@ -196,6 +196,11 @@ class Intents:
 		if 'typo_score' not in item:
 			item['typo_score']= item['score']
 		
+		if item['score']<0:
+			raise ValueError('Value of "score" can not be less than 0')
+		if item['typo_score']<0:
+			raise ValueError('Value of "typo_score" can not be less than 0')
+		
 		# cache pattern
 		if item['wordclass'] in ('regex','emoji'):
 			item['pattern']			= r''+item['stem']+item['affix']
@@ -245,7 +250,7 @@ class Intents:
 			final_score	= {}
 			for key, value in score.items():
 				if value:
-					final_score[key]=value
+					final_score[key]	= value
 			return final_score
 		else:
 			return {}
@@ -253,9 +258,14 @@ class Intents:
 	# Get set of matches from text
 	def match_set(self, text=""):
 		if text:
-			matches	= self.match(text)
-			return set(list(matches.keys()))
-		return set([])
+			score		= self._get_score(text,False)
+			final_score	= {}
+			for key, value in score.items():
+				if value:
+					final_score[key]	= value
+			return set(list(final_score.keys()))
+		else:
+			return set()
 	
 	# Remove matches from text
 	def clean(self, text=""):
@@ -297,7 +307,7 @@ class Intents:
 		return fix_text
 			
 	# Get score for intents in text
-	def _get_score(self, text):
+	def _get_score(self, text, greedy=True):
 		text		= lara.nlp.trim(text)
 		typo_text	= lara.nlp.strip_accents(lara.nlp.remove_double_letters(text))
 		score		= {}
@@ -338,6 +348,8 @@ class Intents:
 									score[key]	= 0
 								elif 'typo_stem' in sub_item and self._match_pattern(typo_text,sub_item,True)[0]:
 									score[key]	= 0
+					if not greedy and key in score and score[key] > 0:
+						break
 		return score
 	
 	# Find an intent in text
