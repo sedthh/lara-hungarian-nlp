@@ -315,11 +315,54 @@ def test_parser_intents_clean(intents,text,cleaned):
 			"urls"		: ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"],
 			"smileys"	: ["=d"]
 		}
+	),
+	(
+		{
+			"text"		: "@mention és #hashtag",
+			"mentions"	: ["@mention"],
+			"hashtags"	: ["#hashtag"],
+		}
+	),
+	(
+		{
+			"text"		: "@mention és #hashtag D:",
+			"mentions"	: ["@mention"],
+			"hashtags"	: ["#hashtag"],
+			"smileys"	: ["D:"],
+		}
+	),
+	(
+		{
+			"text"		: ":DDDDdddd :(((8888 :3 http://",
+			"smileys"	: [":DDDDdddd",":(((8888",":3"]
+		}
+	),
+	(
+		{
+			"text"		: "18/01/09 vagy 18-01-09 vagy 2018. 01. 09. vagy 2018. 01. 09-én vagy 2018 január 19-én",
+			"dates"		: ["18/01/09","18-01-09","2018. 01. 09","2018. 01. 09","2018 január 19"],
+		}
+	),
+	(
+		{
+			"text"		: "$5 000 vagy 5 000$ vagy 5000 dollár 5000.-",
+			"currencies": ["$5 000","5 000$","5000 dollár","5000.-"],
+		}
+	),
+	(
+		{
+			"text"		: "$ßŁł 🍹-😃🍔 :) ß¤é$× asddasd",
+			"emojis"	: ["🍹","😃","🍔"],
+			"smileys"	: [":)"]
+		}
 	)
 ])
 def test_parser_extract(info):
 	test	= parser.Extract(info['text'])
 	check	= ['hashtags','mentions','urls','smileys','dates','currencies','emojis']
+	for item in info:
+		if item!='text' and item not in check:
+			raise ValueError('Possible typo in test case:',item)
 	for item in check:
 		result	= eval('test.'+item+'()')
 		if item in info:

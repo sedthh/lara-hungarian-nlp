@@ -484,14 +484,14 @@ class Extract:
 	# extract list of smileys :) from text
 	def smileys(self):
 		if self.text:
-			return re.compile(r'(?:[\:\;\=]\-*[DdXxCc\|\[\]\(\)3]+[89]?)|(?:[\(\)D\[\]\|]+\-*[\:\;\=])').findall(self.text)
+			return re.compile(r'(?:[\:\;\=]\-*[DdXxCc\|\[\]\(\)3]+[89]*)|(?:[\(\)D\[\]\|]+\-*[\:\;\=])').findall(self.text)
 		return []
 
 	# extract list of common Hungarian date formats from text without further processing them
 	def dates(self):
 		results	= []
 		if self.text:		
-			matches	= re.compile(r'\b((\d{2})?((\d{2}[\\\/\.\-]){1,2})(\d{2}\b))([aáeéo]n)?\b', re.IGNORECASE).findall(self.text)
+			matches	= re.compile(r'\b((\d{2})?((\d{2}([\\\/\.\-]\s?|\s)){1,2})(\d{2}\.?\b))([aáeéio][ikn])?\b', re.IGNORECASE).findall(self.text)
 			for item in matches:
 				results.append(item[0])
 			matches	= re.compile(r'\b((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec)\w{0,10}(\W{1,2}\d{1,2})?)\b', re.IGNORECASE).findall(self.text)

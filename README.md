@@ -19,9 +19,9 @@
 	2. [To do list](#to-do-list)
 
 ## Description
-Due to the complexity of the hungarian language most known stemmers and lemmatisers either fail to find the correct lemmas or require a lot of computational power while relying on large dictionaries. **Lara** provides a smart workaround for this, by tackling the problem the other way around. The user can provide a set of root words and their word classes, and Lara will automatically create complex regular expressions to match most of the root words’ possible inflected forms. The user can then match any root word with a given text and check wether any inflected forms of that word are present. However, it is worth noting that this method might also give false positives for certain words.
+Due to the complexity of the Hungarian language most known stemmers and lemmatisers either fail to find the correct lemmas or require a lot of computational power while relying on large dictionaries. **Lara** provides a smart workaround for this, by tackling the problem the other way around. The user can provide a set of root words and their word classes, and Lara will automatically create complex regular expressions to match most of the root words' possible inflected forms. The user can then match any root word with a given text and check whether any inflected forms of that word are present. However, it is worth noting that this method might also give false positives for certain words.
 
-**Lara** is perfect for developing chatbots in hungarian language, where certain keywords would trigger certain answers. The Class will allow developers to easly match almost every possible inflected forms of any keyword in hungarian language. For example:
+**Lara** is perfect for developing chatbots in Hungarian language, where certain keywords would trigger certain answers. The Class will allow developers to easly match almost every possible inflected forms of any keyword in Hungarian language. For example:
 ```python
 {"to_do"		: [{"stem":"csinál","wordclass":"verb"}]}
 ```
@@ -35,10 +35,10 @@ Will match the intent „to_do” in the following sentences:
 - **Csinálhatott** volna mást is.
 - **Visszacsinalnad** az ekezeteket a billentyuzetemen, kerlek?
 
-The Class also comes with some basic NLP functions that are most useful for processing short texts in hungarian. Please note, that despite being an NLP Class, **Lara** is currently incompatible with languages other than hungarian. It was developed with the focus on all the quirks and specialities of the hungarian grammar in mind and was not meant to be an equally useful processing tool for all languages. 
+The Class also comes with some basic NLP functions that are most useful for processing short texts in hungarian. Please note, that despite being an NLP Class, **Lara** is currently incompatible with languages other than Hungarian. It was developed with the focus on all the quirks and specialties of the Hungarian grammar in mind and was not meant to be an equally useful processing tool for all languages. 
 
 ## Documentation
-**The usage of the Class will be explained in hungarian.**
+**The usage of the Class will be explained in Hungarian.**
 
 A **Lara** egy magyar nyelvű, alacsony számítási igényű szövegfeldolgozó osztály Python 3 alá, rövid szöveges üzenetek kulcsszavainak kinyerésére. Automatizálva megállapíthatjuk a szöveg szándékát, úgy, hogy egy dictionary-ben szándékokat definiálunk, amelyekhez a hozzájuk tarrtozó szavak listáját rendeljük. Az elfogadott szavak ezen listájában elegendő a szó szótövét és annak szófaját definiálnunk. Ezek alapján az osztály olyan reguláris kifejezéseket hoz létre, amelyek az adott szótő majdnem minden szófajának megfelelő ragozott alakját képes azonosítani a folyószövegben. 
 
@@ -251,8 +251,8 @@ print(match_common)
 | `lara.entities.commands()` | Common menu commands for Chatbot conversations | `ok, cancel, next, back, save, open, delete, exit, options, menu, login, logout, error, search` |
 | `lara.entities.counties()` | Hungarian counties and county seats | `bacs-kiskun, baranya, bekes, borsod-abauj-zemplen, csongrad, fejer, gyor-moson-sopron, hajdu-bihar, heves, jasz-nagykun-szolnok, komarom-esztergom, nograd, pest, somogy, szabolcs-szatmar-bereg, tolna, vas, veszprem, zala` |
 | `lara.entities.dow()` | Days of the week. Will also match `hetvege` or `hetkoznap` when matching a day. | `ma, holnap, holnaputan, tegnap, tegnapelott, hetfo, kedd, szerda, csutortok, pentek, szombat, vasarnap, hetkoznap, hetvege` |
-| `lara.entities.smalltalk()` | Common small talk topics | `well_done, user_love, user_flirting, user_bored, user_happy, user_sad, user_friend, how_are_you, about_name, about_you, about_creator, about_look, about_age, about_location, about_family, are_you_a_robot, can_you_hear_me, weather, news, joke` |
-| `lara.entities.popculture()` | Common cyberpunk/Sci-Fi android/robot/AI pop culture references | `turing, matrix, terminator, mrrobot, bladerunner, spaceodyssey, starwars, drwho, undertale, portal, mgs, systemshock, deusex, jarvis, google, alexa, siri, cortana, gits, dragonball, evangelion, flcl, cowboybebop, megaman, chobits, kizunaai, hatsunemiku, astroboy, onepunchman, doraemon` |
+| `lara.entities.smalltalk()` | Common small talk topics | `well_done, user_love, user_flirting, user_bored, user_happy, user_sad, user_friend, how_are_you, about_name, about_you, about_creator, about_look, about_age, about_location, about_family, about_software, about_thoughts, are_you_a_robot, are_you_hungry, are_you_thirsty, are_you_busy, are_you_lying, can_you_hear_me, weather, news, joke` |
+| `lara.entities.popculture()` | Common cyberpunk/Sci-Fi android/robot/AI pop culture references | `turing, matrix, terminator, mrrobot, bladerunner, spaceodyssey, starwars, drwho, undertale, portal, mgs, systemshock, deusex, jarvis, google, alexa, siri, cortana, gits, dragonball, evangelion, flcl, cowboybebop, megaman, chobits, kizunaai, hatsunemiku, astroboy, onepunchman, doraemon, her, tron` |
 | `lara.entities.emoji()` | Common smileys and emojis translated to the type of feelings they represent | `happy, sad, like, dislike, love, wow, angry, scared, confused` |
 
 Some named entities (commands and smalltalk) might give false positive if used out of context. It is recommended that you build your Chatbot in a way, that reacting to more important intents have a higher priority. 
@@ -317,7 +317,7 @@ Setting multiple properties for intents can be useful in detecting patterns:
 - In addition to actual words, regular expressions can also be defined as "stem"s. This also applies to "with" and "without" properties' "stem"s. 
 - Both "prefix"es and "affix"es can be set at the same time.
 - In case inflection would alter a word's "stem", try defining the altered form as another possible Intent **list** element, with the "match_stem" property set to **False**. This way the defined "stem" would only be matched if inflected.  
-- If it is unclear wether or not an iflected word form would be matched by the given definitions, it is always a good idea to manually test it first.
+- If it is unclear whether or not an inflected word form would be matched by the given definitions, it is always a good idea to manually test it first.
 - If you use **Lara** for feature extraction, it is recommended to retrain your machine learning models after updating the library to a newer version.
 
 ## Misc
@@ -339,11 +339,11 @@ Recent projects based on **Lara**:
 
 
 #### To do list
-- Add more word classes (including: numerals nad pronouns).
+- Add more word classes (including: numerals and pronouns).
 - Expand named-entity recognition dictionaries.
-- Implement furhter NLTK functions aimed for the hungarian language.
-- Rewrite regular expressions in a way that autoamtic POS-tagging would be possible in hungarian.
-- Create dictionaries to enable sentiment analysis in hungarian.
+- Implement further NLTK functions aimed for the Hungarian language.
+- Rewrite regular expressions in a way that automatic POS-tagging would be possible in Hungarian.
+- Create dictionaries to enable sentiment analysis in Hungarian.
 - Create unit tests
 
 This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details

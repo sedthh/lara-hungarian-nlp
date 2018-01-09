@@ -84,9 +84,9 @@ def dow():
 # small talk intents
 def smalltalk():
 	return {
-		"well_done"			: [{"stem":"fasza"},{"stem":"jó","prefix":["kurva"],"without":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"j[oó]l\s?van","wordclass":"regex"},{"stem":"király"},{"stem":"ügyes"},{"stem":"sz[eé]p\s(volt|munka)","wordclass":"regex"},{"stem":"ez\s(lesz\s)?az","wordclass":"regex"},{"stem":"👍","wordclass":"emoji"},{"stem":"\(Y\)","wordclass":"regex","boundary":False}],
+		"well_done"			: [{"stem":"fasza"},{"stem":"jó","prefix":["kurva"],"without":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"j[oó]l\s?van","wordclass":"regex"},{"stem":"király"},{"stem":"ügyes"},{"stem":"sz[eé]p\s(volt|munka)","wordclass":"regex"},{"stem":"ez\s(lesz\s)?az","wordclass":"regex"},{"stem":"👍","wordclass":"emoji"},{"stem":"\(Y\)","wordclass":"regex","boundary":False},{"stem":"profi vagy"}],
 		"user_love"			: [{"stem":"szeretlek"},{"stem":"szeretsz engem"},{"stem":"tetszek neked"},{"stem":"tetszel nekem","without":[{"stem":"nem"}]},{"stem":"tetszek neked"},{"stem":"szerelmes.+?bel[eé]d","wordclass":"regex"},{"stem":"bel[eé]d.+?szerettem","wordclass":"regex"}],
-		"user_flirting"		: [{"stem":"(mi|milyen|ruha).+?van\s+rajtad","wordclass":"regex"},{"stem":"(meg)?(basz|dug)(unk|n[aá]lak|lak)","wordclass":"regex"},{"stem":"sz?ex(e[lt]\w*)?","wordclass":"regex"}],
+		"user_flirting"		: [{"stem":"(mi|milyen|ruha).+?van\s+rajtad","wordclass":"regex"},{"stem":"(meg)?(basz|dug)(unk|n[aá]lak|lak)","wordclass":"regex"},{"stem":"sz?ex(e[lt]\w*)?","wordclass":"regex"},{"stem":"folyt(ogas+d?|s([aá]l)? meg) (a nyakam )?(a\s|egy\s)?(d[oö]gl[oö]tt|halott) macsk[aá]val","wordclass":"regex"}],
 		"user_bored"		: [{"stem":"un(atkoz)?(om|unk)","wordclass":"regex"}],
 		"user_happy"		: [{"stem":"j[oó]\s(a\s)?kedvem(\svan)?","wordclass":"regex","without":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"jól vagyok","without":[{"stem":"nincs"},{"stem":"nem"}]}],
 		"user_sad"			: [{"stem":"j[oó]\s(a\s)?kedvem","wordclass":"regex","with":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"szomorú","wordclass":"adjective","with":[{"stem":"vagyok"}]},{"stem":"nem\s+(vagyok|[eé]rzem).+?j[oó]l","wordclass":"regex"}],
@@ -99,7 +99,13 @@ def smalltalk():
 		"about_age"			: [{"stem":"mennyi idős vagy"},{"stem":"hány éves vagy"},{"stem":"melyik évben születtél"},{"stem":"mikor születtél"},{"stem":"(melyik\s[eé]vben|mikor)\sk[eé]sz([uü]lt[eé]l|[ií]tettek)","wordclass":"regex"},{"stem":"(h[aá]nyadik|mikor\s(van|[uü]nnepled)\sa)\ssz[uü]l(et[eé]s|i)napod(at)?","wordclass":"regex"},{"stem":"hány\sévesnek\s\w+\smagad(at)?","wordclass":"regex"}],
 		"about_location"	: [{"stem":"(hol|helyen)\s(k[eé]sz[uü]lt[eé]l|k[eé]sz[ií]tettek|sz[uü]lett[eé]l|(hoztak|j[oö]tt[eé]l).+?l[eé]tre)","wordclass":"regex"},{"stem":"honnan\s(sz[aá]rmazol|[ií]rsz)","wordclass":"regex"},{"stem":"ho(nnan|l)\svagy\s(helyileg|most|pontosan)","wordclass":"regex"},{"stem":"(hol\s)?(van|az).+?otthonod","wordclass":"regex"}],
 		"about_family"		: [{"stem":"ki(k|t|ket)?\s(az?\s|tartasz\sa\s)?(te\s)?(csal[aá]dod(nak)?|sz[uü]l(t|ett[eé]l)|sz[uü]leid(nek)?|([eé]des)?(any(uk)?[aá]d|ap(uk)?[aá]d)(nak)?)","wordclass":"regex"},{"stem":"csal[aá]dban\s([eé]l(sz|tek)|sz[uü]lett[eé]l)","wordclass":"regex"},{"stem":"(h[aá]ny|van(nak)?)\stestv[eé]rei?d","wordclass":"regex"},{"stem":"(kik?|van(nak)?[\-\s]?e?)(\sa)?(\shozz[aá]d?\s?tartoz[oó]i?d|csal[aá]dod)","wordclass":"regex"}],
+		"about_software"	: [{"stem":"(hogy(hogy|an)?|mit[oöő]l) (m[uüű]k[oö]dsz|(tudsz |vagy k[eé]pes )?(meg)?[eé]rte(sz|d|ni)\,? (meg )?(hogy )?(a?mit mond(ok|tam)|a?mit [ií]r(ok|tam)|engem))","wordclass":"regex"}],
+		"about_thoughts"	: [{"stem":"mi(n|re) (gondol(kodsz|kodol|sz)|agyalsz|t[oö]prenge?sz|j[aá]r a? (fejed|agyad))","wordclass":"regex"}],
 		"are_you_a_robot"	: [{"stem":"(te\s)?(egy\s)?(igazi\s|val[oó](s|di)\s|h[uú]s[\-\s]?v[eé]r\s)?(ember|szem[eé]ly|(an)?droid)\svagy","wordclass":"regex"},{"stem":"(robot|chatbot|ai|mesters[eé]ges\sintel+igencia|g[eé]p|humanoid|programozva)\svagy","wordclass":"regex"},{"stem":"(emberrel|szem[eé]l+yel|robottal|programmal|algoritmussal|g[eé]ppel)\s(besz[eé]l(get)?ek|csevegek|levelezek|konzult[aá]lok)","wordclass":"regex"},{"stem":"(embernek|szem[eé]lynek|robotnak|programnak|algoritmusnak)\s([ií]ro(gato)?[km]|magyar[aá]zo[km])","wordclass":"regex"},{"stem":"(embernek|intelligensnek|szem[eé]lynek|robotnak|g[eé]pnek)\s(hiszed|tartod|gondolod)\smagad(at)?","wordclass":"regex"}],
+		"are_you_hungry"	: [{"stem":"kérsz enni"},{"stem":"nem vagy éhes"},{"stem":"éhes vagy"},{"stem":"(nem )?enn[eé]l valamit?","wordclass":"regex"}],
+		"are_you_thirsty"	: [{"stem":"kérsz inni"},{"stem":"nem vagy szomjas"},{"stem":"szomjas vagy"},{"stem":"(nem )?i(nn[aá]|szo)l valamit?","wordclass":"regex"}],
+		"are_you_busy"		: [{"stem":"elfoglalt","with":[{"stem":"vagy"}]},{"stem":"r[aá]m? [eé]rsz( most)?","wordclass":"regex"},{"stem":"(van|volna) (most )?(egy )?kis id[oöő]d( r[aá]m)?","wordclass":"regex"}],
+		"are_you_lying"		: [{"stem":"hazud","wordclass":"verb"},{"stem":"nem mondt[aá][dl] (el az )?igazat","wordclass":"regex"}],
 		"can_you_hear_me"	: [{"stem":"(olvassa|hallja|n[eé]zi|van\sitt)(\sezt)?\s(vala|b[aá]r)ki(\sis)?","wordclass":"regex"},{"stem":"(hall(asz|od)|l[aá]t(sz|od)|vesze[ld])\s(engem|amit\s(mondok|[ií]rok|k[eé]rdezek))","wordclass":"regex"},{"stem":"valaki\s(hall(ja)?\s|olvassa|figyeli?(\sarra)?)\samit\s(ide\s?|itt\s)?([ií]rok|mondok|k[eé]rdezek)","wordclass":"regex"}],
 		"weather"			: [{"stem":"időjárás","affix":["jelentés"],"wordclass":"noun"},{"stem":"(milyen|j[oó]|sz[eé]p)\s(lesz\s)?(az\s)?id[oöő](nk)?(\slesz)?","wordclass":"regex"}],
 		"news"				: [{"stem":"hír","affix":["adó"],"wordclass":"noun"},{"stem":"újság","prefix":["hír"],"wordclass":"noun"},{"stem":"valami\s[uú]j((don)?s[aá]g(ot)?)?","wordclass":"regex"},{"stem":"t[oö]rt[eé]nt(ek)?\s(ma\s)?(az?|valami(\saz?)?)\s((nagy)?vil[aá]gban|fontos|esem[eé]ny|napokban)","wordclass":"regex"}],
@@ -126,7 +132,7 @@ def popculture():
 		"google"			: [{"stem":"OK(ay|[eé])? Google","wordclass":"regex"},{"stem":"Google (home|assistant|asszisztens)","wordclass":"regex"}],
 		"alexa"				: [{"stem":"Alexa","wordclass":"noun"}],
 		"siri"				: [{"stem":"Siri","wordclass":"noun"}],
-		"cortana"			: [{"stem":"Cortana","wordclass":"noun"},{"stem":"Master Chief"},{"stem":"John[\-\s]?117","wordclass":"regex"}],
+		"cortana"			: [{"stem":"Cortana","wordclass":"noun"},{"stem":"Master Chief"},{"stem":"John[\-\s]?117","wordclass":"regex"},{"stem":"Clippy"}],
 		"gits"				: [{"stem":"Motoko","wordclass":"noun"},{"stem":"Kusanagi","wordclass":"noun"},{"stem":"Batou"},{"stem":"Tachikoma","wordclass":"noun"},{"stem":"(the\s)?pup+ete+r","wordclass":"regex"},{"stem":"bábjátékos","wordclass":"noun"}],
 		"dragonball"		: [{"stem":"Android 1[678]","wordclass":"regex"}],
 		"evangelion"		: [{"stem":"evangelion"},{"stem":"NERV"}],
@@ -136,9 +142,11 @@ def popculture():
 		"chobits"			: [{"stem":"Chi+","wordclass":"regex"},{"stem":"chobit"},{"stem":"persocom"}],
 		"kizunaai"			: [{"stem":"Kizuna"}],
 		"hatsunemiku"		: [{"stem":"Hatsune"},{"stem":"Vocaloid"}],
-		"astroboy"			: [{"stem":"Astro Boy"},{"stem":"Astroboy"}],
+		"astroboy"			: [{"stem":"Astro Boy"}],
 		"onepunchman"		: [{"stem":"Genos"}],
-		"doraemon"			: [{"stem":"Doraemon"}]
+		"doraemon"			: [{"stem":"Doraemon"}],
+		"her"				: [{"stem":"Samantha","wordclass":"noun"},{"stem":"Theodore"},{"stem":"Scarlett Johansson"}],
+		"tron"				: [{"stem":"Tron","wordclass":"noun"},{"stem":"Master Control Program"},{"stem":"Mester Kontroll Program"},{"stem":"end of line"}]
 	}
 
 # smiley and emoji references ️

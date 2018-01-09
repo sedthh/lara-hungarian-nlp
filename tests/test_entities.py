@@ -3,7 +3,7 @@
 import pytest
 import os.path, sys
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
-from lara import entities
+from lara import parser, entities
 
 def validate_intent(intents):
 	valid_keys	= set(['stem','clean_stem','affix','clean_affix','prefix','clean_prefix','wordclass','with','without','score','clean_score','match_stem','match_at','ignorecase','boundary'])
@@ -27,5 +27,6 @@ def validate_intent(intents):
 @pytest.mark.parametrize("entity", [
     "common","commands","counties","dow","smalltalk","popculture","emoji"
 ])
-def test_entities(entity):	
+def test_entities(entity):
+	parenthesis_check = eval('parser.Intents(entities.'+entity+'()).match_set("test")')
 	eval('validate_intent(entities.'+entity+'())')
