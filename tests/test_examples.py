@@ -4,7 +4,7 @@ import pytest
 import os, errno, subprocess
 
 @pytest.mark.parametrize("entity", [
-    "example_chatbot_1","example_chatbot_2","example_chatbot_3","example_chatbot_4","example_chatbot_5","example_huszt","example_news","example_readme","example_stemmer","example_tweet"
+    "example_chatbot_1","example_chatbot_2","example_chatbot_3","example_chatbot_4","example_chatbot_5","example_huszt","example_news","example_wiki_intents","example_stemmer","example_tweet","example_entities"
 ])
 def test_entities(entity):
 	file	= os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir, 'examples/', entity+'.py')

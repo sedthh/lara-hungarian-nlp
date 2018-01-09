@@ -2,9 +2,9 @@
 
 import os.path, sys
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
-import lara
+from lara import parser
 
-''' Examples found in README.md'''
+''' Examples found in "Intents_examples" Wiki Page '''
 
 if __name__ == "__main__":
 	alma_intents	= {
@@ -12,13 +12,13 @@ if __name__ == "__main__":
 		"szed"			: [{"stem":"szed","wordclass":"verb"}],
 		"piros"			: [{"stem":"piros","wordclass":"adjective"}]
 	}
-	alma_test		= lara.parser.Intents(alma_intents)
+	alma_test		= parser.Intents(alma_intents)
 	print(alma_test.match("Mikor szedjük le a pirosabb almákat?"))
 	
 	igekoto_intents	= {
 		"to_do"			: [{"stem":"csinál","wordclass":"verb"}],
 	}
-	igekoto_test		= lara.parser.Intents(igekoto_intents)
+	igekoto_test		= parser.Intents(igekoto_intents)
 	
 	print(igekoto_test.match("Ő mit csinál a szobában?"))
 	print(igekoto_test.match("Mit fogok még csinálni?"))
@@ -33,14 +33,14 @@ if __name__ == "__main__":
 		"auto"			: [{"stem":"autó","wordclass":"noun","affix":["busz"]}],
 		"szinten_jo"	: [{"stem":"pálya","wordclass":"noun","prefix":["busz"],"affix":["udvar"]}]
 	}
-	busz_test		= lara.parser.Intents(busz_intents)
+	busz_test		= parser.Intents(busz_intents)
 	print(busz_test.match("Lassan beérünk az autóval a pályaudvarra."))
 	print(busz_test.match("Lassan beérünk az autóbusszal a buszpályaudvarra."))
 	
 	hasonul_intents	= {
 		"enni"		: [{"stem":"esz","wordclass":"verb","match_stem":False},{"stem":"en","wordclass":"verb","match_stem":False}]
 	}
-	hasonul_test	= lara.parser.Intents(hasonul_intents)
+	hasonul_test	= parser.Intents(hasonul_intents)
 	print(hasonul_test.match("Tőmorfémák: esz, en."))		# nem veszi figyelembe
 	print(hasonul_test.match("Eszel valamit?"))
 	print(hasonul_test.match("Azt nem lehet megenni."))
@@ -49,7 +49,7 @@ if __name__ == "__main__":
 		"jo_ido"	: [{"stem":"jó","wordclass":"adjective",
 						"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}]}]
 	}
-	egyutt_test		= lara.parser.Intents(egyutt_intents)
+	egyutt_test		= parser.Intents(egyutt_intents)
 	print(egyutt_test.match("Jó."))							# nem veszi figyelembe
 	print(egyutt_test.match("Meleg van."))					# nem veszi figyelembe
 	print(egyutt_test.match("Milyen az időjárás?"))			# nem veszi figyelembe
@@ -63,7 +63,7 @@ if __name__ == "__main__":
 						"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}],
 						"without":[{"stem":"este","wordclass":"noun"}]}]
 	}
-	kulon_test		= lara.parser.Intents(kulon_intents)
+	kulon_test		= parser.Intents(kulon_intents)
 	print(kulon_test.match("Jó."))							# nem veszi figyelembe
 	print(kulon_test.match("Jó meleg az időjárás."))		# dupla pont
 	print(kulon_test.match("Jó estét!"))					# nem veszi figyelembe
@@ -73,13 +73,8 @@ if __name__ == "__main__":
 		"megszerel"	: [{"stem":"szerel","wordclass":"verb"}],
 		"hibasan"	: [{"stem":"alma","wordclass":"noun"}],
 	}
-	hibas_test		= lara.parser.Intents(fals_pozitiv)
+	hibas_test		= parser.Intents(fals_pozitiv)
 	print(hibas_test.match("Gyönyörű dolog a szerelem"))	# elfogadja hibásan
 	print(hibas_test.match("Ezt is elfogadja találatként: Almainüdböz"))	# elfogadja hibásan
 
-	match_common	= lara.parser.Intents(lara.entities.common()).match_set("Köszönöm szépen a segítséget!")
-	print(match_common)
-	
-	clean_common	= lara.parser.Intents(lara.entities.common()).clean("Köszönöm szépen a segítséget!")
-	print(lara.nlp.trim(clean_common))
 		
