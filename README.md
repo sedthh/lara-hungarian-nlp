@@ -1,6 +1,6 @@
-**Lara** is a lightweight Python3 NLP library for Chatbot AI developement in Hungarian language. Instead of developing an all purpose NLTK library, **Lara** was created to fit the quirks and uniqueness of the Hungarian (online) language as much as possible.
+#### **Lara** is a lightweight Python3 NLP library for Chatbot AI developement in Hungarian language. 
 
-The library is capable of matching inflected forms of keywords in text messages written in Hungarian. It also comes with a collection of common NLP functions for text processing, and can even identify common expressions and small talk topics in discussions.
+Instead of being an all purpose NLP tool, **Lara** was created to fit the quirks and uniqueness of the Hungarian (online) language as much as possible. The library is capable of matching inflected forms of keywords in text messages written in Hungarian. It also comes with functions for text processing, and can even identify common expressions and small talk topics in discussions.
 
 # Table of contents
 
@@ -8,7 +8,7 @@ The library is capable of matching inflected forms of keywords in text messages 
 	1. [Find intents](#find-intents)
 	2. [Extract information](#extract-information)
 	3. [Handle common topics](#handle-common-topics)
-	4. [Create ML features](#ecreate-ml-features)
+	4. [Create ML features](#create-ml-features)
 	5. [And much more](#and-much-more)
 2. [Misc.](#misc)
 
