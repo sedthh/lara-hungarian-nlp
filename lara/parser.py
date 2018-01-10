@@ -538,4 +538,8 @@ class Extract:
 		if self.text:
 			return lara.nlp.tokenizer(self.text)
 		return []
+		
+	# True if word has a digit in it	
+	def hasDigits(self):
+		return any(char.isdigit() for char in self.text)	
 	

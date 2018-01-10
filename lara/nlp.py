@@ -33,7 +33,7 @@ def remove_urls(text, replace=''):
 	if text:
 		return re.sub(r'(((https?://)|(www))([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?)?)', replace, text)
 	return ''
-		
+	
 def remove_email_addresses(text, replace=''):
 	if text:
 		return re.sub(r'[^@\s]*@[^@\s]*\.[^@\s]*', replace, text)
@@ -46,7 +46,7 @@ def remove_html_tags(text, replace=''):
 
 def remove_smileys(text,replace=''):
 	if text:
-		return re.sub(r'([:;]-?[Dd\(\)3]+)', replace, text)
+		return re.sub(r'(?:[\:\;\=]\-*[DdXxCc\|\[\]\(\)3]+[89]*)|(?:[\(\)D\[\]\|]+\-*[\:\;\=])', replace, text)
 	return ''
 
 def vowel_harmony(word, vegyes=True):
@@ -360,10 +360,6 @@ def number_of_syllables(word,rhyme=False):
 		word	= re.compile('(sz)|(cs)|(zs)|(gy)|(ly)|(ny)|(ty)').sub('x',word.lower().strip())
 		szotag	= len(word)
 	return szotag
-
-# True if word has a digit in it	
-def hasDigits(text):
-	return any(char.isdigit() for char in text)	
 
 # generates list of ngrams from list of tokens
 def ngram(tokens,n=2):
