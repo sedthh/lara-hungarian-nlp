@@ -4,7 +4,7 @@ import os.path, sys
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 from lara import nlp
 
-''' Basic chatbot that just prints out replies '''
+''' Basic Chatbot that just prints out replies '''
 
 if __name__ == "__main__":
 	

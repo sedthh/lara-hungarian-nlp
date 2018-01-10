@@ -508,7 +508,7 @@ class Extract:
 	# extract commands and arguments from text: "/help lara" will return ('help',['lara'])
 	def commands(self):
 		if self.text and self.text[0] == '/':
-			commands				= (trim(str(self.text[1:]))).split(" ")
+			commands				= (lara.nlp.trim(str(self.text[1:]))).split(" ")
 			if len(commands)>1:
 				return (commands[0],commands[1:])
 			else:
