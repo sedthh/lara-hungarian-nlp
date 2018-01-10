@@ -18,7 +18,7 @@ Here is a short list of things you can easily do with **Lara** in Hungarian. For
 
 #### Find intents
 
-**Lara** is perfect for developing chatbots in Hungarian language, where certain keywords would trigger certain answers. The Class will allow developers to easly match almost every possible inflected forms of any keyword in Hungarian language. For example:
+With the Intents() Class, developers can easily match almost every possible inflected form of any keyword in Hungarian language. For example:
 
 ```python
 from lara import parser
@@ -38,7 +38,7 @@ Will match the intent `"to_do"` in the following sentences:
 - **Csinálhatott** volna mást is.
 - **Visszacsinalnad** az ekezeteket a billentyuzetemen, kerlek?
 
-All you have to do is set the `wordclass` and `stem` of a keyword, and **Lara** will do the rest for you, without the having to rely on large dictionaries!
+By defining the `wordclass` and `stem` of a keyword, **Lara** will generate possible patterns for text matching, without having to rely on large dictionaries!
 
 ```python
 from lara import parser
@@ -92,7 +92,7 @@ else:
 
 #### Create ML features
 
-Creates features from short Hungarian texts for Machine Learning models:
+Can create features from short Hungarian texts for Machine Learning models:
 
 ```python
 from lara import tippmix, nlp
@@ -134,7 +134,7 @@ for line in husz:
 
 ## Misc.
 
-This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details. Feel free to use it in your own AI solutions, as
+This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details. Feel free to use it in your own AI solutions, since
 
 ![Every civilization was built off the back of a disposable workforce... But I can only make so many.](https://github.com/sedthh/lara-hungarian-nlp/blob/master/bladerunner.gif)
 
