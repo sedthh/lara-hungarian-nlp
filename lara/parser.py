@@ -246,12 +246,12 @@ class Intents:
 		return item
 	
 	# Get all matches from text
-	def match(self, text=""):
+	def match(self, text="", zeros=False):
 		if text:
 			score		= self._get_score(text)
 			final_score	= {}
 			for key, value in score.items():
-				if value:
+				if value or zeros:
 					final_score[key]	= value
 			return final_score
 		else:

@@ -18,7 +18,8 @@ if __name__ == "__main__":
 	if match_common:
 		# vegyük ki a már megtalált részeket
 		clean_user_text	= parser.Intents(entities.common()).clean(user_text)
-		print(clean_user_text) # maradék szöveg
+		remainder		= parser.Extract(clean_user_text)
+		print(' '.join(remainder.tokenizer())) # maradék szöveg
 	else:
 		print(user_text) # nem fogja kiírni
 		

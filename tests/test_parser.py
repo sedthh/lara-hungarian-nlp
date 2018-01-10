@@ -261,6 +261,29 @@ def test_parser_intents_match_best(intent,text,best):
 	for i in range(len(text)):
 		result	= test.match_best(text[i],i+1)
 		assert best[i] == result
+
+@pytest.mark.parametrize("intent,text,best", [
+	(	
+		{
+			"kave"			: [{"stem":"kávé","wordclass":"noun","affix":["gép"]}],
+			"takarit"		: [{"stem":"takarít","wordclass":"verb"}],
+			"sehol"			: [{"stem":"sehol"}]
+		},
+		[
+			"Valakinek ki kellene takarítani a a tudod mit. Tegnap is én takarítottam ki.",
+			"Kávé kávét kávénk kávém. Takarít.",
+		],
+		[
+			{'kave': 0, 'takarit': 4, 'sehol': 0},
+			{'kave': 8, 'takarit': 2, 'sehol': 0},
+		]
+	),
+])
+def test_parser_intents_match_zeros(intent,text,best):
+	test	= parser.Intents(intent)
+	for i in range(len(text)):
+		result	= test.match(text[i],True)
+		assert best[i] == result
 		
 @pytest.mark.parametrize("intents,text,cleaned", [
 	(
