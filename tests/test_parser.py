@@ -341,16 +341,14 @@ def test_parser_intents_clean(intents,text,cleaned):
 	),
 	(
 		{
-			"text"		: "@mention és #hashtag",
+			"text"		: "@mention",
 			"mentions"	: ["@mention"],
-			"hashtags"	: ["#hashtag"],
 		}
 	),
 	(
 		{
-			"text"		: "@mention és #hashtag D:",
+			"text"		: "@mention D:",
 			"mentions"	: ["@mention"],
-			"hashtags"	: ["#hashtag"],
 			"smileys"	: ["D:"],
 		}
 	),
@@ -401,7 +399,7 @@ def test_parser_intents_clean(intents,text,cleaned):
 ])
 def test_parser_extract(info):
 	test	= parser.Extract(info['text'])
-	check	= ['hashtags','mentions','urls','smileys','dates','durations','currencies','emojis','emails']
+	check	= ['mentions','urls','smileys','dates','durations','currencies','emojis','emails']
 	for item in info:
 		if item!='text' and item not in check:
 			raise ValueError('Possible typo in test case:',item)
@@ -464,6 +462,21 @@ def test_parser_extract(info):
 			"function"	: "percentages",
 			"args"		: [False],
 			"result"	: ["90%","0.5 %","0,4%",".7 %"]
+		}
+	),
+	(
+		{
+			"text"		: "#hashtag #YOLO",
+			"function"	: "hashtags",
+			"result"	: ["#hashtag","#yolo"]
+		}
+	),
+	(
+		{
+			"text"		: "#hashtag #YOLO",
+			"function"	: "hashtags",
+			"args"		: [False],
+			"result"	: ["#hashtag","#YOLO"]
 		}
 	)
 ])

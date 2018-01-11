@@ -65,7 +65,20 @@ tweet		= 'A robotok elveszik a munkát! #NLP #Chatbot'
 hashtags	= parser.Extract(tweet).hashtags()
 print(hashtags)
 
->>> ['#NLP','#Chatbot']
+>>> ['#nlp','#chatbot']
+```
+
+And normalization of extracted strings:
+
+```python
+from lara import parser
+
+sms			= 'Hívj fel! A számom 30/123 4567!'
+print(parser.Extract(sms).phone_numbers(False))
+print(parser.Extract(sms).phone_numbers(True))
+
+>>> ['30/123 4567']
+>>> ['+36 30 1234567']
 ```
 
 #### Handle common topics

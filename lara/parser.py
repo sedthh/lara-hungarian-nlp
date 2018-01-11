@@ -464,9 +464,13 @@ class Extract:
 	##### CLASS FUNCTIONS #####
 	
 	# extract list #hashtags from text
-	def hashtags(self):
+	def hashtags(self,normalize=True):
 		if self.text:
-			return ['#{0}'.format(hashtag) for hashtag in re.compile(r'#([\w\d]+(?:[\w\d_\-\']+[\w\d]+)+)\b').findall(self.text)]
+			matches	= re.compile(r'#([\w\d]+(?:[\w\d_\-\']+[\w\d]+)+)\b').findall(self.text)
+			if normalize:
+				return ['#{0}'.format(hashtag.lower()) for hashtag in matches]
+			else:
+				return ['#{0}'.format(hashtag) for hashtag in matches]
 		return []
 	
 	# extract list of @hashtags from text
