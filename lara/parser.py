@@ -487,6 +487,28 @@ class Extract:
 			return re.compile(r'(?:[\:\;\=]\-*[DdXxCc\|\[\]\(\)3]+[89]*)|(?:[\(\)D\[\]\|]+\-*[\:\;\=])').findall(self.text)
 		return []
 
+	# extract digits with n places
+	def digits(self,n=0):
+		results	= []
+		if self.text:
+			matches	= re.compile(r'((?:\d[\-\.\,\s]?)+)', re.IGNORECASE).findall(self.text)
+			for item in matches:
+				item	= lara.nlp.trim(''.join(e for e in item if e.isdigit()))
+				if n<=0 or len(item)==n:
+					results.append(item)
+		return results
+		
+	# extract (decimal) numbers
+	def numbers(self,decimals=True):
+		if self.text:
+			if decimals:
+				matches	= re.compile(r'((?:\d\s?)+(?:[\.\,]\d+[^\.\,])?)', re.IGNORECASE).findall(self.text)
+				return [float(''.join(number.split())) for number in matches]
+			else:
+				matches	= re.compile(r'(?<![\.\,])([^\.\,](?:\d\s?)+(?![\.\,]\d))\D', re.IGNORECASE).findall(self.text+' ')
+				return [int(''.join(number.split())) for number in matches]
+		return []
+		
 	# extract list of common Hungarian date formats from text without further processing them
 	def dates(self):
 		results	= []
@@ -498,6 +520,12 @@ class Extract:
 			for item in matches:
 				results.append(item[0])
 		return results
+	
+	# extract list of time durations
+	def durations(self):
+		if self.text:		
+			return re.compile(r'\b((?:\d\s?)+(?:[\.\,]\d+)?\s(?:(?:(?:sz[aá]zad|ezred)?m[aá]sod)?perc\w{0,3}|[oó]r[aá]\w{0,3}|nap{0,3}|h[eé]t{0,3}|h[oó]nap\w{0,3}|[eé]v\w{0,3})(?:\s(?:m[uú]lva|r[aá]|ezel[oöő]t+|el[oöő]b+|k[eé]s[oö]b+|bel[uü]l|h[aá]tr(?:a|[eé]bb)|vissza|el[oöő]re))?)\b', re.IGNORECASE).findall(self.text)
+		return []
 	
 	# extract list of common currencies from text (including $ € £ ￥ and forints)
 	def currencies(self):

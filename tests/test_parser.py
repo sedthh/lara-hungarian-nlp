@@ -378,11 +378,17 @@ def test_parser_intents_clean(intents,text,cleaned):
 			"emojis"	: ["🍹","😃","🍔"],
 			"smileys"	: [":)"]
 		}
+	),
+	(
+		{
+			"text"		: "3 órád van, hogy 4.5 percen belül elhagyd a 7",
+			"durations": ["3 órád","4.5 percen belül"],
+		}
 	)
 ])
 def test_parser_extract(info):
 	test	= parser.Extract(info['text'])
-	check	= ['hashtags','mentions','urls','smileys','dates','currencies','emojis']
+	check	= ['hashtags','mentions','urls','smileys','dates','durations','currencies','emojis']
 	for item in info:
 		if item!='text' and item not in check:
 			raise ValueError('Possible typo in test case:',item)
@@ -392,3 +398,44 @@ def test_parser_extract(info):
 			assert set(info[item]) == set(result)
 		else:
 			assert not result
+
+@pytest.mark.parametrize("info", [
+	(
+		{
+			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 300 300 és 20. 3 és 2.3.4 1",
+			"function"	: "digits",
+			"result"	: ['120', '5100', '420', '3456', '300300', '20', '3', '2341']
+		}
+	),
+	(
+		{
+			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 300 300 és 20. 3 és 2.3.4 1",
+			"function"	: "digits",
+			"args"		: [3],
+			"result"	: ['120', '420']
+		}
+	),
+	(
+		{
+			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 300 300 és 20. 3 és 2.3.4 1",
+			"function"	: "numbers",
+			"result"	: [120.0, 5100.0, 420.0, 34.56, 300300.0, 20.0, 3.0, 2.0, 3.4, 1.0]
+		}
+	),
+	(
+		{
+			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 300 300 és 20. 3 és 2.3.4 1",
+			"function"	: "numbers",
+			"args"		: [False],
+			"result"	: [120, 5100, 420, 300300, 20, 1]
+		}
+	)
+])
+def test_parser_extract_parameter(info):
+	test	= parser.Extract(info['text'])
+	if 'args' not in info or not info['args']:
+		result	= eval('test.'+info['function']+'()')
+	else:
+		result	= eval('test.'+info['function']+'('+str(info['args']).strip('[]')+')')
+	assert set(info['result']) == set(result)
+	
