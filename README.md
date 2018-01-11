@@ -105,7 +105,7 @@ else:
 
 #### Create ML features
 
-Can create features from short Hungarian texts for Machine Learning models:
+Can create features from short Hungarian texts for Machine Learning models, without large dictionaries:
 
 ```python
 from lara import tippmix, nlp

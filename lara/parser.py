@@ -537,7 +537,7 @@ class Extract:
 	def phone_numbers(self,normalize=True):
 		results	= []
 		if self.text:
-			matches	= re.compile(r'((?:(?:\+36|0036|06)[\s\-\\\/]?)?\d{1,2}[\s\-\\\/]?\d(?:\d[\s\-\\\/]?){5}\d)', re.IGNORECASE).findall(self.text)
+			matches	= re.compile(r'((?:\(?(?:\+36|0036|06)[\s\-\\\/]?)?\(?\d{1,2}\)?[\s\-\\\/]?\d(?:\d[\s\-\\\/]?){5}\d)', re.IGNORECASE).findall(self.text)
 			if not normalize:
 				return matches
 			for item in matches:

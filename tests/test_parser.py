@@ -478,6 +478,21 @@ def test_parser_extract(info):
 			"args"		: [False],
 			"result"	: ["#hashtag","#YOLO"]
 		}
+	),
+	(
+		{
+			"text"		: "Hívj fel! A számom (06 30) 123/45 67!",
+			"function"	: "phone_numbers",
+			"result"	: ['+36 30 1234567']
+		}
+	),
+	(
+		{
+			"text"		: "Hívj fel! A számom (06 30) 123/45 67!",
+			"function"	: "phone_numbers",
+			"args"		: [False],
+			"result"	: ['(06 30) 123/45 67']
+		}
 	)
 ])
 def test_parser_extract_parameter(info):
