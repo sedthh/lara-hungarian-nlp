@@ -472,7 +472,7 @@ class Extract:
 	# extract list of @hashtags from text
 	def mentions(self):
 		if self.text:
-			return ['@{0}'.format(mention) for mention in re.compile(r'@([\w\d_]+(?:[\w\d_\-\'\.]+[\w\d_]+)+)\b').findall(self.text)]
+			return re.compile(r'(?<![\w\d\_])(\@[\w\d_]+(?:[\w\d_\-\'\.]+[\w\d_]+)+)\b').findall(' '+self.text)
 		return []
 	
 	# extract list of http://urls/ from text	
@@ -488,14 +488,18 @@ class Extract:
 		return []
 
 	# extract digits with n places
-	def digits(self,n=0):
+	def digits(self,n=0,normalize=True):
 		results	= []
 		if self.text:
 			matches	= re.compile(r'((?:\d[\-\.\,\s]?)+)', re.IGNORECASE).findall(self.text)
 			for item in matches:
+				original= item
 				item	= lara.nlp.trim(''.join(e for e in item if e.isdigit()))
 				if n<=0 or len(item)==n:
-					results.append(item)
+					if normalize:
+						results.append(item)
+					else:
+						results.append(original.strip())
 		return results
 		
 	# extract (decimal) numbers
@@ -503,11 +507,47 @@ class Extract:
 		if self.text:
 			if decimals:
 				matches	= re.compile(r'((?:\d\s?)+(?:[\.\,]\d+[^\.\,])?)', re.IGNORECASE).findall(self.text)
-				return [float(''.join(number.split())) for number in matches]
+				return [float(''.join(number.replace(',','.').split())) for number in matches]
 			else:
 				matches	= re.compile(r'(?<![\.\,])([^\.\,](?:\d\s?)+(?![\.\,]\d))\D', re.IGNORECASE).findall(self.text+' ')
 				return [int(''.join(number.split())) for number in matches]
 		return []
+	
+	# extract percentages
+	def percentages(self,normalize=True):
+		if self.text:
+			if normalize:
+				matches	= re.compile(r'((?:\d+(?:[\,\.]\d+)?|[\,\.]\d+))\s?\%', re.IGNORECASE).findall(self.text)
+				results	= []
+				for item in matches:
+					item = item.replace(',','.')+'%'
+					if item.startswith('.'):
+						item='0'+item
+					results.append(item)
+				return results
+			else:
+				return re.compile(r'((?:\d+(?:[\,\.]\d+)?|[\,\.]\d+)\s?\%)', re.IGNORECASE).findall(self.text)
+		return []
+	
+	# extract phonen umbers
+	def phone_numbers(self,normalize=True):
+		results	= []
+		if self.text:
+			matches	= re.compile(r'((?:(?:\+36|0036|06)[\s\-\\\/]?)?\d{1,2}[\s\-\\\/]?\d(?:\d[\s\-\\\/]?){5}\d)', re.IGNORECASE).findall(self.text)
+			if not normalize:
+				return matches
+			for item in matches:
+				item	= lara.nlp.trim(''.join(e for e in item if e.isdigit()))
+				if item.startswith('36') or item.startswith('06'):
+					item	= item[2:]
+				elif item.startswith('0036'):
+					item	= item[4:]
+				if len(item)==8:
+					item	= item[0]+' '+item[1:]
+				else:
+					item	= item[0:2]+' '+item[2:]
+				results.append('+36 '+item)
+		return results
 		
 	# extract list of common Hungarian date formats from text without further processing them
 	def dates(self):
@@ -553,6 +593,12 @@ class Extract:
 					   u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
 					   "]", flags=re.UNICODE)
 			return emoji_pattern.findall(self.text)
+		return []
+	
+	# extract e-mail addresses
+	def emails(self):
+		if self.text:
+			return re.compile(r'\b([\w\d\-\_\.]+\@[\w\d\-\_\.]+\.\w{2,4}(?:\.\w{2,4})?)\b', re.IGNORECASE).findall(self.text)
 		return []
 	
 	# returns the approx. number of words in text	

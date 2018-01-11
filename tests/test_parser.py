@@ -384,11 +384,24 @@ def test_parser_intents_clean(intents,text,cleaned):
 			"text"		: "3 órád van, hogy 4.5 percen belül elhagyd a 7",
 			"durations": ["3 órád","4.5 percen belül"],
 		}
+	),
+	(
+		{
+			"text"		: "john.doe@gmail.com email",
+			"emails"	: ["john.doe@gmail.com"]
+		}
+	),
+	(
+		{
+			"text"		: "notmention@gmail.com email @mention",
+			"emails"	: ["notmention@gmail.com"],
+			"mentions"	: ["@mention"]
+		}
 	)
 ])
 def test_parser_extract(info):
 	test	= parser.Extract(info['text'])
-	check	= ['hashtags','mentions','urls','smileys','dates','durations','currencies','emojis']
+	check	= ['hashtags','mentions','urls','smileys','dates','durations','currencies','emojis','emails']
 	for item in info:
 		if item!='text' and item not in check:
 			raise ValueError('Possible typo in test case:',item)
@@ -417,9 +430,17 @@ def test_parser_extract(info):
 	),
 	(
 		{
-			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 300 300 és 20. 3 és 2.3.4 1",
+			"text"		: "1-2-0 és 420 meg 3.6.0",
+			"function"	: "digits",
+			"args"		: [3,False],
+			"result"	: ['1-2-0', '420', '3.6.0']
+		}
+	),
+	(
+		{
+			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 78,90 yen 300 300 és 20. 3 és 2.3.4 1",
 			"function"	: "numbers",
-			"result"	: [120.0, 5100.0, 420.0, 34.56, 300300.0, 20.0, 3.0, 2.0, 3.4, 1.0]
+			"result"	: [120.0, 5100.0, 420.0, 34.56, 78.90, 300300.0, 20.0, 3.0, 2.0, 3.4, 1.0]
 		}
 	),
 	(
@@ -428,6 +449,21 @@ def test_parser_extract(info):
 			"function"	: "numbers",
 			"args"		: [False],
 			"result"	: [120, 5100, 420, 300300, 20, 1]
+		}
+	),
+	(
+		{
+			"text"		: "100 90% 0.5 % és 0,4% valamint .7 %",
+			"function"	: "percentages",
+			"result"	: ["90%","0.5%","0.4%","0.7%"]
+		}
+	),
+	(
+		{
+			"text"		: "100 90% 0.5 % és 0,4% valamint .7 %",
+			"function"	: "percentages",
+			"args"		: [False],
+			"result"	: ["90%","0.5 %","0,4%",".7 %"]
 		}
 	)
 ])
