@@ -366,12 +366,6 @@ def test_parser_intents_clean(intents,text,cleaned):
 	),
 	(
 		{
-			"text"		: "$5 000 vagy 5 000$ vagy 5000 dollár 5000.-",
-			"currencies": ["$5 000","5 000$","5000 dollár","5000.-"],
-		}
-	),
-	(
-		{
 			"text"		: "$ßŁł 🍹-😃🍔 :) ß¤é$× asddasd",
 			"emojis"	: ["🍹","😃","🍔"],
 			"smileys"	: [":)"]
@@ -399,7 +393,7 @@ def test_parser_intents_clean(intents,text,cleaned):
 ])
 def test_parser_extract(info):
 	test	= parser.Extract(info['text'])
-	check	= ['mentions','urls','smileys','dates','durations','currencies','emojis','emails']
+	check	= ['mentions','urls','smileys','dates','durations','emojis','emails']
 	for item in info:
 		if item!='text' and item not in check:
 			raise ValueError('Possible typo in test case:',item)
@@ -488,12 +482,49 @@ def test_parser_extract(info):
 	),
 	(
 		{
-			"text"		: "Hívj fel! A számom (06 30) 123/45 67!",
+			"text"		: "Hívj fel! A számom (0630) 123/45 67!",
 			"function"	: "phone_numbers",
 			"args"		: [False],
-			"result"	: ['(06 30) 123/45 67']
+			"result"	: ['(0630) 123/45 67']
 		}
-	)
+	),
+	(
+		{
+			"text"		: "5 000 YEN vagy 5 000€ vagy 5000 fontot 5000£",
+			"function"	: "currencies",
+			"result"	: ["5000.0 JPY","5000.0 EUR","5000.0 GBP","5000.0 GBP"],
+		}
+	),
+	(
+		{
+			"text"		: "$5 000 vagy 5 000$ vagy 5000 dollár 5000.-",
+			"function"	: "currencies",
+			"args"		: [False],
+			"result"	: ["$5 000","5 000$","5000 dollár","5000.-"],
+		}
+	),
+	(
+		{
+			"text"		: "adj nekem $99,99-et meg 19 dollárt és 99 centet!",
+			"function"	: "currencies",
+			"result"	: ["99.99 USD", "19.99 USD"]
+		}
+	),
+	(
+		{
+			"text"		: "adj nekem $99,99-et meg 19 dollárt és 99 centet!",
+			"function"	: "currencies",
+			"args"		: [False],
+			"result"	: ["$99,99", "19 dollárt és 99 centet"]
+		}
+	),
+	(
+		{
+			"text"		: "csak 1 000 000 van ide írva",
+			"function"	: "currencies",
+			"result"	: ["1000000.0 HUF"],
+		}
+	),
 ])
 def test_parser_extract_parameter(info):
 	test	= parser.Extract(info['text'])

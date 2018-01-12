@@ -572,9 +572,56 @@ class Extract:
 		return []
 	
 	# extract list of common currencies from text (including $ € £ ￥ and forints)
-	def currencies(self):
+	def currencies(self,normalize=True):
 		if self.text:
-			return [item[0] for item in re.compile(r'(((\$|€|£|￥)\s?(\d([\s\.,]\d)?)+)|((\d([\s\.,]\d)?)+\s?(\.\-|\$|€|£|￥|huf\b|ft\b|forint\w*|doll[aá]r\w*|eur[oó]\w*)))', re.IGNORECASE).findall(self.text)]
+			matches	= re.compile(r'((?:(?:\$|€|£|￥)\s?(?:\d(?:[\s\.,]\d)?)+)|(?:(?:\d(?:[\s\.,]\d)?)+\s?(?:\.\-|\$|€|£|￥|huf\b|ft\b|forint\w{0,3}|[jy]en\w{0,3}|font\w{0,3}|doll[aá]r\w{0,3}|eur[oó]?\w{0,3}|gbp\b|usd\b|jpy\b))(?:\,?\s(?:[eé]s\s)?\d+\s?(?:cent|fill[eé]r)\w{0,3})?)', re.IGNORECASE).findall(self.text)
+			if normalize:
+				results	= []
+				for item in matches:
+					if 'cent' in item or 'fill' in item:
+						switch	= False
+						amount	= ""
+						cent	= ""
+						for char in item:
+							if char != ' ':
+								if not switch and not char.isdigit():
+									switch	= True
+								elif not switch and char.isdigit():
+									amount	+= char
+								elif switch and char.isdigit():
+									cent	+= char
+						if not amount:
+							amount	= "0"
+						if not cent:
+							cent	= "0"
+					else:
+						amount	= item
+						cent	= "0"
+					amount	= ''.join([e for e in amount.replace(',','.') if e.isdigit() or e=='.'])
+					if amount[-1]=='.':
+						amount	= amount[:-1]
+					if '.' in amount:
+						amount	= float(amount)
+					else:
+						amount	= float(amount)+float("0."+cent)
+					currency= 'HUF'
+					item	= item.lower()
+					if '$' in item or 'doll' in item or 'usd' in item:
+						currency= 'USD'
+					elif '€' in item or 'eur' in item:
+						currency= 'EUR'
+					elif '£' in item or 'font' in item or 'gbp' in item:
+						currency= 'GBP'
+					elif '￥' in item or 'yen' in item or 'jen' in item or 'jpy' in item:
+						currency= 'JPY'
+					results.append(str(amount)+' '+currency)
+				if not results:
+					return [str(item)+' HUF' for item in self.numbers()]
+				return results
+			else:
+				if not matches:
+					return [str(item) for item in self.numbers()]
+				return matches
 		return []
 	
 	# extract commands and arguments from text: "/help lara" will return ('help',['lara'])
