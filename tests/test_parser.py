@@ -525,6 +525,54 @@ def test_parser_extract(info):
 			"result"	: ["1000000.0 HUF"],
 		}
 	),
+	(
+		{	
+			"text"		: "találkozzunk háromnegyed 3 előtt 4 perccel, holnap!",
+			"function"	: "times",
+			"args"		: [False,0],
+			"result"	: ["háromnegyed 3 előtt 4 perccel, holnap"]
+		}
+	),
+	(
+		{	
+			"text"		: "3 óra 4 perc",
+			"function"	: "times",
+			"args"		: [True,0],
+			"result"	: ["03:04"]
+		}
+	),
+	(
+		{	
+			"text"		: "3 óra 4 perc",
+			"function"	: "times",
+			"args"		: [True,10],
+			"result"	: ["15:04"]
+		}
+	),
+	(
+		{	
+			"text"		: "találkozzunk 10 perccel 9 előtt vagy 20 perccel 20 előtt vagy akár nekem 10 perccel 20 után is jó",
+			"function"	: "times",
+			"args"		: [True,10],
+			"result"	: ["20:50","19:40","20:10"]
+		}
+	),
+	(
+		{	
+			"text"		: "10:30 simán, de reggel 9-től este 10-ig és holnap 4-kor vagy holnap délután 4-kor illetve 8-kor és holnap 8-kor",
+			"function"	: "times",
+			"args"		: [True,10],
+			"result"	: ["10:30","09:00","22:00","16:00","16:00","20:00","20:00"]
+		}
+	),
+	(
+		{	
+			"text"		: "fél 3 után 2 perccel vagy háromnegyed 2 körül vagy fél 5 előtt vagy 5 előtt 2 perccel vagy fél 5 előtt 2 perccel vagy 2 perccel fél 5 előtt vagy fél 5 után vagy fél 5 után 2 perccel vagy 2 perccel fél 5 után",
+			"function"	: "times",
+			"args"		: [True,10],
+			"result"	: ["14:32","13:45","16:30","16:58","16:28","16:28","16:30","16:32","16:32"]
+		}
+	),
 ])
 def test_parser_extract_parameter(info):
 	test	= parser.Extract(info['text'])
@@ -532,5 +580,5 @@ def test_parser_extract_parameter(info):
 		result	= eval('test.'+info['function']+'()')
 	else:
 		result	= eval('test.'+info['function']+'('+str(info['args']).strip('[]')+')')
-	assert set(info['result']) == set(result)
+	assert info['result'] == result
 	

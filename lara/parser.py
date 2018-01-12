@@ -1,8 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-import re
-import json
-import hashlib
+import re, json, hashlib, datetime
 
 import lara.nlp
 
@@ -564,6 +562,109 @@ class Extract:
 			for item in matches:
 				results.append(item[0])
 		return results
+		
+	# extract times like 12:00 or délután 4
+	def times(self,normalize=True,current=-1):
+		if self.text:
+			matches	= re.compile(r'((?:ma\s?|holnap(?:\s?ut[aá]n)?\s?)?(?:reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?)?\,?\s?(?:[12345]?\d\s?perc+el\s)?(?:(?:h[aá]rom)?negyed\s?|f[eé]l\s?)?[012]?\d\s?(?:\:\s?|\-?kor\s?|[oó]ra\w{0,3}\s?)?(?:el[oöő]t+\s?|ut[aá]n\s?)?(?:[0123456]?\d[\-\s]?(?:kor|perc\w{0,3})?)?\,?\s?(?:ma\s?|holnap(?:\s?ut[aá]n)?\s?)?(?:reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?)?)', re.IGNORECASE).findall(' '+self.text+' ')
+			if normalize:
+				results	= []
+				for item in matches:
+					hour	= "00"
+					minute	= "00"
+					pm		= False
+					zero	= False
+					elott	= False
+					hour_matches 	= re.compile(r'\D([012]?\d(?!\d))\D*?(?!perc)(?:\:|\-?kor|[oó]ra)?', re.IGNORECASE).findall(' '+item+' ')
+					minute_matches 	= re.compile(r'(?!negyed|f[eé]l)\D([0123456]?\d(?!\d))\D*?(?![oó]ra)(?:\-?kor|perc)?', re.IGNORECASE).findall(' '+item+' ')
+					quarter_matches	= re.compile(r'((?:h[aá]rom)?negyed|f[eé]l)', re.IGNORECASE).findall(' '+item+' ')
+					am_matches		= re.compile(r'(reggel|hajnal|d[eé]lel[oöő]t|d\.?e\.?)', re.IGNORECASE).findall(' '+item+' ')
+					pm_matches		= re.compile(r'(d[eé]lut[aá]n|d\.?u\.?|este|[eé]j+el)', re.IGNORECASE).findall(' '+item+' ')
+					if len(hour_matches) in (1,2):
+						if len(hour_matches)==1:
+							if len(minute_matches)==1:
+								hour	= (hour_matches[0])
+								minute	= "00" 
+							elif len(minute_matches)==2:
+								if (hour_matches[0])==(minute_matches[0]):
+									hour	= (hour_matches[0])
+									minute	= (minute_matches[1])
+								else:
+									hour	= (hour_matches[0])
+									minute	= (minute_matches[0])
+						else:
+							if len(minute_matches) == 2:
+								if (hour_matches[0])==(minute_matches[1]):
+									hour	= (hour_matches[0])
+									minute	= (minute_matches[0])
+								else:
+									hour	= (hour_matches[0])
+									minute	= (minute_matches[1])
+							elif len(minute_matches) == 1:
+								if (hour_matches[0])==(minute_matches[0]):
+									hour	= (hour_matches[1])
+									minute	= "00" 
+								else:
+									hour	= (hour_matches[0])
+									minute	= (minute_matches[0])
+							else:
+								hour	= (hour_matches[0])
+								if len(hour_matches) == 2:
+									minute	= (hour_matches[1])
+						if hour[0]=='0':
+							zero	= True
+						hour	= int(hour)
+						minute	= int(minute)
+						if hour>24 and minute<24:
+							minute, hour	= hour, minute
+						if minute>60:
+							minute	= 0
+						if re.compile(r'(el[oöő]t+)', re.IGNORECASE).findall(' '+item+' '):
+							if minute:
+								if not re.compile(r'(el[oöő]t+.+?perc)', re.IGNORECASE).findall(' '+item+' '):
+									hour, minute	= minute, hour
+								elott	= True
+								hour	-= 1
+								minute	= 60-minute
+						if re.compile(r'(perccel.+?ut[aá]n+)', re.IGNORECASE).findall(' '+item+' '):
+							hour, minute	= minute, hour
+							hour	= hour
+						if quarter_matches:
+							if quarter_matches[0] in ('fel','fél'):
+								if not elott:
+									hour	-= 1
+								minute	+= 30
+							elif quarter_matches[0] in ('haromnegyed','háromnegyed'):
+								if not elott:
+									hour	-= 1
+								minute	+= 45
+							elif quarter_matches[0] in ('negyed'):
+								if not elott:
+									hour	-= 1
+								minute	+= 15
+						if not zero:
+							if pm_matches:
+								pm	= True
+							elif not am_matches:
+								if current:
+									if current>=0:
+										now	= current
+									else:
+										now	= datetime.datetime.now().hour							
+									if 'holnap' in item and hour<9:
+										pm = True
+									elif hour<12 and now>hour:
+										pm = True
+							if pm and hour<=12:
+								hour	+= 12
+						hour	%= 24
+						minute	%= 60
+						
+						results.append(str(hour).zfill(2)+':'+str(minute).zfill(2))
+				return results
+			else:
+				return [item.strip() for item in matches]
+		return []
 	
 	# extract list of time durations
 	def durations(self):
