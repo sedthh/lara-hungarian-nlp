@@ -4,6 +4,7 @@ import re, json, hashlib, datetime
 
 import lara.nlp
 
+# Intents Class
 class Intents:
 		
 	# STATIC REGULAR EXPRESSIONS
@@ -15,8 +16,6 @@ class Intents:
 	typo_pattern_adj	= r'(?i)(?:[aeo]?s)?(?:[aeo]?b?)(?:[ae]?[nk])?(?:(?:[aeiou]?[dklmnt])?(?:[aeiou]?[klnt]?)?)'
 	pattern_verb		= r'(?i)(?:h[ae][st])?(?:[eaá]?s{0,2}d?|[aáeéo]tt)?(?:(?:[jntv]|[eo]?g[ae]t+)?(?:[aeioöuü]n?[dklmt]|n[aáeéi]k?|sz|[aái])?(?:t[aáeéou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aáeéou](?:[dkm]|t[eéo]k)?)?t*)|[aáeé]?z?ni)?'
 	typo_pattern_verb	= r'(?i)(?:h[ae][st])?(?:[eaá]?s?d?|[aeo]t)?(?:(?:[jntv]|[eo]?g[ae]t)?(?:[aeiou]n?[dklmt]|n[aei]k?|sz|[ai])?(?:t[aeou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aeou](?:[dkm]|t[eo]k)?)?t?)|[ae]?z?ni)?'
-	
-	cache				= {}
 	
 	##### CONSTRUCTOR #####
 	def __init__(self, new_intents={}, is_raw=False):	
@@ -83,11 +82,7 @@ class Intents:
 				self.intents	= new_intents.copy()
 			else:
 				raise ValueError('Unsupported value: %s' % (new_intents))
-	
-	# Clean cache
-	def flush(self):
-		Intents.cache	= {}
-	
+		
 	# Add default values and fill in optional parameters for a single intent
 	def _generate(self, item):
 		if 'stem' not in item:
@@ -364,27 +359,11 @@ class Intents:
 			else:
 				boundary	= r''
 
-			t_hash			= hashlib.sha1(text.encode("utf-8"))
-			i_hash			= hashlib.sha1((boundary+item[select+'pattern']+boundary).encode("utf-8"))				
-			if t_hash in Intents.cache and i_hash in Intents.cache[t_hash]:
-				matches	= Intents.cache[t_hash][i_hash]			
+			if item['ignorecase']:
+				matches	= _re.findall(boundary+r'('+item[select+'pattern']+r')'+boundary,re.IGNORECASE,text)
 			else:
-				if item['wordclass'] in ('regex','emoji'):
-					if item['ignorecase']:
-						matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary,re.IGNORECASE).findall(text)
-					else:
-						matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary).findall(text)
-				else:
-					if item['ignorecase']:
-						matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary,re.IGNORECASE).findall(text)
-					else:
-						matches	= re.compile(boundary+r'('+item[select+'pattern']+r')'+boundary).findall(text)
-				if t_hash not in Intents.cache:
-					Intents.cache[t_hash]			= {}
-					Intents.cache[t_hash][i_hash]	= matches
-				else:
-					Intents.cache[t_hash][i_hash]	= matches
-					
+				matches	= _re.findall(boundary+r'('+item[select+'pattern']+r')'+boundary,None,text)
+
 			if matches:
 				if delete:
 					tmp	= text
@@ -392,14 +371,14 @@ class Intents:
 						if not isinstance(match,str):
 							match	= match[0]
 						if item['match_stem'] or (item['ignorecase'] and match.lower() != item[select+'stem'].lower()) or (match.lower() != item[select+'stem']):
-							tmp	= re.sub(boundary+r'('+re.escape(match)+r')'+boundary, '', tmp, flags=re.IGNORECASE)
+							tmp	= _re.sub(boundary+r'('+re.escape(match)+r')'+boundary,re.IGNORECASE,'',tmp)
 					return tmp
 				else:	
 					if not item['match_stem']:
 						if item['ignorecase']:
-							stem_matches	= re.compile(boundary+r'('+re.escape(item[select+'stem'])+r')'+boundary,re.IGNORECASE).findall(text)
+							stem_matches	= _re.findall(boundary+r'('+re.escape(item[select+'stem'])+r')'+boundary,re.IGNORECASE,text)
 						else:
-							stem_matches	= re.compile(boundary+r'('+re.escape(item[select+'stem'])+r')'+boundary).findall(text)
+							stem_matches	= _re.findall(boundary+r'('+re.escape(item[select+'stem'])+r')'+boundary,None,text)
 						if stem_matches:
 							if len(matches) <= len(stem_matches):
 								return (False, 0)
@@ -419,6 +398,7 @@ class Intents:
 				return {item:score[item] for item in best_candidates}
 		return {}
 
+# Extract Class
 class Extract:
 	
 	##### CONSTRUCTOR #####
@@ -427,6 +407,7 @@ class Extract:
 			raise ValueError('Constructor only accepts strings.')
 		elif text:
 			self.text	= text
+			self._text_	= ' '+text+' '	# some complex regular expressions were easier to write for padded text
 
 	##### DATA MODEL #####
 	def __repr__(self):
@@ -454,8 +435,10 @@ class Extract:
 		if other:
 			if self.__class__.__name__ == other.__class__.__name__:
 				self.text	+= other.text
+				self._text_	= ' '+self.text+' '
 			elif isinstance(other,str):
 				self.text	+= other
+				self._text_	= ' '+self.text+' '
 			return self
 		return self
 	
@@ -464,7 +447,7 @@ class Extract:
 	# extract list #hashtags from text
 	def hashtags(self,normalize=True):
 		if self.text:
-			matches	= re.compile(r'#([\w\d]+(?:[\w\d_\-\']+[\w\d]+)+)\b').findall(self.text)
+			matches	= _re.findall(r'#([\w\d]+(?:[\w\d_\-\']+[\w\d]+)+)\b', None, self.text)
 			if normalize:
 				return ['#{0}'.format(hashtag.lower()) for hashtag in matches]
 			else:
@@ -474,26 +457,26 @@ class Extract:
 	# extract list of @hashtags from text
 	def mentions(self):
 		if self.text:
-			return re.compile(r'(?<![\w\d\_])(\@[\w\d_]+(?:[\w\d_\-\'\.]+[\w\d_]+)+)\b').findall(' '+self.text)
+			return _re.findall(r'(?<![\w\d\_])(\@[\w\d_]+(?:[\w\d_\-\'\.]+[\w\d_]+)+)\b', None, self._text_)
 		return []
 	
 	# extract list of http://urls/ from text	
 	def urls(self):
 		if self.text:
-			return re.compile(r'\b((?:https?\:[\/\\]{2}(?:w{3}\.)?|(?:w{3}\.))(?:[\w\d_\-]+\.\w{2,})(?:[\/\\](?:[\w\d\-_]+[\/\\]?)*)?(?:\?[^\s]*)?(?:\#[^\s]+)?)', re.IGNORECASE).findall(self.text)
+			return _re.findall(r'\b((?:https?\:[\/\\]{2}(?:w{3}\.)?|(?:w{3}\.))(?:[\w\d_\-]+\.\w{2,})(?:[\/\\](?:[\w\d\-_]+[\/\\]?)*)?(?:\?[^\s]*)?(?:\#[^\s]+)?)', re.IGNORECASE, self.text)
 		return []
 		
 	# extract list of smileys :) from text
 	def smileys(self):
 		if self.text:
-			return re.compile(r'(?:[\:\;\=]\-*[DdXxCc\|\[\]\(\)3]+[89]*)|(?:[\(\)D\[\]\|]+\-*[\:\;\=])').findall(self.text)
+			return _re.findall(r'(?:[\:\;\=]\-*[DdXxCc\|\[\]\(\)3]+[89]*)|(?:[\(\)D\[\]\|]+\-*[\:\;\=])', None, self.text)
 		return []
 
 	# extract digits with n places
 	def digits(self,n=0,normalize=True):
 		results	= []
 		if self.text:
-			matches	= re.compile(r'((?:\d[\-\.\,\s]?)+)', re.IGNORECASE).findall(self.text)
+			matches	= _re.findall(r'((?:\d[\-\.\,\s]?)+)', re.IGNORECASE, self.text)
 			for item in matches:
 				original= item
 				item	= lara.nlp.trim(''.join(e for e in item if e.isdigit()))
@@ -508,10 +491,10 @@ class Extract:
 	def numbers(self,decimals=True):
 		if self.text:
 			if decimals:
-				matches	= re.compile(r'((?:\d\s?)+(?:[\.\,]\d+[^\.\,])?)', re.IGNORECASE).findall(self.text)
+				matches	= _re.findall(r'((?:\d\s?)+(?:[\.\,]\d+[^\.\,])?)', re.IGNORECASE, self.text)
 				return [float(''.join(number.replace(',','.').split())) for number in matches]
 			else:
-				matches	= re.compile(r'(?<![\.\,])([^\.\,](?:\d\s?)+(?![\.\,]\d))\D', re.IGNORECASE).findall(self.text+' ')
+				matches	= _re.findall(r'(?<![\.\,])([^\.\,](?:\d\s?)+(?![\.\,]\d))\D', re.IGNORECASE, self._text_)
 				return [int(''.join(number.split())) for number in matches]
 		return []
 	
@@ -519,7 +502,7 @@ class Extract:
 	def percentages(self,normalize=True):
 		if self.text:
 			if normalize:
-				matches	= re.compile(r'((?:\d+(?:[\,\.]\d+)?|[\,\.]\d+))\s?\%', re.IGNORECASE).findall(self.text)
+				matches	= _re.findall(r'((?:\d+(?:[\,\.]\d+)?|[\,\.]\d+))\s?\%', re.IGNORECASE, self.text)
 				results	= []
 				for item in matches:
 					item = item.replace(',','.')+'%'
@@ -528,14 +511,14 @@ class Extract:
 					results.append(item)
 				return results
 			else:
-				return re.compile(r'((?:\d+(?:[\,\.]\d+)?|[\,\.]\d+)\s?\%)', re.IGNORECASE).findall(self.text)
+				return _re.findall(r'((?:\d+(?:[\,\.]\d+)?|[\,\.]\d+)\s?\%)', re.IGNORECASE, self.text)
 		return []
 	
 	# extract phonen umbers
 	def phone_numbers(self,normalize=True):
 		results	= []
 		if self.text:
-			matches	= re.compile(r'((?:\(?(?:\+36|0036|06)[\s\-\\\/]?)?\(?\d{1,2}\)?[\s\-\\\/]?\d(?:\d[\s\-\\\/]?){5}\d)', re.IGNORECASE).findall(self.text)
+			matches	= _re.findall(r'((?:\(?(?:\+36|0036|06)[\s\-\\\/]?)?\(?\d{1,2}\)?[\s\-\\\/]?\d(?:\d[\s\-\\\/]?){5}\d)', re.IGNORECASE, self.text)
 			if not normalize:
 				return matches
 			for item in matches:
@@ -554,11 +537,11 @@ class Extract:
 	# extract list of common Hungarian date formats from text without further processing them
 	def dates(self):
 		results	= []
-		if self.text:		
-			matches	= re.compile(r'\b((\d{2})?((\d{2}([\\\/\.\-]\s?|\s)){1,2})(\d{2}\.?\b))([aáeéio][ikn])?\b', re.IGNORECASE).findall(self.text)
+		if self.text:
+			matches	= _re.findall(r'\b((\d{2})?((\d{2}([\\\/\.\-]\s?|\s)){1,2})(\d{2}\.?\b))([aáeéio][ikn])?\b', re.IGNORECASE, self.text)
 			for item in matches:
 				results.append(item[0])
-			matches	= re.compile(r'\b((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec)\w{0,10}(\W{1,2}\d{1,2})?)\b', re.IGNORECASE).findall(self.text)
+			matches	= _re.findall(r'\b((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec)\w{0,10}(\W{1,2}\d{1,2})?)\b', re.IGNORECASE, self.text)
 			for item in matches:
 				results.append(item[0])
 		return results
@@ -566,20 +549,21 @@ class Extract:
 	# extract times like 12:00 or délután 4
 	def times(self,normalize=True,current=-1):
 		if self.text:
-			matches	= re.compile(r'((?:ma\s?|holnap(?:\s?ut[aá]n)?\s?)?(?:reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?)?\,?\s?(?:[12345]?\d\s?perc+el\s)?(?:(?:h[aá]rom)?negyed\s?|f[eé]l\s?)?[012]?\d\s?(?:\:\s?|\-?kor\s?|[oó]ra\w{0,3}\s?)?(?:el[oöő]t+\s?|ut[aá]n\s?)?(?:[0123456]?\d[\-\s]?(?:kor|perc\w{0,3})?)?\,?\s?(?:ma\s?|holnap(?:\s?ut[aá]n)?\s?)?(?:reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?)?)', re.IGNORECASE).findall(' '+self.text+' ')
+			matches	= _re.findall(r'((?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(?:reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?)?\,?\s?(?:[12345]?\d\s?perc+el\s)?(?:(?:h[aá]rom)?negyed\s?|f[eé]l\s?)?[012]?\d\s?(?:\:\s?|\-?kor\s?|[oó]ra\w{0,3}\s?)?(?:el[oöő]t+\s?|ut[aá]n\s?)?(?:[0123456]?\d[\-\s]?(?:kor|perc\w{0,3})?)?\,?\s?(?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(?:reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?)?)', re.IGNORECASE, self._text_)
 			if normalize:
 				results	= []
 				for item in matches:
+					item	= ' '+item+' '
 					hour	= "00"
 					minute	= "00"
 					pm		= False
 					zero	= False
 					elott	= False
-					hour_matches 	= re.compile(r'\D([012]?\d(?!\d))\D*?(?!perc)(?:\:|\-?kor|[oó]ra)?', re.IGNORECASE).findall(' '+item+' ')
-					minute_matches 	= re.compile(r'(?!negyed|f[eé]l)\D([0123456]?\d(?!\d))\D*?(?![oó]ra)(?:\-?kor|perc)?', re.IGNORECASE).findall(' '+item+' ')
-					quarter_matches	= re.compile(r'((?:h[aá]rom)?negyed|f[eé]l)', re.IGNORECASE).findall(' '+item+' ')
-					am_matches		= re.compile(r'(reggel|hajnal|d[eé]lel[oöő]t|d\.?e\.?)', re.IGNORECASE).findall(' '+item+' ')
-					pm_matches		= re.compile(r'(d[eé]lut[aá]n|d\.?u\.?|este|[eé]j+el)', re.IGNORECASE).findall(' '+item+' ')
+					hour_matches 	= _re.findall(r'\D([012]?\d(?!\d))\D*?(?!perc)(?:\:|\-?kor|[oó]ra)?', re.IGNORECASE, item)
+					minute_matches 	= _re.findall(r'(?!negyed|f[eé]l)\D([0123456]?\d(?!\d))\D*?(?![oó]ra)(?:\-?kor|perc)?', re.IGNORECASE, item)
+					quarter_matches	= _re.findall(r'((?:h[aá]rom)?negyed|f[eé]l)', re.IGNORECASE, item)
+					am_matches		= _re.findall(r'(reggel|hajnal|d[eé]lel[oöő]t|d\.?e\.?)', re.IGNORECASE, item)
+					pm_matches		= _re.findall(r'(d[eé]lut[aá]n|d\.?u\.?|este|[eé]j+el)', re.IGNORECASE, item)
 					if len(hour_matches) in (1,2):
 						if len(hour_matches)==1:
 							if len(minute_matches)==1:
@@ -619,14 +603,14 @@ class Extract:
 							minute, hour	= hour, minute
 						if minute>60:
 							minute	= 0
-						if re.compile(r'(el[oöő]t+)', re.IGNORECASE).findall(' '+item+' '):
+						if _re.findall(r'(el[oöő]t+)', re.IGNORECASE, item):
 							if minute:
-								if not re.compile(r'(el[oöő]t+.+?perc)', re.IGNORECASE).findall(' '+item+' '):
+								if not _re.findall(r'(el[oöő]t+.+?perc)', re.IGNORECASE, item):
 									hour, minute	= minute, hour
 								elott	= True
 								hour	-= 1
 								minute	= 60-minute
-						if re.compile(r'(perccel.+?ut[aá]n+)', re.IGNORECASE).findall(' '+item+' '):
+						if _re.findall(r'(perccel.+?ut[aá]n+)', re.IGNORECASE, item):
 							hour, minute	= minute, hour
 							hour	= hour
 						if quarter_matches:
@@ -668,14 +652,14 @@ class Extract:
 	
 	# extract list of time durations
 	def durations(self):
-		if self.text:		
-			return re.compile(r'\b((?:\d\s?)+(?:[\.\,]\d+)?\s(?:(?:(?:sz[aá]zad|ezred)?m[aá]sod)?perc\w{0,3}|[oó]r[aá]\w{0,3}|nap{0,3}|h[eé]t{0,3}|h[oó]nap\w{0,3}|[eé]v\w{0,3})(?:\s(?:m[uú]lva|r[aá]|ezel[oöő]t+|el[oöő]b+|k[eé]s[oö]b+|bel[uü]l|h[aá]tr(?:a|[eé]bb)|vissza|el[oöő]re))?)\b', re.IGNORECASE).findall(self.text)
+		if self.text:
+			return _re.findall(r'\b((?:\d\s?)+(?:[\.\,]\d+)?\s(?:(?:(?:sz[aá]zad|ezred)?m[aá]sod)?perc\w{0,3}|[oó]r[aá]\w{0,3}|nap{0,3}|h[eé]t{0,3}|h[oó]nap\w{0,3}|[eé]v\w{0,3})(?:\s(?:m[uú]lva|r[aá]|ezel[oöő]t+|el[oöő]b+|k[eé]s[oö]b+|bel[uü]l|h[aá]tr(?:a|[eé]bb)|vissza|el[oöő]re))?)\b', re.IGNORECASE, self.text)
 		return []
 	
 	# extract list of common currencies from text (including $ € £ ￥ and forints)
 	def currencies(self,normalize=True):
 		if self.text:
-			matches	= re.compile(r'((?:(?:\$|€|£|￥)\s?(?:\d(?:[\s\.,]\d)?)+)|(?:(?:\d(?:[\s\.,]\d)?)+\s?(?:\.\-|\$|€|£|￥|huf\b|ft\b|forint\w{0,3}|[jy]en\w{0,3}|font\w{0,3}|doll[aá]r\w{0,3}|eur[oó]?\w{0,3}|gbp\b|usd\b|jpy\b))(?:\,?\s(?:[eé]s\s)?\d+\s?(?:cent|fill[eé]r)\w{0,3})?)', re.IGNORECASE).findall(self.text)
+			matches	= _re.findall(r'((?:(?:\$|€|£|￥)\s?(?:\d(?:[\s\.,]\d)?)+)|(?:(?:\d(?:[\s\.,]\d)?)+\s?(?:\.\-|\$|€|£|￥|huf\b|ft\b|forint\w{0,3}|[jy]en\w{0,3}|font\w{0,3}|doll[aá]r\w{0,3}|eur[oó]?\w{0,3}|gbp\b|usd\b|jpy\b))(?:\,?\s(?:[eé]s\s)?\d+\s?(?:cent|fill[eé]r)\w{0,3})?)', re.IGNORECASE, self.text)
 			if normalize:
 				results	= []
 				for item in matches:
@@ -735,22 +719,21 @@ class Extract:
 				return (commands[0],[])
 		return ('',[])
 	
-	# extract list of emojis from text
+	# extract list of emojis from text via https://gist.github.com/naotokui/
 	def emojis(self):
 		if self.text:
-			emoji_pattern = re.compile("["
+			return _re.findall("["
 					   u"\U0001F600-\U0001F64F"  # emoticons
 					   u"\U0001F300-\U0001F5FF"  # symbols & pictographs
 					   u"\U0001F680-\U0001F6FF"  # transport & map symbols
 					   u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-					   "]", flags=re.UNICODE)
-			return emoji_pattern.findall(self.text)
+					   "]", re.UNICODE, self.text)
 		return []
 	
 	# extract e-mail addresses
 	def emails(self):
 		if self.text:
-			return re.compile(r'\b([\w\d\-\_\.]+\@[\w\d\-\_\.]+\.\w{2,4}(?:\.\w{2,4})?)\b', re.IGNORECASE).findall(self.text)
+			return _re.findall(r'\b([\w\d\-\_\.]+\@[\w\d\-\_\.]+\.\w{2,4}(?:\.\w{2,4})?)\b', re.IGNORECASE, self.text)
 		return []
 	
 	# returns the approx. number of words in text	
@@ -768,4 +751,49 @@ class Extract:
 	# True if word has a digit in it	
 	def hasDigits(self):
 		return any(char.isdigit() for char in self.text)	
+
+# Wrapper Class for Regular Expression Caching
+class _re:
+
+	compile_cache		= {}
+	findall_cache		= {}
 	
+	# cache re.compile() outputs
+	def compile(e_hash,expression,flags):
+		flags_str	= str(flags)
+		if flags_str not in _re.compile_cache:
+			_re.compile_cache[flags_str]	= {}
+		if e_hash not in _re.compile_cache[flags_str]:
+			if flags:
+				cache									= re.compile(r''+expression,flags)
+				_re.compile_cache[flags_str][e_hash]	= cache
+			else:
+				cache									= re.compile(r''+expression)
+				_re.compile_cache[flags_str][e_hash]	= cache
+	
+	# cache re.compile().findall() outputs
+	def findall(expression,flags,text):
+		e_hash			= hashlib.sha1(str(expression).encode("utf-8")).hexdigest()
+		_re.compile(e_hash,expression,flags)
+		t_hash			= hashlib.sha1(str(text).encode("utf-8")).hexdigest()
+		flags_str		= str(flags)
+		if flags_str not in _re.findall_cache:
+			_re.findall_cache[flags_str]	= {}
+		if t_hash not in _re.findall_cache[flags_str]:
+			_re.findall_cache[flags_str][t_hash]	= {}
+		if e_hash not in _re.findall_cache[flags_str][t_hash]:
+			_re.findall_cache[flags_str][t_hash][e_hash]	= _re.compile_cache[flags_str][e_hash].findall(text)
+		return _re.findall_cache[flags_str][t_hash][e_hash]
+	
+	# user cached re.compile() for re.sub()
+	def sub(expression,flags,repl,string):
+		e_hash			= hashlib.sha1(str(expression).encode("utf-8")).hexdigest()
+		_re.compile(e_hash,expression,flags)
+		flags_str		= str(flags)
+		return _re.compile_cache[flags_str][e_hash].sub(repl,string)
+	
+	# clean cache
+	def flush(self):
+		_re.compile_cache	= {}
+		_re.findall_cache	= {}
+				
