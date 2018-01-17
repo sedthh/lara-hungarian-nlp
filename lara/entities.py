@@ -96,7 +96,7 @@ def smalltalk():
 		"user_sad"			: [{"stem":"j[oó]\s(a\s)?kedvem","wordclass":"regex","with":[{"stem":"nincs"},{"stem":"nem"}]},{"stem":"szomorú","wordclass":"adjective","with":[{"stem":"vagyok"}]},{"stem":"nem\s+(vagyok|[eé]rzem).+?j[oó]l","wordclass":"regex"}],
 		"user_angry_at_you"	: [{"stem":"ne\s((h[uú]z+|bas+z|d[uü]h[ií])\w*\s?fel|idege(s[ií]ts|lj([eé]l)?\s?(ki)?))","wordclass":"regex"},{"stem":"(ideges|m[eé]rges|d[uü]h[oö]s)\s(vagyok|voltam)","wordclass":"regex"},{"stem":"haragszom","without":[{"stem":"nem"}]},{"stem":"(mi([eé]r)?t?\s)?nem\s(hall|[eé]rt)([ae]sz|[eo]d)","wordclass":"regex"}],
 		"user_forgiving_you": [{"stem":"meg\s?(van\s)?bocs[aá]l?j?t(o(t+a)?[km]|va)","wordclass":"regex"},{"stem":"(nem|dehogy)\sharagszo[km]","wordclass":"regex"}],
-		"user_sorry"		: [{"stem":"meg\s?(tud(sz|n[aá]l)\s)?bocs[aá]l?j?ta?(ni|sz|od|t*ot+ad)","wordclass":"regex"},{"stem":"ne haragudj"},{"stem":"bocsáss meg"},{"stem":"sajnálom"}],
+		"user_sorry"		: [{"stem":"meg\s?(tud(sz|n[aá]l)\s)?bocs[aá]l?j?ta?(ni|sz|od|t*ot+ad)","wordclass":"regex"},{"stem":"ne haragudj"},{"stem":"bocsáss meg","without":[{"stem":"bocs[aá]ss\s?meg\,?\s?\w+","wordclass":"regex"}]},{"stem":"sajnálom", "without":[{"stem":"sajn[aá]lom\,?\s?\w+","wordclass":"regex"}]},{"stem":"ha megbántottalak"}],
 		"user_friend"		: [{"stem":"(lesz(e[kl]|[uü]nk)|legy[uü]nk|lenn[eé][kl]|lehet([uü]nk|n[eé]n?k))\s(az?\s)?(egyik\s|legjobb\s|k[eé]pzele?t(beli)?\s)?(bar[aá]to|havero|spano)[dkm]","wordclass":"regex"},{"stem":"(bar[aá]to[km]|havero[km])\svagy(unk)?","wordclass":"regex"},{"stem":"te\svagy\sa.+?bar[aá]tom","wordclass":"regex"}],
 		"how_are_you"		: [{"stem":"hogy vagy"},{"stem":"jól vagy"},{"stem":"(j[oó]l|hogy)\s[eé]rzed\s(most\s)?magad(at)?","wordclass":"regex"},{"stem":"mizu","affix":["js","jság"]},{"stem":"hogy ityeg"},{"stem":"(hogy\stelt\sa|milyen(\svolt\sa)?)\snapod(\svan)?","wordclass":"regex"},{"stem":"[vw]+h*[aá]+[csz]+[aáu]+p+","wordclass":"regex"},{"stem":"(j[oó]|milyen)\s(a\s)?kedved(\svan)?","wordclass":"regex"},{"stem":"mi a(z [aá]bra| st[aá]jsz)","wordclass":"regex"}],
 		"about_name"		: [{"stem":"(mond+\ski|mi\sa)\sneved(et)?","wordclass":"regex"},{"stem":"(hogy(an)?|minek)\s(h[ií]v[jn]a(la)?k|nevez+(nek|elek))","wordclass":"regex"},{"stem":"(mi?[eé]rt\s|hogy[\s\-]?hogy\s)(lett\s)?(pont\s)?(ezt?\s(lett\s)?(a\s)?|[ií]gy\s|ilyen\s)(nevez[nt]ek|h[ií]v[nt]ak|neved|nevet\s(kapt[aá][dl]|adt[aá]k))","wordclass":"regex"}],
@@ -159,7 +159,7 @@ def popculture():
 		"tron"				: [{"stem":"Tron","wordclass":"noun"},{"stem":"Master Control Program"},{"stem":"Mester Kontroll Program"},{"stem":"end of line"}]
 	}
 
-# smiley and emoji references ️
+# smiley and emoji references
 def emoji():
 	return {
 		"happy"				: [{"stem":"😉","wordclass":"emoji"},{"stem":"😃","wordclass":"emoji"},{"stem":"😄","wordclass":"emoji"},{"stem":"🙂","wordclass":"emoji"},{"stem":"[\:\;\=8BX]\-*[p\)\]93]+","wordclass":"regex","boundary":False},{"stem":"[\(\[8]+\-*[\:\;\=8X]","wordclass":"regex","boundary":False}],
