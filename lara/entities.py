@@ -39,7 +39,12 @@ def commands():
 		"error"				: [{"stem":"error","wordclass":"noun"},{"stem":"hiba","wordclass":"noun"},{"stem":"rossz","wordclass":"adjective"},{"stem":"nem (siker[uü]lt|j[oó]l?|m[uüű]k[oö]d(ik|[oö]tt)|ment)(\s\w)?(\s\w)?$","wordclass":"regex"}],
 		"search"			: [{"stem":"keres","wordclass":"verb"},{"stem":"find"},{"stem":"találd meg"}],
 		"undo"				: [{"stem":"visszavon","wordclass":"verb","prefix":[]},{"stem":"vissza.+?eg[eé]szet","wordclass":"regex"},{"stem":"von.+?vis+za","wordclass":"regex"},{"stem":"undo"}],
-		"restart"			: [{"stem":"indíts","affix":["d","a"],"with":[{"stem":"újra"}]},{"stem":"újraindít","wordclass":"verb"},{"stem":"(([uú]jra)?kezd\w{0,5}|kezd\w{0,5}.+?([uú]jra|el[oöő]l?r[oö]l|elej[eé](t|r)[oöő]l))","wordclass":"regex"}]
+		"restart"			: [{"stem":"indíts","affix":["d","a"],"with":[{"stem":"újra"}]},{"stem":"újraindít","wordclass":"verb"},{"stem":"(([uú]jra)?kezd\w{0,5}|kezd\w{0,5}.+?([uú]jra|el[oöő]l?r[oö]l|elej[eé](t|r)[oöő]l))","wordclass":"regex"}],
+		"play"				: [{"stem":"(le)?j[aá](ts+z|c+)([aá]([dls]|ni))?(\sle)?(\svalamit?)?(\segy)?","wordclass":"regex"},{"stem":"play"},{"stem":"indít","wordclass":"verb"}],
+		"stop"				: [{"stem":"(meg|le)?[aá]l+(j+([aá]l)?|[ií][ct]+(s?a?d|[aá](ni|s)))(\smeg|\sle)?","wordclass":"regex"},{"stem":"stop"},{"stem":"el[eé]g(\sis)?(\sle(sz|gyen))?(\sm[aá]r)?(\smost)?(\sennyi)?","wordclass":"regex"}],
+		"pause"				: [{"stem":"pau[sz][aáeé]([lz]+((as+a|[jz]a)?[dj]|ni))?(\sle)?","wordclass":"regex"},{"stem":"szünet(elt?(et)?([eé]?s+e?d?|ni)?)?","wordclass":"regex"}],
+		"volume_up"			: [{"stem":"((n[oö]vel\w+|magas\w+|fel)\s(\w+\s)?hang(er)?[oöő]?t?|hang(er)?[oöő]?t?\s(n[oö]vel\w+|magas\w+|fel))","wordclass":"regex"},{"stem":"hangos\w+","wordclass":"regex","without":[{"stem":"túl"}]},{"stem":"t[uú]l\shalk\w*","wordclass":"regex","without":[{"stem":"túl"}]},{"stem":"(nem|alig|semmit\s[ns]em?)\shall[ao][km]","wordclass":"regex"}],
+		"volume_down"		: [{"stem":"((cs[oö]k+en\w+|alacsony\w+|le(j+eb+)?)\s(\w+\s)?hang(er)?[oöő]?t?|hang(er)?[oöő]?t?\s(cs[oö]k+en\w+|alacsony\w+|le(j+eb+)?))","wordclass":"regex"},{"stem":"t[uú]l\shangos\w*","wordclass":"regex"},{"stem":"halk[aií]\w+","wordclass":"regex","without":[{"stem":"túl"}]}],
 	}
 	
 # hungarian counties and county seats
@@ -127,12 +132,17 @@ def cocktail():
 		"random_dice"		: [{"stem":"dob[dj]([aá][dl])?(\sf?el)?(\saz?|\segy(et)?(\saz?)?)?\s[\w\d]+[\-\s]?(\w*\s)?(kock[aá](t|val))?","wordclass":"regex"}],
 		"random_card"		: [{"stem":"(h[uú]z+([aá]l)?|v[aá]las+z([aá]l)?)(\ski)?(\segy)?\s(lapot|k[aá]rty[aá](lapo)?t)","wordclass":"regex"}],
 		"timer"				: [{"stem":"([aá]l+[ií](ts|c+s+)([aá]?[ld])?|csin[aá]lj([aá]l)?|rakj([aá]l)?)(\sbe)?(\segy\saz?)\s(id[oöő]z[ií]t([oöő]|[eé]s)t|riaszt([aá]s|[oó])t|cs[oöe]ng([oöő]|et[eé]s)t|alarmot)","wordclass":"regex"}],
+		"calendar_info"		: [{"stem":"(id[oőö]pont(ok)?|napt[aá]r|[kc]al+end[aá]r|tal[aá]lkoz[oó])\w*","wordclass":"regex","with":[{"stem":"(mi(ke?)?t?\s(van(nak)?|[ií]r\w*)|van(nak)?\s(\w+\s)?m[aá](ra)?|m[aá](i|ra)|valami)","wordclass":"regex"}]}],
+		"calendar_add"		: [{"stem":"(id[oőö]pont(ok)?|napt[aá]r|[kc]al+end[aá]r|tal[aá]lkoz[oó])\w*","wordclass":"regex","with":[{"stem":"([ií]r[dj]([aá][dl])?\s(be|fel|meg)|ve(d+|gy[eé][dl])\sfel|ad(j[aá])?[dl])","wordclass":"regex"}]}],
+		"calendar_remove"	: [{"stem":"(id[oőö]pont(ok)?|napt[aá]r|[kc]al+end[aá]r|tal[aá]lkoz[oó])\w*","wordclass":"regex","with":[{"stem":"(t[oö]r[oö]l[jd]([eé][dl])?|ve(d+|gy[eé][dl])\s(ki|le))","wordclass":"regex"}]}],
+		"calendar_modify"	: [{"stem":"(id[oőö]pont(ok)?|napt[aá]r|[kc]al+end[aá]r|tal[aá]lkoz[oó])\w*","wordclass":"regex","with":[{"stem":"([ií]r[dj]([aá][dl])?\s[aá]t|te(gye)?d+\s[aá]t|szerkes+ze?d|m[oó]dos[ií][ct]sa?d)","wordclass":"regex"}]}],
 		"weather"			: [{"stem":"időjárás","affix":["jelentés"],"wordclass":"noun"},{"stem":"(milyen|j[oó]|sz[eé]p)\s(lesz\s)?(az\s)?id[oöő](nk)?(\slesz)?","wordclass":"regex"}],
 		"weather_rain"		: [{"stem":"(sz[uü]ks[eé]g(em)?|(fog\s)?kell(eni)?(\sfog)?|vigyek(\smagammal)?)(\slesz|\svan)?(\segy)?\s(es)?erny[oöő](t|re)?","wordclass":"regex"},{"stem":"(fog(\sma\s)?esni|esik\sma|esni\sfog(\sma)?)(\s(az\s)?es[oöő])?","wordclass":"regex"}],
 		"weather_snow"		: [{"stem":"havaz(ni|ik|[aá]s|ott)","wordclass":"regex"},{"stem":"(fog(\sma\s)?esni|esik\sma|esni\sfog(\sma)?)\s(a\s)?h[oó]","wordclass":"regex"}],
 		"weather_sunny"		: [{"stem":"(s[uü]t(ni)?(\sfog)?(\sma)?(\sa)?nap|meleg(\sid[oöő])?(\slesz(\sma)?|\svan(\smost)?\s(oda)?kin+t?))","wordclass":"regex"}],
 		"news"				: [{"stem":"hír","affix":["adó"],"wordclass":"noun"},{"stem":"újság","prefix":["hír"],"wordclass":"noun"},{"stem":"valami\w*\s[uú]j((don)?s[aá]g(ot)?)?","wordclass":"regex"},{"stem":"(t[oö]rt[eé]nt(ek)?\s|volt(ak)?\s)(ma\s)?(valami\s)?([uú]j(dons[aá]g)?\s)?(az?\s)?((nagy)?vil[aá]gban|fontos|esem[eé]ny|napokban)","wordclass":"regex"}],
 		"joke"				: [{"stem":"vicc","wordclass":"noun"},{"stem":"vid[ií][ct]s+([aá]l)?\s?fel","wordclass":"regex"},{"stem":"nevet+es+([eé]l)?\s?meg","wordclass":"regex"},{"stem":"felvid[ií]t(hat|a)(sz|n[aá]l)","wordclass":"regex"}],
+		"summary"			: [{"stem":"mik?\s(van(nak)?|lesz(nek)?|volt(ak)?|t[oö]rt[eé]nt(ek)?)(\sa)?\sm[aá](i(\snapon)?|ra)?","wordclass":"regex"},{"stem":"összefoglal","wordclass":"noun"},{"stem":"foglal\w+\s[oö]s+ze","wordclass":"regex"}]
 	}
 	
 # pop culture AI references
