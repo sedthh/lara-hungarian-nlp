@@ -445,17 +445,17 @@ def test_parser_extract(info):
 	),
 	(
 		{
-			"text"		: "100 90% 0.5 % és 0,4% valamint .7 %",
+			"text"		: "100 90% 1100% 123,45% 0.5 % és 0,4% valamint .7 %",
 			"function"	: "percentages",
-			"result"	: ["90%","0.5%","0.4%","0.7%"]
+			"result"	: [0.90,11.0,1.2345,0.005,0.004,0.007]
 		}
 	),
 	(
 		{
-			"text"		: "100 90% 0.5 % és 0,4% valamint .7 %",
+			"text"		: "100 90% 1100% 123,45% 0.5 % és 0,4% valamint .7 %",
 			"function"	: "percentages",
 			"args"		: [False],
-			"result"	: ["90%","0.5 %","0,4%",".7 %"]
+			"result"	: ["90%","1100%","123,45%","0.5 %","0,4%",".7 %"]
 		}
 	),
 	(

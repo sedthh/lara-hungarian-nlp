@@ -18,7 +18,7 @@ class Intents:
 	typo_pattern_verb	= r'(?i)(?:h[ae][st])?(?:[eaá]?s?d?|[aeo]t)?(?:(?:[jntv]|[eo]?g[ae]t)?(?:[aeiou]n?[dklmt]|n[aei]k?|sz|[ai])?(?:t[aeou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aeou](?:[dkm]|t[eo]k)?)?t?)|[ae]?z?ni)?'
 	
 	##### CONSTRUCTOR #####
-	def __init__(self, new_intents={}, is_raw=False):	
+	def __init__(self, new_intents={}, is_raw=False):
 		self.intents	= {}
 		if not isinstance(new_intents, str) and not isinstance(new_intents, dict) and self.__class__.__name__ == new_intents.__class__.__name__:
 			raise ValueError('Unsupported value for Intents.')
@@ -35,7 +35,7 @@ class Intents:
 	def __str__(self):
 		return json.dumps(self.intents)
 
-	def __len__(self):		
+	def __len__(self):
 		return len(self.intents.keys())
 	
 	def __eq__(self, other):
@@ -505,16 +505,21 @@ class Extract:
 				matches	= _re.findall(r'((?:\d+(?:[\,\.]\d+)?|[\,\.]\d+))\s?\%', re.IGNORECASE, self.text)
 				results	= []
 				for item in matches:
-					item = item.replace(',','.')+'%'
+					item = item.replace(',','.')
 					if item.startswith('.'):
 						item='0'+item
-					results.append(item)
+					if '.' in item:
+						places=len(item.split('.')[1])+2
+					else:
+						places=2
+					item = str("{:."+str(places)+"f}").format(float(item)/100.00)
+					results.append(float(item))
 				return results
 			else:
 				return _re.findall(r'((?:\d+(?:[\,\.]\d+)?|[\,\.]\d+)\s?\%)', re.IGNORECASE, self.text)
 		return []
 	
-	# extract phonen umbers
+	# extract phone numbers
 	def phone_numbers(self,normalize=True):
 		results	= []
 		if self.text:
@@ -535,7 +540,7 @@ class Extract:
 		return results
 		
 	# extract list of common Hungarian date formats from text without further processing them
-	def dates(self):
+	def dates(self,normalize=True):
 		results	= []
 		if self.text:
 			matches	= _re.findall(r'\b((\d{2})?((\d{2}([\\\/\.\-]\s?|\s)){1,2})(\d{2}\.?\b))([aáeéio][ikn])?\b', re.IGNORECASE, self.text)
@@ -544,6 +549,9 @@ class Extract:
 			matches	= _re.findall(r'\b((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec)\w{0,10}(\W{1,2}\d{1,2})?)\b', re.IGNORECASE, self.text)
 			for item in matches:
 				results.append(item[0])
+			if normalize:
+				# TODO
+				return results
 		return results
 		
 	# extract times like 12:00 or délután 4
@@ -651,9 +659,13 @@ class Extract:
 		return []
 	
 	# extract list of time durations
-	def durations(self):
+	def durations(self,normalize=True):
 		if self.text:
-			return _re.findall(r'\b((?:\d\s?)+(?:[\.\,]\d+)?\s(?:(?:(?:sz[aá]zad|ezred)?m[aá]sod)?perc\w{0,3}|[oó]r[aá]\w{0,3}|nap{0,3}|h[eé]t{0,3}|h[oó]nap\w{0,3}|[eé]v\w{0,3})(?:\s(?:m[uú]lva|r[aá]|ezel[oöő]t+|el[oöő]b+|k[eé]s[oö]b+|bel[uü]l|h[aá]tr(?:a|[eé]bb)|vissza|el[oöő]re))?)\b', re.IGNORECASE, self.text)
+			matches	= _re.findall(r'\b((?:\d\s?)+(?:[\.\,]\d+)?\s(?:(?:(?:sz[aá]zad|ezred)?m[aá]sod)?perc\w{0,3}|[oó]r[aá]\w{0,3}|nap{0,3}|h[eé]t{0,3}|h[oó]nap\w{0,3}|[eé]v\w{0,3})(?:\s(?:m[uú]lva|r[aá]|(?:ez)?el[oöő]t+|el[oöő]b+|k[eé]s[oö]b+|bel[uü]l|h[aá]tr(?:a|[eé]bb)|vissza|el[oöő]re))?)\b', re.IGNORECASE, self.text)
+			if normalize:
+				# TODO
+				return matches
+			return matches
 		return []
 	
 	# extract list of common currencies from text (including $ € £ ￥ and forints)
@@ -752,6 +764,10 @@ class Extract:
 	def hasDigits(self):
 		return any(char.isdigit() for char in self.text)	
 
+	# TODO: actually implement this
+	def convert_numbers(self):
+		return self.text
+	
 # Wrapper Class for Regular Expression Caching
 class _re:
 
