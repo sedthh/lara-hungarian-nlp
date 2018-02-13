@@ -1,4 +1,4 @@
-#### **Lara** is a lightweight Python3 NLP library for Chatbot AI developement in Hungarian language. 
+## **Lara** is a lightweight Python3 NLP library for Chatbot AI developement in Hungarian language. 
 
 Instead of being an all purpose NLP tool, **Lara** was created to fit the [quirks and uniqueness](https://en.wikipedia.org/wiki/Agglutinative_language) of the Hungarian (online) [language](https://en.wikipedia.org/wiki/Hungarian_language) as much as possible. The library is capable of matching inflected forms of keywords in text messages written in Hungarian. It also comes with functions for text processing, and can even identify common expressions and small talk topics in discussions.
 
@@ -29,7 +29,7 @@ ragozott_forma	= {
 ragozott_talalat= parser.Intents(ragozott_forma)
 ```
 
-Will match the intent `"to_do"` in the following sentences:
+Will `match` the intent `"to_do"` in the following sentences:
 - Ő mit **csinál** a szobában?
 - Mit fogok még **csinálni**?
 - Mikor **csináltad** meg a szekrényt?
@@ -96,6 +96,8 @@ if references_match:
 	print('Értem, egy másik AI-ra utaltál az üzenetedben.')
 	if 'terminator' in references_match:
 		print('Visszatérek!')
+	elif 'matrix' in references_match:
+		print('Minden dolog, aminek kezdete van, véget is ér.')
 else:
 	print('Ez egy valós üzenetnek tűnik!')
 		
@@ -119,8 +121,8 @@ text 	= '''
 	maradt az elemző előtt. 
 	'''
 
-text	= nlp.remove_stopwords(text)
-stems	= tippmix.stemmer(text)
+clean	= nlp.remove_stopwords(text)
+stems	= tippmix.stemmer(clean)
 bigrams = nlp.ngram(stems,2)
 print(bigrams)
 
@@ -133,10 +135,8 @@ print(bigrams)
 ```python
 from lara import nlp
 
-huszt	= [
-	'Bús düledékeiden, Husztnak romvára megállék;',
-	'Csend vala, felleg alól szállt fel az éjjeli hold.',
-	]
+huszt	= ['Bús düledékeiden, Husztnak romvára megállék;',
+	'Csend vala, felleg alól szállt fel az éjjeli hold.']
 
 for line in husz:
 	print(nlp.metre(line))

@@ -39,7 +39,7 @@ def commands():
 		"error"				: [{"stem":"error","wordclass":"noun"},{"stem":"hiba","wordclass":"noun"},{"stem":"rossz","wordclass":"adjective"},{"stem":"nem (siker[uü]lt|j[oó]l?|m[uüű]k[oö]d(ik|[oö]tt)|ment)(\s\w)?(\s\w)?$","wordclass":"regex"}],
 		"search"			: [{"stem":"keres","wordclass":"verb"},{"stem":"find"},{"stem":"találd meg"}],
 		"undo"				: [{"stem":"visszavon","wordclass":"verb","prefix":[]},{"stem":"vissza.+?eg[eé]szet","wordclass":"regex"},{"stem":"von.+?vis+za","wordclass":"regex"},{"stem":"undo"}],
-		"restart"			: [{"stem":"indíts","affix":["d","a"],"with":[{"stem":"újra"}]},{"stem":"újraindít","wordclass":"verb"},{"stem":"(([uú]jra)?kezd\w{0,5}|kezd\w{0,5}.+?([uú]jra|el[oöő]l?r[oö]l|elej[eé](t|r)[oöő]l))","wordclass":"regex"}],
+		"restart"			: [{"stem":"ind[ií][ct]+sa?d?(\sel)?(\s[uú]j(ra|b[oó]l))","wordclass":"regex"},{"stem":"újraindít","wordclass":"verb"},{"stem":"(([uú]jra)?kezd\w{0,5}|kezd\w{0,5}.+?([uú]jra|el[oöő]l?r[oö]l|(leg)?elej[eé](t|r)[oöő]l))","wordclass":"regex"}],
 		"play"				: [{"stem":"(le)?j[aá](ts+z|c+)([aá]([dls]|ni))?(\sle)?(\svalamit?)?(\segy)?","wordclass":"regex"},{"stem":"play"},{"stem":"indít","wordclass":"verb"}],
 		"stop"				: [{"stem":"(meg|le)?[aá]l+(j+([aá]l)?|[ií][ct]+(s?a?d|[aá](ni|s)))(\smeg|\sle)?","wordclass":"regex"},{"stem":"stop"},{"stem":"el[eé]g(\sis)?(\sle(sz|gyen))?(\sm[aá]r)?(\smost)?(\sennyi)?","wordclass":"regex"},{"stem":"(kus+(olj([aá]l)?)?|fog(ja)?d\s?be)","wordclass":"regex"}],
 		"pause"				: [{"stem":"pau[sz][aáeé]([lz]+((as+a|[jz]a)?[dj]|ni))?(\sle)?","wordclass":"regex"},{"stem":"szünet(elt?(et)?([eé]?s+e?d?|ni)?)?","wordclass":"regex"}],
@@ -144,6 +144,9 @@ def cocktail():
 		"calendar_add"		: [{"stem":"(id[oőö]pont(ok)?|napt[aá]r|[kc]al+end[aá]r|tal[aá]lkoz[oó]|teend[oöő])\w*","wordclass":"regex","with":[{"stem":"([ií]r[dj]([aá][dl])?\s(be|fel|meg)|ve(d+|gy[eé][dl])\sfel|ad(j[aá])?[dl])","wordclass":"regex"}]}],
 		"calendar_remove"	: [{"stem":"(id[oőö]pont(ok)?|napt[aá]r|[kc]al+end[aá]r|tal[aá]lkoz[oó]|teend[oöő])\w*","wordclass":"regex","with":[{"stem":"(t[oö]r[oö]l[jd]([eé][dl])?|ve(d+|gy[eé][dl])\s(ki|le))","wordclass":"regex"}]}],
 		"calendar_modify"	: [{"stem":"(id[oőö]pont(ok)?|napt[aá]r|[kc]al+end[aá]r|tal[aá]lkoz[oó]|teend[oöő])\w*","wordclass":"regex","with":[{"stem":"([ií]r[dj]([aá][dl])?\s[aá]t|te(gye)?d+\s[aá]t|szerkes+ze?d|m[oó]dos[ií][ct]sa?d)","wordclass":"regex"}]}],
+		"calendar_date"		: [{"stem":"hányadika van"},{"stem":"mai dátum"}],
+		"calendar_day"		: [{"stem":"milyen nap van"}],
+		"calendar_holiday"	: [{"stem":"mi(nek az?|t|lyen)\s([uü]n+ep(l?[uü]nk|e|nap(ja)?)?|napj[aá]t?)","wordclass":"regex"},{"stem":"(piros\s?bet[uüú]s|[uü]n+ep(nap)?|nevezetes\snap)\svan","wordclass":"regex"}],
 		"weather"			: [{"stem":"időjárás","affix":["jelentés"],"wordclass":"noun"},{"stem":"(milyen|j[oó]|sz[eé]p)\s(lesz\s)?(az\s)?id[oöő](nk)?(\slesz)?","wordclass":"regex"}],
 		"weather_rain"		: [{"stem":"(sz[uü]ks[eé]g(em)?|(fog\s)?kell(eni)?(\sfog)?|vigyek(\smagammal)?)(\slesz|\svan)?(\segy)?\s(es)?erny[oöő](t|re)?","wordclass":"regex"},{"stem":"(fog(\sma\s)?esni|esik\sma|esni\sfog(\sma)?)(\s(az\s)?es[oöő])?","wordclass":"regex"}],
 		"weather_snow"		: [{"stem":"havaz(ni|ik|[aá]s|ott)","wordclass":"regex"},{"stem":"(fog(\sma\s)?esni|esik\sma|esni\sfog(\sma)?)\s(a\s)?h[oó]","wordclass":"regex"}],
@@ -151,7 +154,11 @@ def cocktail():
 		"news"				: [{"stem":"hír","affix":["adó"],"wordclass":"noun"},{"stem":"újság","prefix":["hír"],"wordclass":"noun"},{"stem":"valami\w*\s[uú]j((don)?s[aá]g(ot)?)?","wordclass":"regex"},{"stem":"(t[oö]rt[eé]nt(ek)?\s|volt(ak)?\s)(ma\s)?(valami\s)?([uú]j(dons[aá]g)?\s)?(az?\s)?((nagy)?vil[aá]gban|fontos|esem[eé]ny|napokban)","wordclass":"regex"}],
 		"joke"				: [{"stem":"vicc","wordclass":"noun","without":[{"stem":"(ez\s(csak\s)?valami|rossz)","wordclass":"regex"}]},{"stem":"vid[ií][ct]s+([aá]l)?\s?fel","wordclass":"regex"},{"stem":"nevet+es+([eé]l)?\s?meg","wordclass":"regex"},{"stem":"felvid[ií]t(hat|a)(sz|n[aá]l)","wordclass":"regex"}],
 		"summary"			: [{"stem":"mik?\s(van(nak)?|lesz(nek)?|volt(ak)?|t[oö]rt[eé]nt(ek)?)(\sa)?\sm[aá](i(\snapon)?|ra)?","wordclass":"regex"},{"stem":"összefoglal","wordclass":"noun"},{"stem":"foglal\w+\s[oö]s+ze","wordclass":"regex"}],
-		"zodiac"			: [{"stem":"horosz","affix":["pók","kóp"],"match_stem":False,"wordclass":"noun"},{"stem":"csillagok","with":[{"stem":"ír","wordclass":"verb"},{"stem":"mond","wordclass":"verb"}]}]
+		"zodiac"			: [{"stem":"horosz","affix":["pók","kóp"],"match_stem":False,"wordclass":"noun"},{"stem":"csillagok","with":[{"stem":"ír","wordclass":"verb"},{"stem":"mond","wordclass":"verb"}]}],
+		"translate"			: [{"stem":"(le)?fordít(s[aá]?[dl]|ani|an[aá][dl])","wordclass":"regex"},{"stem":"hogy(an)?\s(van|(kell\s)?mond(od|an[aá]d|j[aá]k|ani))\s(az\s)?\w+l\s\,?(hogy\s|az?\s)?","wordclass":"regex"},{"stem":"mit?\s(a\s)?jelent\s\w+l\s\,?(hogy\s|az?\s)?","wordclass":"regex"}],
+		"shop"				: [{"stem":"(meg\s)?(hol|ho(l|nnan)\studok|ho(l|nnan)\slehet|szeretn[eé][km]|akaro[km])\s?(meg)?(ve(nni|hete[km])|v[aá]s[aá]rol(ni|hato[km]))\s(meg\s)?(szeretn[eé][km]|akaro[km])","wordclass":"regex"}],
+		"music"				: [{"stem":"zene","wordclass":"noun"},{"stem":"(kezdj(\sel)?\s)?(le)?j[aá]ts+z([aá][dl]|ani)?(\sle)?\s","wordclass":"regex"},{"stem":"(be)?(tegy[eé][dl]|tehetn[eé][dl]|tedd|rakj?[aá]?[dl]|rakhatn[aá][dl])(\sbe)?\s(valamit?\s)?\w[lt]","wordclass":"regex"}],
+		"directions"		: [{"stem":"(merre\s(kell men\w+|van)|hogy(an)?\s(lehet\s)(el)?jut(hat)?(n[eé]k|ok|ni)(\sel)?)","wordclass":"regex"},{"stem":"([uú]tvonal\s?terv\w*|tervez\w*\s(meg\s)?(az?\s)[uú]tvonalat)","wordclass":"regex"}]
 	}
 	
 # pop culture AI references
