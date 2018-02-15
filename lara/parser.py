@@ -566,7 +566,7 @@ class Extract:
 							results.append(str(now.year)+'-'+parts[0].zfill(2)+'-'+parts[1].zfill(2))
 					else:
 						results.append(item[0])
-			matches	= _re.findall(r'((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec|[ivx]+)\w{0,10}(\W{1,2}\d{1,2})?)\b', re.IGNORECASE, self.text)
+			matches	= _re.findall(r'((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec|[ivx]+)\w{0,10}(\W{1,2}h[aoó][nv]?\w{0,7})?(\W{1,2}\d{1,2})?)\b', re.IGNORECASE, self.text)
 			for item in matches:
 				match	= item[0].lower()
 				year	= ''
@@ -623,7 +623,7 @@ class Extract:
 							roman	+= char
 						elif char.isalpha():
 							roman	= ''
-							continue
+							break
 					if not roman:
 						continue
 					if 'v' in roman:
@@ -752,11 +752,69 @@ class Extract:
 	# extract list of time durations
 	def durations(self,normalize=True):
 		if self.text:
-			matches	= _re.findall(r'\b((?:\d\s?)+(?:[\.\,]\d+)?\s(?:(?:(?:sz[aá]zad|ezred)?m[aá]sod)?perc\w{0,3}|[oó]r[aá]\w{0,3}|nap{0,3}|h[eé]t{0,3}|h[oó]nap\w{0,3}|[eé]v\w{0,3})(?:\s(?:m[uú]lva|r[aá]|(?:ez)?el[oöő]t+|el[oöő]b+|k[eé]s[oö]b+|bel[uü]l|h[aá]tr(?:a|[eé]bb)|vissza|el[oöő]re))?)\b', re.IGNORECASE, self.text)
+			matches	= _re.findall(r'\b((?:(?:(?:\d\s?)+(?:[\.\,]\d+)?\s(?:(?:[eé]s\s)?(?:f[eé]l|(?:h[aá]rom)?negyed)\s)?(?:(?:(?:t[ií]zed|sz[aá]zad|ezred)?m[aá]sod)?perc\w{0,3}|[oó]r[aá]\w{0,3}|nap\w{0,3}|h[eé]t\w{0,3}|h[oó]nap\w{0,3}|[eé]v\w{0,3})(?:\s(?:m[uú]lva|r[aá]|(?:ez)?el[oöő]t+|el[oöő]b+|k[eé]s[oö]b+|bel[uü]l|h[aá]tr(?:a|[eé]bb)|vissza|el[oöő]re))?)(?:\W*(?:[eé]s|meg)\W*)?)+)', re.IGNORECASE, self.text)
 			if normalize:
-				# TODO
+				results	= []
+				now = datetime.datetime.now()
+				for item in matches:
+					sub_matches	= _re.findall(r'\b((?:(?:\d\s?)+(?:[\.\,]\d+)?\s(?:(?:[eé]s\s)?(?:f[eé]l|(?:h[aá]rom)?negyed)\s)?(?:(?:(?:t[ií]zed|sz[aá]zad|ezred)?m[aá]sod)?perc\w{0,3}|[oó]r[aá]\w{0,3}|nap\w{0,3}|h[eé]t\w{0,3}|h[oó]nap\w{0,3}|[eé]v\w{0,3})(?:\s(?:m[uú]lva|r[aá]|(?:ez)?el[oöő]t+|el[oöő]b+|k[eé]s[oö]b+|bel[uü]l|h[aá]tr(?:a|[eé]bb)|vissza|el[oöő]re))?))', re.IGNORECASE, item)
+					val			= 0
+					for sub_item in sub_matches:
+						match	= sub_item.lower().replace(',','.')
+						sval	= ''
+						for char in match:
+							if char.isdigit() or char=='.':
+								sval+=char
+							else:
+								break
+						sval	= float(sval)
+						mpx		= 1
+						if 'tized' in match or 'tízed' in match:
+							mpx		= 0.1
+						elif 'szazad' in match or 'század' in match:
+							mpx		= 0.01
+						elif 'ezred' in match:
+							mpx		= 0.001
+						elif 'masod' in match or 'másod' in match:
+							mpx		= 1
+						elif 'perc' in match:
+							mpx		= 60
+						elif 'or' in match or 'ór' in match:
+							mpx		= 3600
+						elif 'ho' in match or 'hó' in match:
+							if now.month in (1,3,5,7,8,10,12):
+								mpx		= 86400 * 31
+							elif now.month==2:
+								if now.year%400==0 or now.year%100==0 or now.year%4==0:
+									mpx		= 86400 * 29
+								else:
+									mpx		= 86400 * 28
+							else:
+								mpx		= 86400 * 30
+						elif 'nap' in match:
+							mpx		= 86400
+						elif 'het' in match or 'hét' in match:
+							mpx		= 604800
+						elif 'ev' in match or 'év' in match:
+							if now.year%400==0 or now.year%100==0 or now.year%4==0:
+								mpx		= 86400 * 366
+							else:
+								mpx		= 86400 * 365
+						sval	*= mpx
+						if 'fel' in match or 'fél' in match:
+							sval		+= mpx*.5
+						elif 'negyed' in match:
+							if 'háromnegyed' in match or 'haromnegyed' in match:
+								sval		+= mpx*.75
+							else:
+								sval		+= mpx*.25
+						val	+= sval
+					if _re.findall(r'(el[oöő]t+|el[oöő]b+|h[aá]tr(?:a|[eé]bb)|vissza)', re.IGNORECASE, self.text):
+						val		*= -1
+					results.append(val)
+				return results
+			else:		
 				return matches
-			return matches
 		return []
 	
 	# extract list of common currencies from text (including $ € £ ￥ and forints)

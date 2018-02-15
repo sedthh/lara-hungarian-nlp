@@ -367,12 +367,6 @@ def test_parser_intents_clean(intents,text,cleaned):
 	),
 	(
 		{
-			"text"		: "3 órád van, hogy 4.5 percen belül elhagyd a 7",
-			"durations": ["3 órád","4.5 percen belül"],
-		}
-	),
-	(
-		{
 			"text"		: "john.doe@gmail.com email",
 			"emails"	: ["john.doe@gmail.com"]
 		}
@@ -387,7 +381,7 @@ def test_parser_intents_clean(intents,text,cleaned):
 ])
 def test_parser_extract(info):
 	test	= parser.Extract(info['text'])
-	check	= ['mentions','urls','smileys','durations','emojis','emails']
+	check	= ['mentions','urls','smileys','emojis','emails']
 	for item in info:
 		if item!='text' and item not in check:
 			raise ValueError('Possible typo in test case:',item)
@@ -582,7 +576,31 @@ def test_parser_extract(info):
 			"args"		: [True],
 			"result"	: ["2018-01-09","2018-01-09","2019-01-09","2018-01-09","2018-07-20","2018-01-20"]
 		}
-	)	
+	),
+	(
+		{
+			"text"		: "3 óra múlva vagy 12 percen belül de akár 2 és fél éven belül is megtörténhet, hogy 5 órával vissza kell állítani, az órát, mert jöttömre kelet felől 1,5 hét múlva számítsatok",
+			"function"	: "durations",
+			"args"		: [True],
+			"result"	: [-10800.0, -720.0, -78840000.0, -18000.0, -907200.0]
+		}
+	),
+	(
+		{
+			"text"		: "3 óra és 4 perc múlva valamint majd egyszer 1 héttel rá",
+			"function"	: "durations",
+			"args"		: [False],
+			"result"	: ['3 óra és 4 perc múlva', '1 héttel rá']
+		}
+	),
+	(
+		{
+			"text"		: "3 óra és 4 perc múlva valamint majd egyszer 1 héttel rá",
+			"function"	: "durations",
+			"args"		: [True],
+			"result"	: [11040.0, 604800.0]
+		}
+	),
 ])
 def test_parser_extract_parameter(info):
 	test	= parser.Extract(info['text'])
