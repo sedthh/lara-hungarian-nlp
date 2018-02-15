@@ -543,15 +543,106 @@ class Extract:
 	def dates(self,normalize=True):
 		results	= []
 		if self.text:
-			matches	= _re.findall(r'\b((\d{2})?((\d{2}([\\\/\.\-]\s?|\s)){1,2})(\d{2}\.?\b))([aáeéio][ikn])?\b', re.IGNORECASE, self.text)
+			now = datetime.datetime.now()
+			matches	= _re.findall(r'((\d{2})?(\d{2}([\\\/\.\-]\s?|\s))(\d{1,2}([\\\/\.\-]\s?|\s))?(\d{1,2}))\W*([aáeéio][ikn])?\b', re.IGNORECASE, self.text)
 			for item in matches:
-				results.append(item[0])
-			matches	= _re.findall(r'\b((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec)\w{0,10}(\W{1,2}\d{1,2})?)\b', re.IGNORECASE, self.text)
+				parts	= list(filter(None,re.split(r'\W', item[0]+'-')))
+				if len(parts)==3:
+					if int(parts[1])<=12:
+						if normalize:
+							if len(parts[0])==4:
+								results.append(parts[0]+'-'+parts[1].zfill(2)+'-'+parts[2].zfill(2))
+							else:
+								results.append('20'+parts[0]+'-'+parts[1].zfill(2)+'-'+parts[2].zfill(2))
+						else:
+							results.append(item[0])
+				elif len(parts)==2:
+					if normalize:
+						if len(parts[0])==4:
+							results.append(parts[0]+'-'+parts[1].zfill(2)+'-??')
+						elif int(parts[0])>12:
+							results.append('20'+parts[0]+'-'+parts[1].zfill(2)+'-??')
+						else:
+							results.append(str(now.year)+'-'+parts[0].zfill(2)+'-'+parts[1].zfill(2))
+					else:
+						results.append(item[0])
+			matches	= _re.findall(r'((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec|[ivx]+)\w{0,10}(\W{1,2}\d{1,2})?)\b', re.IGNORECASE, self.text)
 			for item in matches:
-				results.append(item[0])
-			if normalize:
-				# TODO
-				return results
+				match	= item[0].lower()
+				year	= ''
+				day		= ''
+				switch	= False
+				for char in match:
+					if switch:
+						if char.isdigit():
+							day		+=char
+					else:
+						if char.isdigit():
+							year	+=char
+						else:
+							switch	= True
+				if not year and not day:
+					continue
+				if not year:
+					year	= str(now.year)
+				elif len(year)==2:
+					year	= '20'+year
+				if not day:
+					day		= '??'
+				elif len(day)==1:
+					day		= '0'+day
+				month	= ''
+				if 'jan' in match:
+					month	= '01'
+				elif 'feb' in match:
+					month	= '02'
+				elif 'mar' in match or 'már' in match:
+					month	= '03'
+				elif 'apr' in match or 'ápr' in match:
+					month	= '04'
+				elif 'maj' in match or 'máj' in match:
+					month	= '05'
+				elif 'jun' in match or 'jún' in match:
+					month	= '06'
+				elif 'jul' in match or 'júl' in match:
+					month	= '07'
+				elif 'aug' in match:
+					month	= '08'
+				elif 'sep' in match or 'szep' in match:
+					month	= '09'
+				elif 'okt' in match:
+					month	= '10'
+				elif 'nov' in match:
+					month	= '11'
+				elif 'dec' in match:
+					month	= '12'
+				else:
+					roman	= ''
+					for char in match:
+						if char in ('i','v','x'):
+							roman	+= char
+						elif char.isalpha():
+							roman	= ''
+							continue
+					if not roman:
+						continue
+					if 'v' in roman:
+						if roman.startswith('v'):
+							month	= str(4+len(roman)).zfill(2)
+						else:
+							month	= str(6-len(roman)).zfill(2)
+					elif 'x' in roman:
+						if roman.startswith('x'):
+							month	= str(9+len(roman)).zfill(2)
+						else:
+							month	= str(11-len(roman)).zfill(2)
+					else:
+						month	= str(len(roman)).zfill(2)
+				if month and month!='00':
+					if normalize:
+						results.append(year+'-'+month+'-'+day)
+					else:
+						results.append(item[0])
 		return results
 		
 	# extract times like 12:00 or délután 4

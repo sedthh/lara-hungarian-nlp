@@ -360,12 +360,6 @@ def test_parser_intents_clean(intents,text,cleaned):
 	),
 	(
 		{
-			"text"		: "18/01/09 vagy 18-01-09 vagy 2018. 01. 09. vagy 2018. 01. 09-én vagy 2018 január 19-én",
-			"dates"		: ["18/01/09","18-01-09","2018. 01. 09","2018. 01. 09","2018 január 19"],
-		}
-	),
-	(
-		{
 			"text"		: "$ßŁł 🍹-😃🍔 :) ß¤é$× asddasd",
 			"emojis"	: ["🍹","😃","🍔"],
 			"smileys"	: [":)"]
@@ -393,7 +387,7 @@ def test_parser_intents_clean(intents,text,cleaned):
 ])
 def test_parser_extract(info):
 	test	= parser.Extract(info['text'])
-	check	= ['mentions','urls','smileys','dates','durations','emojis','emails']
+	check	= ['mentions','urls','smileys','durations','emojis','emails']
 	for item in info:
 		if item!='text' and item not in check:
 			raise ValueError('Possible typo in test case:',item)
@@ -573,6 +567,22 @@ def test_parser_extract(info):
 			"result"	: ["14:32","13:45","16:30","16:58","16:28","16:28","16:30","16:32","16:32"]
 		}
 	),
+	(
+		{
+			"text"		: "18/01/09 vagy 18-01-09 vagy 2018. 01. 09. vagy 2018. 01. 09-én vagy 2018 VII 20. és így 2018 január 20-án",
+			"function"	: "dates",
+			"args"		: [False],
+			"result"	: ["18/01/09","18-01-09","2018. 01. 09","2018. 01. 09","2018 VII 20","2018 január 20"]
+		}
+	),
+	(
+		{
+			"text"		: "18/01/09 vagy 18-01-09 vagy 2019. 01. 09. vagy 2018. 01. 09-én vagy 2018 VII 20. és így 2018 január 20-án",
+			"function"	: "dates",
+			"args"		: [True],
+			"result"	: ["2018-01-09","2018-01-09","2019-01-09","2018-01-09","2018-07-20","2018-01-20"]
+		}
+	)	
 ])
 def test_parser_extract_parameter(info):
 	test	= parser.Extract(info['text'])
