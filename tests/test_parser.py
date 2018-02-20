@@ -396,13 +396,13 @@ def test_parser_extract(info):
 	(
 		{
 			"in"		: "tízenkétmillióhatvanezerhetvenegy és hárommillió száz huszonkettő vagy még nullamilliárd de akkor már kettő kettő tizenkettő :) harmincnégy és nyolcvan illetve kilencvenezer az állás pedig egy-egy és végül egy kettő három",
-			"out"		: "12060071 és 3000122 vagy még 0 de akkor már 2 2 12 34 és 80 illetve 90000 az állás pedig 1-1 és végül 1 2 3"
+			"out"		: "12060071 és 3000122 vagy még 0 de akkor már 2 2 12 :) 34 és 80 illetve 90000 az állás pedig 1-1 és végül 1 2 3"
 		}
 	)
 ])
 def test_parser_extract_convert_numbers(info):
 	test	= parser.Extract(info['in'])
-	assert test.convert_numbers()==info['out']
+	assert test.ntext==info['out']
 			
 @pytest.mark.parametrize("info", [
 	(

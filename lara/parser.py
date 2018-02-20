@@ -407,7 +407,9 @@ class Extract:
 			raise ValueError('Constructor only accepts strings.')
 		elif text:
 			self.text	= text
-			self._text_	= ' '+text+' '	# some complex regular expressions were easier to write for padded text
+			self.ntext	= self._convert_numbers(self.text)
+			self._text_	= ' '+self.text+' '		# some complex regular expressions were easier to write for padded text
+			self._ntext_= ' '+self.ntext+' '	# some complex regular expressions were easier to write for padded text
 
 	##### DATA MODEL #####
 	def __repr__(self):
@@ -435,10 +437,11 @@ class Extract:
 		if other:
 			if self.__class__.__name__ == other.__class__.__name__:
 				self.text	+= other.text
-				self._text_	= ' '+self.text+' '
 			elif isinstance(other,str):
 				self.text	+= other
-				self._text_	= ' '+self.text+' '
+			self._text_	= ' '+self.text+' '
+			self.ntext	= self._convert_numbers(self.text)
+			self._ntext_= ' '+self.ntext+' '
 			return self
 		return self
 	
@@ -914,10 +917,10 @@ class Extract:
 	def hasDigits(self):
 		return any(char.isdigit() for char in self.text)	
 
-	# TODO: actually implement this
-	def convert_numbers(self):
-		if self.text:
-			fix		= _re.sub(r'(?<=\d)\s+(?=\d)',re.IGNORECASE,'',self.text.lower())
+	# Converts text representation of numbers to digits
+	def _convert_numbers(self,text):
+		if text:
+			fix		= _re.sub(r'(?<=\d)\s+(?=\d)',re.IGNORECASE,'',text.lower())
 			matches	= _re.findall(r'((?:(?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|egy|k[eé]t(?:t[oöő])?|h[aá]rom|n[eé]gy|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?\W*)|(?:ezer|sz[aá]z|t[ií]z)\W*)+)\b', re.IGNORECASE, fix)
 			results	= {}
 			for match in matches:
@@ -966,26 +969,31 @@ class Extract:
 					if last is False or scale<last:
 						value		+= scale * (ten*10+one)
 					else:
-						lname	= lname.strip()
-						if lname and not lname[-1].isalnum():
-							lname	= lname[:-1]
+						lname	= self._convert_numbers_name(lname)
 						if lname:
 							results[lname.strip()]= value
-						elif name.strip():
-							results[name.strip()]= scale * (ten*10+one)
+						elif self._convert_numbers_name(name):
+							results[self._convert_numbers_name(name)]= scale * (ten*10+one)
 						name		= ''
 						value		= 0
 					last	= scale
 					if up:
 						last	*= 10
-				if name.strip():
-					results[name.strip()]	= value
+				if self._convert_numbers_name(name):
+					results[self._convert_numbers_name(name)]= value
 			swap 	= sorted(results.items(), key=lambda x: x[1], reverse=True)	
-			text	= self.text
+			rtext	= fix
 			for item in swap:
-				text		= _re.sub(re.escape(item[0]), re.IGNORECASE, str(item[1]), text)
-			return text	
+				rtext		= _re.sub(r'\b('+re.escape(item[0])+r')\b', re.IGNORECASE, str(item[1]), rtext)
+			return rtext
 		return ''
+	
+	def _convert_numbers_name(self,name):
+		newname=''
+		for char in name:
+			if char.isalnum() or char in (' ','.',','):
+				newname	+= char
+		return newname.strip()
 	
 	def _convert_numbers_helper(self,match,default):
 		if 'egy' in match:
