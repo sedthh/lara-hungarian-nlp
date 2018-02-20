@@ -916,7 +916,97 @@ class Extract:
 
 	# TODO: actually implement this
 	def convert_numbers(self):
-		return self.text
+		if self.text:
+			fix		= _re.sub(r'(?<=\d)\s+(?=\d)',re.IGNORECASE,'',self.text.lower())
+			matches	= _re.findall(r'((?:(?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|egy|k[eé]t(?:t[oöő])?|h[aá]rom|n[eé]gy|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?\W*)|(?:ezer|sz[aá]z|t[ií]z)\W*)+)\b', re.IGNORECASE, fix)
+			results	= {}
+			for match in matches:
+				value	= 0
+				parts	= _re.findall(r'((?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|egy|k[eé]t(?:t[oöő])?|h[aá]rom|n[eé]gy|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?|(?:ezer|sz[aá]z|t[ií]z))\W*)', re.IGNORECASE, match)
+				last	= False
+				name	= ''
+				lname	= ''
+				for part in parts:
+					lname		= name
+					name		+=part
+					ten			= 0
+					one			= 1
+					scale		= 1
+					up			= False
+					if 'nulla' in part:
+						scale	= 0
+					elif _re.findall(r'milli[aá]rd', re.IGNORECASE, part):
+						scale	= 1000000000
+					elif _re.findall(r'milli[oó]', re.IGNORECASE, part):
+						scale	= 1000000
+					elif _re.findall(r'ezer', re.IGNORECASE, part):
+						scale	= 1000
+					elif _re.findall(r'sz[aá]z', re.IGNORECASE, part):
+						scale	= 100
+					if _re.findall(r'v[ae]n', re.IGNORECASE, part):
+						elem		= re.split('v[ae]n',part)	
+						if len(elem)==2:
+							one		= self._convert_numbers_helper(elem[1],0)
+							ten		= self._convert_numbers_helper(elem[0],0)
+						else:
+							ten		= self._convert_numbers_helper(elem[0],0)
+							one		= 0
+						up		= True
+					else:
+						if _re.findall(r't[ií]z', re.IGNORECASE, part):
+							ten		= 1
+							up		= True
+						elif _re.findall(r'h[uú]sz', re.IGNORECASE, part):
+							ten		= 2
+							up		= True
+						elif _re.findall(r'harminc', re.IGNORECASE, part):
+							ten		= 3
+							up		= True
+						one		= 	self._convert_numbers_helper(part,1)
+					if last is False or scale<last:
+						value		+= scale * (ten*10+one)
+					else:
+						lname	= lname.strip()
+						if lname and not lname[-1].isalnum():
+							lname	= lname[:-1]
+						if lname:
+							results[lname.strip()]= value
+						elif name.strip():
+							results[name.strip()]= scale * (ten*10+one)
+						name		= ''
+						value		= 0
+					last	= scale
+					if up:
+						last	*= 10
+				if name.strip():
+					results[name.strip()]	= value
+			swap 	= sorted(results.items(), key=lambda x: x[1], reverse=True)	
+			text	= self.text
+			for item in swap:
+				text		= _re.sub(re.escape(item[0]), re.IGNORECASE, str(item[1]), text)
+			return text	
+		return ''
+	
+	def _convert_numbers_helper(self,match,default):
+		if 'egy' in match:
+			return 1
+		elif _re.findall(r'k[eé]t(?:t[oöő])?', re.IGNORECASE, match):
+			return 2
+		elif _re.findall(r'h[aá]rom', re.IGNORECASE, match):
+			return 3
+		elif _re.findall(r'n[eé]gy', re.IGNORECASE, match):
+			return 4
+		elif _re.findall(r'[oö]t', re.IGNORECASE, match):
+			return 5
+		elif _re.findall(r'hat', re.IGNORECASE, match):
+			return 6
+		elif _re.findall(r'h[eé]t', re.IGNORECASE, match):
+			return 7
+		elif _re.findall(r'nyolc', re.IGNORECASE, match):
+			return 8
+		elif _re.findall(r'kilenc', re.IGNORECASE, match):
+			return 9
+		return default
 	
 # Wrapper Class for Regular Expression Caching
 class _re:

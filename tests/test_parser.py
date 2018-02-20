@@ -395,6 +395,18 @@ def test_parser_extract(info):
 @pytest.mark.parametrize("info", [
 	(
 		{
+			"in"		: "tízenkétmillióhatvanezerhetvenegy és hárommillió száz huszonkettő vagy még nullamilliárd de akkor már kettő kettő tizenkettő :) harmincnégy és nyolcvan illetve kilencvenezer az állás pedig egy-egy és végül egy kettő három",
+			"out"		: "12060071 és 3000122 vagy még 0 de akkor már 2 2 12 34 és 80 illetve 90000 az állás pedig 1-1 és végül 1 2 3"
+		}
+	)
+])
+def test_parser_extract_convert_numbers(info):
+	test	= parser.Extract(info['in'])
+	assert test.convert_numbers()==info['out']
+			
+@pytest.mark.parametrize("info", [
+	(
+		{
 			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 300 300 és 20. 3 és 2.3.4 1",
 			"function"	: "digits",
 			"result"	: ['120', '5100', '420', '3456', '300300', '20', '3', '2341']
