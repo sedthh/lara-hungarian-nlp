@@ -154,7 +154,7 @@ def cocktail():
 		"news"				: [{"stem":"hír","affix":["adó"],"wordclass":"noun"},{"stem":"újság","prefix":["hír"],"wordclass":"noun"},{"stem":"valami\w*\s[uú]j((don)?s[aá]g(ot)?)?","wordclass":"regex"},{"stem":"(t[oö]rt[eé]nt(ek)?\s|volt(ak)?\s)(ma\s)?(valami\s)?([uú]j(dons[aá]g)?\s)?(az?\s)?((nagy)?vil[aá]gban|fontos|esem[eé]ny|napokban)","wordclass":"regex"}],
 		"joke"				: [{"stem":"vicc","wordclass":"noun","without":[{"stem":"(ez\s(csak\s)?valami|rossz)","wordclass":"regex"}]},{"stem":"vid[ií][ct]s+([aá]l)?\s?fel","wordclass":"regex"},{"stem":"nevet+es+([eé]l)?\s?meg","wordclass":"regex"},{"stem":"felvid[ií]t(hat|a)(sz|n[aá]l)","wordclass":"regex"}],
 		"summary"			: [{"stem":"mik?\s(van(nak)?|lesz(nek)?|volt(ak)?|t[oö]rt[eé]nt(ek)?)(\sa)?\sm[aá](i(\snapon)?|ra)?","wordclass":"regex"},{"stem":"összefoglal","wordclass":"noun"},{"stem":"foglal\w+\s[oö]s+ze","wordclass":"regex"}],
-		"zodiac"			: [{"stem":"horosz","affix":["pók","kóp"],"match_stem":False,"wordclass":"noun"},{"stem":"csillagok","with":[{"stem":"ír","wordclass":"verb"},{"stem":"mond","wordclass":"verb"}]}],
+		"zodiac"			: [{"stem":"horosz","affix":["pók","kóp"],"match_stem":False,"wordclass":"noun"},{"stem":"csillagok","affix":["ban"],"with":[{"stem":"ír","wordclass":"verb"},{"stem":"mond","wordclass":"verb"}]}],
 		"translate"			: [{"stem":"(le)?fordít(s[aá]?[dl]|ani|an[aá][dl])","wordclass":"regex"},{"stem":"hogy(an)?\s(van|(kell\s)?mond(od|an[aá]d|j[aá]k|ani))\s(az\s)?\w+l\s\,?(hogy\s|az?\s)?","wordclass":"regex"},{"stem":"mit?\s(a\s)?jelent\s\w+l\s\,?(hogy\s|az?\s)?","wordclass":"regex"}],
 		"shop"				: [{"stem":"(meg\s)?(hol|ho(l|nnan)\studok|ho(l|nnan)\slehet|szeretn[eé][km]|akaro[km])\s?(meg)?(ve(nni|hete[km])|v[aá]s[aá]rol(ni|hato[km]))\s(meg\s)?(szeretn[eé][km]|akaro[km])","wordclass":"regex"}],
 		"music"				: [{"stem":"zene","wordclass":"noun"},{"stem":"(kezdj(\sel)?\s)?(le)?j[aá]ts+z([aá][dl]|ani)?(\sle)?\s","wordclass":"regex"},{"stem":"(be)?(tegy[eé][dl]|tehetn[eé][dl]|tedd|rakj?[aá]?[dl]|rakhatn[aá][dl])(\sbe)?\s(valamit?\s)?\w[lt]","wordclass":"regex"}],
@@ -195,7 +195,8 @@ def popculture():
 		"onepunchman"		: [{"stem":"Genos"}],
 		"doraemon"			: [{"stem":"Doraemon"}],
 		"her"				: [{"stem":"Samantha","wordclass":"noun"},{"stem":"Theodore"},{"stem":"Scarlett Johansson"}],
-		"tron"				: [{"stem":"Tron","wordclass":"noun"},{"stem":"Master Control Program"},{"stem":"Mester Kontroll Program"},{"stem":"end of line"}]
+		"tron"				: [{"stem":"Tron","wordclass":"noun"},{"stem":"Master Control Program"},{"stem":"Mester Kontroll Program"},{"stem":"end of line"}],
+		"rickmorty"			: [{"stem":"You pass butter"},{"stem":"vaj","affix":["at"],"with":[{"stem":"ad","wordclass":"verb","prefix":["ide","oda","nekem","át"]}]}]
 	}
 	
 # smiley and emoji references

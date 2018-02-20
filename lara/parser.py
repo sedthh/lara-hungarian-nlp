@@ -544,9 +544,10 @@ class Extract:
 		results	= []
 		if self.text:
 			now = datetime.datetime.now()
-			matches	= _re.findall(r'((\d{2})?(\d{2}([\\\/\.\-]\s?|\s))(\d{1,2}([\\\/\.\-]\s?|\s))?(\d{1,2}))\W*([aáeéio][ikn])?\b', re.IGNORECASE, self.text)
+			matches	= _re.findall(r'((\d{2})?(\d{2}([\\\/\.\-]\s?|\s))([eé]v\s?)?(\d{1,2}([\\\/\.\-]\s?|\s)(h[oó](nap)?\s?)?)?(\d{1,2}))\W*([aáeéio][ikn]|nap)?\b', re.IGNORECASE, self.text)
 			for item in matches:
-				parts	= list(filter(None,re.split(r'\W', item[0]+'-')))
+				match	= re.sub('([eé]v|h[oó]|nap)', '', item[0])
+				parts	= list(filter(None,re.split(r'\W', match+'-')))
 				if len(parts)==3:
 					if int(parts[1])<=12:
 						if normalize:
@@ -566,7 +567,7 @@ class Extract:
 							results.append(str(now.year)+'-'+parts[0].zfill(2)+'-'+parts[1].zfill(2))
 					else:
 						results.append(item[0])
-			matches	= _re.findall(r'((\d{2}(\d{2})?\W{0,2})?(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec|[ivx]+)\w{0,10}(\W{1,2}h[aoó][nv]?\w{0,7})?(\W{1,2}\d{1,2})?)\b', re.IGNORECASE, self.text)
+			matches	= _re.findall(r'((\d{2}(\d{2})?)?\W{1,2}(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec|[ivx]+)\w{0,10}(\W{1,2}h[aoó][nv]?\w{0,7})?(\W{1,2}\d{1,2})?)\b', re.IGNORECASE, self.text)
 			for item in matches:
 				match	= item[0].lower()
 				year	= ''
