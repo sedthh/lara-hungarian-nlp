@@ -74,8 +74,9 @@ And normalization of extracted strings:
 from lara import parser
 
 sms			= 'Hívj fel! A számom 30/123 4567!'
-print(parser.Extract(sms).phone_numbers(False))
-print(parser.Extract(sms).phone_numbers(True))
+info		= parser.Extract(sms)
+print(info.phone_numbers(False))
+print(info.phone_numbers(True))
 
 >>> ['30/123 4567']
 >>> ['+36 30 1234567']
@@ -86,17 +87,32 @@ It uses Black Magic™:
 ```python
 from lara import parser
 
-text	= 'Hívj fel ezen a számon 2018 IV. huszadikán mondjuk délután nyolc perccel háromnegyed kettő előtt!'
-sorcery	= parser.Extract(text)
-print(sorcery.dates())
-print(sorcery.times())
+sorcery		= 'Hívj fel ezen a számon 2018 IV. huszadikán mondjuk délután nyolc perccel háromnegyed kettő előtt!'
+info		= parser.Extract(sorcery)
+print(info.dates())
+print(info.times())
 	
->>>	['2018-04-20']
+>>> ['2018-04-20']
 >>> ['13:37']
 ```
 
 
 #### Handle common topics
+
+Is able to engage in small talk:
+
+```python
+from lara import parser, entities
+
+user_text	= 'Te egy ember vagy, vagy egy intelligens számítógép vagy?'
+
+chitchat	= entities.smalltalk()
+chitchat_match= parser.Intents(chitchat).match_set(user_text)
+if 'are_you_a_robot' in chitchat_match:
+	print('Egy számítógépet akkor nevezhetünk intelligensnek, ha át tud verni egy embert, hogy őt is embernek higgye.')
+		
+>>> Egy számítógépet akkor nevezhetünk intelligensnek, ha át tud verni egy embert, hogy őt is embernek higgye.
+```
 
 Understands when the user is just trying to mess with your Chatbot, instead of actually sending a request:
 
