@@ -3,7 +3,7 @@
 # Lara - Lingusitic Aim Recognizer API
 
 __all__				= 'nlp','parser','tippmix','entities'
-__version__ 		= '0.5.1'
+__version__ 		= '0.9.9'
 __version_info__	= tuple(int(num) for num in __version__.split('.'))
 
 import sys

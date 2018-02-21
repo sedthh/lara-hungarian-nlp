@@ -81,6 +81,21 @@ print(parser.Extract(sms).phone_numbers(True))
 >>> ['+36 30 1234567']
 ```
 
+It uses Black Magic™:
+
+```python
+from lara import parser
+
+text	= 'Hívj fel ezen a számon 2018 IV. huszadikán mondjuk délután nyolc perccel háromnegyed kettő előtt!'
+sorcery	= parser.Extract(text)
+print(sorcery.dates())
+print(sorcery.times())
+	
+>>>	['2018-04-20']
+>>> ['13:37']
+```
+
+
 #### Handle common topics
 
 Understands when the user is just trying to mess with your Chatbot, instead of actually sending a request:
