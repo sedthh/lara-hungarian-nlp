@@ -398,6 +398,12 @@ def test_parser_extract(info):
 			"in"		: "tízenkétmillióhatvanezerhetvenegy és hárommillió száz huszonkettő vagy még nullamilliárd de akkor már kettő kettő tizenkettő :) harmincnégy és nyolcvan illetve kilencvenezer az állás pedig egy-egy és végül egy kettő három",
 			"out"		: "12060071 és 3000122 vagy még 0 de akkor már 2 2 12 :) 34 és 80 illetve 90000 az állás pedig 1-1 és végül 1 2 3"
 		}
+	),
+	(
+		{
+			"in"		: "harmincnégy lol első a második harmadik :D negyed végén ötödikén mit más csinálsz tízenkétmillióhatvanezerhetvenegy és hárommillió száz huszonkettő vagy még nullamilliárd de akkor már kettő kettő tizenkettő :) harmincnégy és nyolcvan illetve kilencvenezer az állás pedig egy-egy és végül egy kettő három",
+			"out"		: "34 lol 1 a 2 3 :D negyed végén 5 mit más csinálsz 12060071 és 3000122 vagy még 0 de akkor már 2 2 12 :) 34 és 80 illetve 90000 az állás pedig 1-1 és végül 1 2 3"
+		}
 	)
 ])
 def test_parser_extract_convert_numbers(info):
@@ -445,14 +451,14 @@ def test_parser_extract_convert_numbers(info):
 	),
 	(
 		{
-			"text"		: "100 90% 1100% 123,45% 0.5 % és 0,4% valamint .7 %",
+			"text"		: "100 a 90% 1100% 123,45% 0.5 % és 0,4% valamint .7 %",
 			"function"	: "percentages",
 			"result"	: [0.90,11.0,1.2345,0.005,0.004,0.007]
 		}
 	),
 	(
 		{
-			"text"		: "100 90% 1100% 123,45% 0.5 % és 0,4% valamint .7 %",
+			"text"		: "100 a 90% 1100% 123,45% 0.5 % és 0,4% valamint .7 %",
 			"function"	: "percentages",
 			"args"		: [False],
 			"result"	: ["90%","1100%","123,45%","0.5 %","0,4%",".7 %"]
@@ -529,7 +535,7 @@ def test_parser_extract_convert_numbers(info):
 		{	
 			"text"		: "találkozzunk háromnegyed 3 előtt 4 perccel, holnap!",
 			"function"	: "times",
-			"args"		: [False,0],
+			"args"		: [False,False,0],
 			"result"	: ["háromnegyed 3 előtt 4 perccel, holnap"]
 		}
 	),
@@ -537,15 +543,15 @@ def test_parser_extract_convert_numbers(info):
 		{	
 			"text"		: "3 óra 4 perc",
 			"function"	: "times",
-			"args"		: [True,0],
+			"args"		: [True,False,0],
 			"result"	: ["03:04"]
 		}
 	),
 	(
 		{	
-			"text"		: "3 óra 4 perc",
+			"text"		: "három óra négy perc",
 			"function"	: "times",
-			"args"		: [True,10],
+			"args"		: [True,True,10],
 			"result"	: ["15:04"]
 		}
 	),
@@ -553,7 +559,7 @@ def test_parser_extract_convert_numbers(info):
 		{	
 			"text"		: "találkozzunk 10 perccel 9 előtt vagy 20 perccel 20 előtt vagy akár nekem 10 perccel 20 után is jó",
 			"function"	: "times",
-			"args"		: [True,10],
+			"args"		: [True,False,10],
 			"result"	: ["20:50","19:40","20:10"]
 		}
 	),
@@ -561,7 +567,7 @@ def test_parser_extract_convert_numbers(info):
 		{	
 			"text"		: "10:30 simán, de reggel 9-től este 10-ig és holnap 4-kor vagy holnap délután 4-kor illetve 8-kor és holnap 8-kor",
 			"function"	: "times",
-			"args"		: [True,10],
+			"args"		: [True,False,10],
 			"result"	: ["10:30","09:00","22:00","16:00","16:00","20:00","20:00"]
 		}
 	),
@@ -569,7 +575,7 @@ def test_parser_extract_convert_numbers(info):
 		{	
 			"text"		: "fél 3 után 2 perccel vagy háromnegyed 2 körül vagy fél 5 előtt vagy 5 előtt 2 perccel vagy fél 5 előtt 2 perccel vagy 2 perccel fél 5 előtt vagy fél 5 után vagy fél 5 után 2 perccel vagy 2 perccel fél 5 után",
 			"function"	: "times",
-			"args"		: [True,10],
+			"args"		: [True,False,10],
 			"result"	: ["14:32","13:45","16:30","16:58","16:28","16:28","16:30","16:32","16:32"]
 		}
 	),
