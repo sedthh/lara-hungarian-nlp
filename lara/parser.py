@@ -570,7 +570,7 @@ class Extract:
 							results.append(str(now.year)+'-'+parts[0].zfill(2)+'-'+parts[1].zfill(2))
 					else:
 						results.append(item[0])
-			matches	= _re.findall(r'((\d{2}(\d{2})?)?\W{1,2}(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec|[ivx]+)\w{0,10}(\W{1,2}h[aoó][nv]?\w{0,7})?(\W{1,2}\d{1,2})?)\b', re.IGNORECASE, self.ntext if convert else self.text)
+			matches	= _re.findall(r'((\d{2}(\d{2})?)?\W{1,2}(jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec|[ivx]+\W{0,2})\w{0,10}(\W{1,2}h[aoó][nv]?\w{0,7})?(\W{1,2}\d{1,2})?)\b', re.IGNORECASE, self.ntext if convert else self.text)
 			for item in matches:
 				match	= item[0].lower()
 				year	= ''
