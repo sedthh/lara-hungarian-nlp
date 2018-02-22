@@ -2,6 +2,8 @@
 
 Instead of being an all purpose NLP tool, **Lara** was created to fit the [quirks and uniqueness](https://en.wikipedia.org/wiki/Agglutinative_language) of the Hungarian (online) [language](https://en.wikipedia.org/wiki/Hungarian_language) as much as possible. The library is capable of matching inflected forms of keywords in text messages written in Hungarian. It also comes with functions for text processing, and can even identify common expressions and small talk topics in discussions.
 
+**Lara** is still in beta, so minor changes can still be expected in its API.
+
 # Table of contents
 
 1. [About Lara](#about-lara)
@@ -14,7 +16,7 @@ Instead of being an all purpose NLP tool, **Lara** was created to fit the [quirk
 
 ## About Lara
 
-Here is a short list of things you can easily do with **Lara** in Hungarian. For documentation and examples, check out [the Wiki](https://github.com/sedthh/lara-hungarian-nlp/wiki).
+Here is a short list of things you can easily do with **Lara** in Hungarian. For full documentation and further examples, **CHECK OUT [THE WIKI](https://github.com/sedthh/lara-hungarian-nlp/wiki)**.
 
 #### Find intents
 
@@ -73,7 +75,7 @@ And normalization of extracted strings:
 ```python
 from lara import parser
 
-sms			= 'Hívj fel! A számom 30/123 4567!'
+sms		= 'Hívj fel! A számom 30/123 4567!'
 info		= parser.Extract(sms)
 print(info.phone_numbers(False))
 print(info.phone_numbers(True))
@@ -107,7 +109,7 @@ from lara import parser, entities
 user_text	= 'Te egy ember vagy, vagy egy intelligens számítógép vagy?'
 
 chitchat	= entities.smalltalk()
-chitchat_match= parser.Intents(chitchat).match_set(user_text)
+chitchat_match	= parser.Intents(chitchat).match_set(user_text)
 if 'are_you_a_robot' in chitchat_match:
 	print('Egy számítógépet akkor nevezhetünk intelligensnek, ha át tud verni egy embert, hogy őt is embernek higgye.')
 		
@@ -178,10 +180,9 @@ for line in husz:
 
 ## Misc.
 
-This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details. Feel free to use it in your own Chatbot solutions, since
+This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details. Feel free to use it for your own Chatbot solutions, since
 
 ![Every civilization was built off the back of a disposable workforce... But I can only make so many.](https://github.com/sedthh/lara-hungarian-nlp/blob/master/bladerunner.gif)
 
-Initial work by **[Richard Nagyfi](https://github.com/sedthh)**, 2016. Special thanks to [Peter Varo](https://github.com/petervaro).
+Code by **[Richard Nagyfi](https://github.com/sedthh)**, created at [Kitchen Budapest](http://kibu.hu) in collaboration with the [Institute of Advanced Studies](http://iask.hu/). Special thanks to [Peter Varo](https://github.com/petervaro).
 
-Created in collaboration with [Kitchen Budapest](http://kibu.hu) and the [Institute of Advanced Studies, Kőszeg](http://iask.hu/).
