@@ -436,17 +436,17 @@ def test_parser_extract_convert_numbers(info):
 	),
 	(
 		{
-			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 78,90 yen 300 300 és 20. 3 és 2.3.4 1",
+			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 78,90 yen 300 300 és 20. 3 és 2.3.4 1 de -2 jó e és a -2.0",
 			"function"	: "numbers",
-			"result"	: [120.0, 5100.0, 420.0, 34.56, 78.90, 300300.0, 20.0, 3.0, 2.0, 3.4, 1.0]
+			"result"	: [120.0, 5100.0, 420.0, 34.56, 78.90, 300300.0, 20.0, 3.0, 2.0, 3.4, 1.0, -2.0, -2.0]
 		}
 	),
 	(
 		{
-			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 300 300 és 20. 3 és 2.3.4 1",
+			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 300 300 és 20. 3 és 2.3.4 1 de -2 jó e és a -2.0",
 			"function"	: "numbers",
-			"args"		: [False],
-			"result"	: [120, 5100, 420, 300300, 20, 1]
+			"args"		: [False,False],
+			"result"	: [120, 5100, 420, 300300, 20, 3, 1, -2]
 		}
 	),
 	(

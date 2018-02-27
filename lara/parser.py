@@ -479,7 +479,7 @@ class Extract:
 	def digits(self,n=0,normalize=True,convert=True):
 		results	= []
 		if self.text:
-			matches	= _re.findall(r'((?:\d[\-\.\,\s]?)+)', re.IGNORECASE, self.ntext if convert else self._text_)
+			matches	= _re.findall(r'((?:\d[\-\.\,\s]?)+)', re.IGNORECASE, self.ntext if convert else self.text)
 			for item in matches:
 				original= item
 				item	= lara.nlp.trim(''.join(e for e in item if e.isdigit()))
@@ -491,13 +491,13 @@ class Extract:
 		return results
 		
 	# extract (decimal) numbers
-	def numbers(self,decimals=True):
+	def numbers(self,decimals=True,convert=True):
 		if self.text:
 			if decimals:
-				matches	= _re.findall(r'((?:\d\s?)+(?:[\.\,]\d+[^\.\,])?)', re.IGNORECASE, self.text)
+				matches	= _re.findall(r'((?:-\s?)?(?:\d\s?)+(?:[\.\,]\d+[^\.\,])?)', re.IGNORECASE, self._ntext_ if convert else self._text_)
 				return [float(''.join(number.replace(',','.').split())) for number in matches]
 			else:
-				matches	= _re.findall(r'(?<![\.\,])([^\.\,](?:\d\s?)+(?![\.\,]\d))\D', re.IGNORECASE, self._text_)
+				matches	= _re.findall(r'(?<![\.\,\d])(\-?(?:\d\s?)+(?![\.\,]\d))\D', re.IGNORECASE, self._ntext_ if convert else self._text_)
 				return [int(''.join(number.split())) for number in matches]
 		return []
 	
@@ -922,10 +922,17 @@ class Extract:
 	def _convert_numbers(self,text):
 		if text:
 			#fix		= _re.sub(r'(?<=\d)\s+(?=\d)',re.IGNORECASE,'',text.lower())
-			matches	= _re.findall(r'((?:(?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|egy|els[eoöő]|k[eé]t+[oöő]?|m[aá]sod(?:ik)?|h[aá]rom|harmadik|n[eé]gy|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?\W*)|(?:ezer|sz[aá]z|t[ií]z|h[uú]sz|harminc|nulla|z[eé]r[oó])\W*)+(?:[aeoö]dik)?(?:j?[aáeéi]+n?)?)\b', re.IGNORECASE, text.lower())
+			matches	= _re.findall(r'((?:m[ií]n[uú]sz\s?|negat[ií]v\s?)?(?:(?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|egy|els[eoöő]|k[eé]t+[oöő]?|m[aá]sod(?:ik)?|h[aá]rom|harmadik|n[eé]gy|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?\W*)|(?:ezer|sz[aá]z|t[ií]z|h[uú]sz|harminc|nulla|z[eé]r[oó])\W*)+(?:[aeoö]dik)?(?:j?[aáeéi]+n?)?)\b', re.IGNORECASE, text.lower())
 			results	= {}
 			for match in matches:
 				value	= 0
+				minusc	= _re.findall(r'(m[ií]n[uú]sz\s?|negat[ií]v\s?)', re.IGNORECASE, match)
+				if minusc:
+					minus	= -1
+					minusm	= minusc[0]
+				else:
+					minus	= 1
+					minusm	= ''
 				parts	= _re.findall(r'((?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|egy|els[eoöő]|k[eé]t+[oöő]?|m[aá]sod(?:ik)?|h[aá]rom|harmadik|n[eé]gy|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?|(?:ezer|sz[aá]z|t[ií]z|h[uú]sz|harminc|nulla|z[eé]r[oó]))\W*)', re.IGNORECASE, match)
 				last	= False
 				name	= ''
@@ -975,18 +982,18 @@ class Extract:
 					else:
 						lname	= self._convert_numbers_name(lname)
 						if lname:
-							results[lname.strip()]= value
+							results[self._convert_numbers_name(minusm+lname)]= value*minus
 							name		= name.split(lname)[1]
 							value		= scale * (ten*10+one)
 						elif self._convert_numbers_name(name):
-							results[self._convert_numbers_name(name)]= scale * (ten*10+one)
+							results[self._convert_numbers_name(minusm+name)]= scale * (ten*10+one)
 							name		= ''
 							value		= 0
 					last	= scale
 					if up:
 						last	*= 10
 				if self._convert_numbers_name(name):
-					results[self._convert_numbers_name(name)]= value
+					results[minusm+self._convert_numbers_name(name)]= value*minus
 			swap 	= sorted(results.items(), key=lambda x: x[1], reverse=True)	
 			rtext	= text
 			for item in swap:

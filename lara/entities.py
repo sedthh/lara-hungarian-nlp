@@ -197,7 +197,8 @@ def popculture():
 		"doraemon"			: [{"stem":"Doraemon"}],
 		"her"				: [{"stem":"Samantha","wordclass":"noun"},{"stem":"Theodore"},{"stem":"Scarlett Johansson"}],
 		"tron"				: [{"stem":"Tron","wordclass":"noun"},{"stem":"Master Control Program"},{"stem":"Mester Kontroll Program"},{"stem":"end of line"}],
-		"rickmorty"			: [{"stem":"You pass butter"},{"stem":"vaj","affix":["at"],"with":[{"stem":"ad","wordclass":"verb","prefix":["ide","oda","nekem","át"]}]}]
+		"rickmorty"			: [{"stem":"You pass butter"},{"stem":"vaj","affix":["at"],"with":[{"stem":"ad","wordclass":"verb","prefix":["ide","oda","nekem","át"]}]}],
+		"knightrider"		: [{"stem":"k(night)?[\s\.]?i(ndustries)?[\s\.]?t(wo)?[\s\.]?t(housand)?[\s\.]?","wordclass":"regex"},{"stem":"SPM fokozat","affix":["ba"]}]
 	}
 	
 # smiley and emoji references
