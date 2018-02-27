@@ -479,7 +479,7 @@ class Extract:
 	def digits(self,n=0,normalize=True,convert=True):
 		results	= []
 		if self.text:
-			matches	= _re.findall(r'((?:\d[\-\.\,\s]?)+)', re.IGNORECASE, self.ntext if convert else self.text)
+			matches	= _re.findall(r'((?:\d[\-\.\,\s]?)+)', re.IGNORECASE, self.ntext if convert else self._text_)
 			for item in matches:
 				original= item
 				item	= lara.nlp.trim(''.join(e for e in item if e.isdigit()))
@@ -997,19 +997,21 @@ class Extract:
 	def _convert_numbers_name(self,name):
 		newname=''
 		for char in name:
-			if char.isalnum() or char in (' ','.',','):
+			if char.isalnum() or char in (' ','.',',','-'):
 				newname	+= char
+		if newname and not newname[-1].isalnum():
+			newname	= newname[:-1]
 		return newname.strip()
 	
 	def _convert_numbers_helper(self,match,default):
-		if 'egy' in match or 'els' in match:
-			return 1
-		elif _re.findall(r'(k[eé]t+[oöő]?|m[aá]sod(ik)?)', re.IGNORECASE, match):
+		if _re.findall(r'(k[eé]t+[oöő]?|m[aá]sod(ik)?)', re.IGNORECASE, match):
 			return 2
 		elif _re.findall(r'(harmadik|h[aá]rom)', re.IGNORECASE, match):
 			return 3
 		elif _re.findall(r'n[eé]gy', re.IGNORECASE, match):
 			return 4
+		elif 'egy' in match or 'els' in match:
+			return 1
 		elif _re.findall(r'[oö]t', re.IGNORECASE, match):
 			return 5
 		elif _re.findall(r'hat', re.IGNORECASE, match):
