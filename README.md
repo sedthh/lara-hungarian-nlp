@@ -1,4 +1,4 @@
-## **Lara** is a lightweight Python3 NLP library for Chatbot AI developement in Hungarian language. 
+## **Lara** is a super fast, lightweight Python3 NLP library for ChatBot AI development in Hungarian language. 
 
 Instead of being an all purpose NLP tool, **Lara** was created to fit the [quirks and uniqueness](https://en.wikipedia.org/wiki/Agglutinative_language) of the Hungarian (online) [language](https://en.wikipedia.org/wiki/Hungarian_language) as much as possible. The library is capable of matching inflected forms of keywords in text messages written in Hungarian. It also comes with functions for text processing, and can even identify common expressions and small talk topics in discussions.
 
@@ -63,7 +63,7 @@ It allows simple text processing:
 ```python
 from lara import parser
 
-tweet		= 'A robotok elveszik a munkát! #NLP #Chatbot'
+tweet		= 'A robotok elveszik a munkát! #NLP #ChatBot'
 hashtags	= parser.Extract(tweet).hashtags()
 print(hashtags)
 
@@ -116,7 +116,7 @@ if 'are_you_a_robot' in chitchat_match:
 >>> Egy számítógépet akkor nevezhetünk intelligensnek, ha át tud verni egy embert, hogy őt is embernek higgye.
 ```
 
-Understands when the user is just trying to mess with your Chatbot, instead of actually sending a request:
+Understands when the user is just trying to mess with your ChatBot, instead of actually sending a request:
 
 ```python
 from lara import parser, entities
@@ -180,7 +180,7 @@ for line in husz:
 
 ## Misc.
 
-This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details. Feel free to use it for your own Chatbot solutions, since
+This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details. Feel free to use it for your own ChatBot solutions, since
 
 ![Every civilization was built off the back of a disposable workforce... But I can only make so many.](https://github.com/sedthh/lara-hungarian-nlp/blob/master/bladerunner.gif)
 
