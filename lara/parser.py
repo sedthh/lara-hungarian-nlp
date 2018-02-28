@@ -304,45 +304,43 @@ class Intents:
 	# Get score for intents in text
 	def _get_score(self, text, greedy=True):
 		text		= lara.nlp.trim(text)
-		typo_text	= lara.nlp.strip_accents(lara.nlp.remove_double_letters(text))
 		score		= {}
 		if text:
+			typo_text	= lara.nlp.strip_accents(lara.nlp.remove_double_letters(text))
 			for key, value in self.intents.items():
 				for item in self.intents[key]:
 					found	= False
-					if 'stem' in item:
-						result		= self._match_pattern(text,item)
-						found		= found or result[0]
-						if key not in score:
-							score[key]	= 0
-						score[key]	+= result[1]
-					if 'typo_stem' in item:
-						result		= self._match_pattern(typo_text,item,True)
-						found		= found or result[0]
-						if key not in score:
-							score[key]	= 0
-						score[key]	+= result[1]
-					if found and 'with' in item and len(item['with']):
+					
+					result		= self._match_pattern(text,item)
+					found		= found or result[0]
+					if key not in score:
+						score[key]	= 0
+					score[key]	+= result[1]
+					result		= self._match_pattern(typo_text,item,True)
+					found		= found or result[0]
+					if key not in score:
+						score[key]	= 0
+					score[key]	+= result[1]
+					
+					if found and item['with']:
 						for sub_item in item['with']:
-							if 'stem' in sub_item:
-								if key not in score:
-									score[key]	= 0
-								found	= self._match_pattern(text,sub_item)
-								if found[0]:
-									score[key]	+=found[1]
-							if 'typo_stem' in sub_item:
-								if key not in score:
-									score[key]	= 0
-								found	= self._match_pattern(typo_text,sub_item,True)
-								if found[0]:
-									score[key]	+=found[1]
-					if found and 'without' in item and len(item['without']):
+							if key not in score:
+								score[key]	= 0
+							found	= self._match_pattern(text,sub_item)
+							if found[0]:
+								score[key]	+=found[1]
+							found	= self._match_pattern(typo_text,sub_item,True)
+							if found[0]:
+								score[key]	+=found[1]
+								
+					if found and item['without']:
 						if key in score and score[key]:
 							for sub_item in item['without']:
-								if 'stem' in sub_item and self._match_pattern(text,sub_item)[0]:
+								if self._match_pattern(text,sub_item)[0]:
 									score[key]	= 0
-								elif 'typo_stem' in sub_item and self._match_pattern(typo_text,sub_item,True)[0]:
+								elif self._match_pattern(typo_text,sub_item,True)[0]:
 									score[key]	= 0
+									
 					if not greedy and key in score and score[key] > 0:
 						break
 		return score
