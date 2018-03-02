@@ -945,7 +945,7 @@ class Extract:
 					elif _re.findall(r'ezer', re.IGNORECASE, part):
 						if _re.findall(r'sz[aá]z', re.IGNORECASE, part):
 							scale	= 100000
-						elif _re.findall(r't[ií]z|h[uú]sz|harminc|v[ae]n', re.IGNORECASE, part):
+						elif _re.findall(r'v[ae]n', re.IGNORECASE, part):
 							scale	= 10000
 						else:
 							scale	= 1000
