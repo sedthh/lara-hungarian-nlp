@@ -920,7 +920,7 @@ class Extract:
 	def _convert_numbers(self,text):
 		if text:
 			#fix		= _re.sub(r'(?<=\d)\s+(?=\d)',re.IGNORECASE,'',text.lower())
-			matches	= _re.findall(r'((?:m[ií]n[uú]sz\s?|negat[ií]v\s?)?(?:(?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|egy|els[eoöő]|k[eé]t+[oöő]?|m[aá]sod(?:ik)?|h[aá]rom|harmadik|n[eé]gy|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?\W*)|(?:ezer|sz[aá]z|t[ií]z|h[uú]sz|harminc|nulla|z[eé]r[oó])\W*)+(?:[aeoö]dik)?(?:j?[aáeéi]+n?)?)\b', re.IGNORECASE, text.lower())
+			matches	= _re.findall(r'((?:m[ií]n[uú]sz\s?|negat[ií]v\s?)?(?:(?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|egy|els[eoöő]|k[eé]t+[oöő]?|m[aá]sod(?:ik)?|h[aá]rom|harmadik|n[eé]gy|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?\W*)|(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z|t[ií]z|h[uú]sz|harminc|nulla|z[eé]r[oó])\W*)+(?:[aeoö]dik)?(?:j?[aáeéi]+n?)?)\b', re.IGNORECASE, text.lower())
 			results	= {}
 			for match in matches:
 				value	= 0
@@ -931,72 +931,85 @@ class Extract:
 				else:
 					minus	= 1
 					minusm	= ''
-				parts	= _re.findall(r'((?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|egy|els[eoöő]|k[eé]t+[oöő]?|m[aá]sod(?:ik)?|h[aá]rom|harmadik|n[eé]gy|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?|(?:ezer|sz[aá]z|t[ií]z|h[uú]sz|harminc|nulla|z[eé]r[oó]))\W*)', re.IGNORECASE, match)
-				last	= False
-				name	= ''
-				lname	= ''
+				parts	= _re.findall(r'((?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|egy|els[eoöő]|k[eé]t+[oöő]?|m[aá]sod(?:ik)?|h[aá]rom|harmadik|n[eé]gy|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?|(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z|t[ií]z|h[uú]sz|harminc|nulla|z[eé]r[oó]))\W*)', re.IGNORECASE, match)
+				values	= []
 				for part in parts:
-					lname		= name
-					name		+=part
-					ten			= 0
-					one			= 1
+					val			= 0
 					scale		= 1
-					up			= False
 					if 'nulla' in part:
-						scale	= 0
+						val	= 0
 					elif _re.findall(r'milli[aá]rd', re.IGNORECASE, part):
 						scale	= 1000000000
 					elif _re.findall(r'milli[oó]', re.IGNORECASE, part):
 						scale	= 1000000
 					elif _re.findall(r'ezer', re.IGNORECASE, part):
-						scale	= 1000
+						if _re.findall(r'sz[aá]z', re.IGNORECASE, part):
+							scale	= 100000
+						elif _re.findall(r't[ií]z|h[uú]sz|harminc|v[ae]n', re.IGNORECASE, part):
+							scale	= 10000
+						else:
+							scale	= 1000
 					elif _re.findall(r'sz[aá]z', re.IGNORECASE, part):
 						scale	= 100
 					if _re.findall(r'v[ae]n', re.IGNORECASE, part):
 						elem		= re.split('v[ae]n',part)	
 						if len(elem)==2:
-							one		= self._convert_numbers_helper(elem[1],0)
-							ten		= self._convert_numbers_helper(elem[0],0)
+							val		= self._convert_numbers_helper(elem[1],0)*10
+							val		+= self._convert_numbers_helper(elem[0],0)
 						else:
-							ten		= self._convert_numbers_helper(elem[0],0)
-							one		= 0
-						up		= True
+							val		= self._convert_numbers_helper(elem[0],0)
+						if 'ezer' in part:
+							scale	= max(scale,10)
+						else:
+							scale	= max(scale*10,10)
 					else:
 						if _re.findall(r't[ií]z', re.IGNORECASE, part):
-							ten		= 1
-							up		= True
+							val		= 10
+							scale	= max(scale,1)
 						elif _re.findall(r'h[uú]sz', re.IGNORECASE, part):
-							ten		= 2
-							up		= True
+							val		= 20
+							scale	= max(scale,1)
 						elif _re.findall(r'harminc', re.IGNORECASE, part):
-							ten		= 3
-							up		= True
-						if part.strip() in ('tiz','tíz','husz','húsz','harminc'):
-							one		= 0
+							val		= 30
+							scale	= max(scale,1)
+						if 'nulla' not in part:
+							if not _re.findall(r't[ií]z|h[uú]sz|harminc|v[ae]n', re.IGNORECASE, part):
+								val		+= 	self._convert_numbers_helper(part,1)
+							else:
+								val		+= 	self._convert_numbers_helper(part,0)
+					values.append([part,val*scale])
+				number	= 0
+				maxn	= 0
+				name	= ''
+				for n in reversed(values):
+					old	 = name
+					name = n[0] + name
+					if n[1]<maxn:
+						if len(str(n[1]))==3:
+							if len(str(maxn))==4:
+								n[1] 	*= int(pow(10,len(str(maxn))-1))
+							else:
+								n[1] 	*= int(pow(10,len(str(maxn))-2))
 						else:
-							one		= 	self._convert_numbers_helper(part,1)
-					if last is False or scale<last:
-						value		+= scale * (ten*10+one)
-					else:
-						lname	= self._convert_numbers_name(lname)
-						if lname:
-							results[self._convert_numbers_name(minusm+lname)]= value*minus
-							name		= name.split(lname)[1]
-							value		= scale * (ten*10+one)
-						elif self._convert_numbers_name(name):
-							results[self._convert_numbers_name(minusm+name)]= scale * (ten*10+one)
-							name		= ''
-							value		= 0
-					last	= scale
-					if up:
-						last	*= 10
+							n[1] 	*= int(pow(10,len(str(maxn))-len(str(n[1]))+1))
+					elif len(str(n[1]))==len(str(maxn)):
+						number	*=minus
+						name	= old
+						if self._convert_numbers_name(name):
+							results[self._convert_numbers_name(minusm+name)]=number
+						name	= n[0]
+						number	= 0
+					if not _re.findall(r'\b(milli[oó]|ezer)\b', re.IGNORECASE, n[0]):
+						number	+= n[1]
+					maxn	= pow(10,len(str(n[1]))-1)
+				number	*=minus
 				if self._convert_numbers_name(name):
-					results[minusm+self._convert_numbers_name(name)]= value*minus
-			swap 	= sorted(results.items(), key=lambda x: x[1], reverse=True)	
-			rtext	= text
+					results[self._convert_numbers_name(minusm+name)]=number
+					
+			swap 	= sorted(results.items(), key=lambda x: x[1], reverse=True)
 			for item in swap:
-				rtext		= _re.sub(r'\b('+re.escape(item[0])+r')(?:[aeoö]dik?)?(?:j?[aáeéi]+n?)?\b', re.IGNORECASE, str(item[1]), rtext)
-			return rtext
+				text		= _re.sub(r'\b('+re.escape(item[0])+r')(?:[aeoö]dik?)?(?:j?[aáeéi]+n?)?\b', re.IGNORECASE, str(item[1]), text)
+			return text
 		return ''
 	
 	def _convert_numbers_name(self,name):
