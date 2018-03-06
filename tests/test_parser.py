@@ -603,10 +603,10 @@ def test_parser_extract_convert_numbers(info):
 	),
 	(
 		{
-			"text"		: "3 óra múlva vagy 12 percen belül de akár 2 és fél éven belül is megtörténhet, hogy 5 órával vissza kell állítani, az órát, mert jöttömre kelet felől 1,5 hét múlva számítsatok",
+			"text"		: "3 óra múlva vagy 12 percen belül de akár 2 és fél évvel előbb is megtörténhet, hogy 5 órával vissza kell állítani, az órát, mert jöttömre kelet felől 1,5 hét múlva számítsatok",
 			"function"	: "durations",
 			"args"		: [True],
-			"result"	: [-10800.0, -720.0, -78840000.0, -18000.0, -907200.0]
+			"result"	: [10800.0, 720.0, -78840000.0, -18000.0, 907200.0]
 		}
 	),
 	(

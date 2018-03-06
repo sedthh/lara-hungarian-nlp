@@ -752,10 +752,10 @@ class Extract:
 				return [item.strip() for item in matches if len(item.strip())>2]
 		return []
 	
-	# extract list of time durations TODO: 3 óra 2 perc -> [3h+2s] instead of [3h,2s]
+	# extract list of time durations
 	def durations(self,normalize=True,convert=True):
 		if self.text:
-			matches	= _re.findall(r'\b((?:(?:(?:\d\s?)+(?:[\.\,]\d+)?\s(?:(?:[eé]s\s)?(?:f[eé]l|(?:h[aá]rom)?negyed)\s)?(?:(?:(?:t[ií]zed|sz[aá]zad|ezred)?m[aá]sod)?perc\w{0,3}|[oó]r[aá]\w{0,3}|nap\w{0,3}|7|h[eé]t\w{0,3}|h[oó]nap\w{0,3}|[eé]v\w{0,3})(?:\s(?:m[uú]lva|r[aá]|(?:ez)?el[oöő]t+|el[oöő]b+|k[eé]s[oö]b+|bel[uü]l|h[aá]tr(?:a|[eé]bb)|vissza|el[oöő]re))?)(?:\W*(?:[eé]s|meg)\W*)?)+)', re.IGNORECASE, self.ntext if convert else self.text)
+			matches	= _re.findall(r'\b((?:(?:(?:\d\s?)+(?:[\.\,]\d+)?\s(?:(?:[eé]s\s)?(?:f[eé]l|(?:h[aá]rom)?negyed)\s)?(?:(?:(?:t[ií]zed|sz[aá]zad|ezred)?m[aá]sod)?perc\w{0,3}|[oó]r[aá]\w{0,3}|nap\w{0,3}|7|h[eé]t\w{0,3}|h[oó]nap\w{0,3}|[eé]v\w{0,3})(?:\s(?:m[uú]lva|r[aá]|(?:ez)?el[oöő]t+|el[oöő]b+|k[eé]s[oö]b+|bel[uü]l|h[aá]tr(?:a|[eé]bb)|vissza|el[oöő]re))?)(?:\W{1,2}(?:[eé]s|meg)?\W*)?)+)', re.IGNORECASE, self.ntext if convert else self.text)
 			if normalize:
 				results	= []
 				now = datetime.datetime.now()
@@ -812,12 +812,12 @@ class Extract:
 							else:
 								sval		+= mpx*.25
 						val	+= sval
-					if _re.findall(r'(el[oöő]t+|el[oöő]b+|h[aá]tr(?:a|[eé]bb)|vissza)', re.IGNORECASE, self.text):
+					if _re.findall(r'\b(el[oöő]t+|el[oöő]b+|h[aá]tr[aáeé]b*|vissza)', re.IGNORECASE, item):
 						val		*= -1
 					results.append(val)
 				return results
 			else:		
-				return matches
+				return [item.strip() for item in matches]
 		return []
 	
 	# extract list of common currencies from text (including $ € £ ￥ and forints)
