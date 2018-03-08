@@ -2,8 +2,6 @@
 
 Instead of being an all purpose NLP tool, **Lara** was created to fit the [quirks and uniqueness](https://en.wikipedia.org/wiki/Agglutinative_language) of the Hungarian (online) [language](https://en.wikipedia.org/wiki/Hungarian_language) as much as possible. The library is capable of matching inflected forms of keywords in text messages written in Hungarian. It also comes with functions for text processing, and can even identify common expressions and small talk topics in discussions.
 
-**Lara** is still in beta, so minor changes can still be expected in its API.
-
 # Table of contents
 
 1. [About Lara](#about-lara)
@@ -12,7 +10,7 @@ Instead of being an all purpose NLP tool, **Lara** was created to fit the [quirk
 	3. [Handle common topics](#handle-common-topics)
 	4. [Create ML features](#create-ml-features)
 	5. [And much more](#and-much-more)
-2. [Misc.](#misc)
+2. [Licensing](#licensing)
 
 ## About Lara
 
@@ -178,11 +176,9 @@ for line in husz:
 >>> ['-', 'u', 'u', '-', 'u', 'u', '-', '-', 'u', 'u', '-', 'u', 'u', '-']
 ```
 
-## Misc.
+## Licensing
 
-This project is licensed under the **MIT License** - see the [LICENSE.md](LICENSE.md) file for details. Feel free to use it for your own ChatBot solutions, since
+This project has **dual licensing**. You may use it either under the [GNU GPLv3 License](LICENSE.md) for Open Source ChatBot solutions and NLP research purposes or [contact me](https://github.com/sedthh) about different (proprietary) licensing options for Commercial use. 
 
 ![Every civilization was built off the back of a disposable workforce... But I can only make so many.](https://github.com/sedthh/lara-hungarian-nlp/blob/master/bladerunner.gif)
-
-Code by **[Richard Nagyfi](https://github.com/sedthh)**, created at [Kitchen Budapest](http://kibu.hu) in collaboration with the [Institute of Advanced Studies](http://iask.hu/). Special thanks to [Peter Varo](https://github.com/petervaro).
 
