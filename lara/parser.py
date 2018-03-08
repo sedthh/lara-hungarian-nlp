@@ -306,7 +306,7 @@ class Intents:
 		text		= lara.nlp.trim(text)
 		score		= {}
 		if text:
-			typo_text	= lara.nlp.strip_accents(lara.nlp.remove_double_letters(text))
+			typo_text	= lara.nlp.trim(lara.nlp.strip_accents(lara.nlp.remove_double_letters(text.replace(',', ' '))))
 			for key, value in self.intents.items():
 				for item in self.intents[key]:
 					found	= False
