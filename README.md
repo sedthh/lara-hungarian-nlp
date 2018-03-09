@@ -178,7 +178,8 @@ for line in husz:
 
 ## Licensing
 
-This project has **dual licensing**. You may use it either under the [GNU GPLv3 License](LICENSE.md) for Open Source ChatBot solutions and NLP research purposes or [contact me](https://github.com/sedthh) about different (proprietary) licensing options for Commercial use. 
+This project has **dual licensing**. You may use it either under the [GNU GPLv3 License](LICENSE.md) for Open Source ChatBot solutions and NLP research purposes or [contact me](https://github.com/sedthh) about different licensing options for commercial use. 
+
+Feel free to add your own ChatBot to the [use case list](https://github.com/sedthh/lara-hungarian-nlp/wiki/Projects) because
 
 ![Every civilization was built off the back of a disposable workforce... But I can only make so many.](https://github.com/sedthh/lara-hungarian-nlp/blob/master/bladerunner.gif)
-
