@@ -99,7 +99,20 @@ print(info.times())
 
 #### Handle common topics
 
-Is able to engage in small talk:
+Common entities are included:
+
+```python
+from lara import parser, entities
+
+user_text	= 'Igen, köszönöm a segítséget!'
+
+common	= entities.common()
+print(parser.Intents(common).match_set(user_text))
+
+>>> {'yes', 'thx', 'help'}
+```
+
+Several small talk topics are also automatically handled:
 
 ```python
 from lara import parser, entities
@@ -108,11 +121,14 @@ user_text	= 'Te egy ember vagy, vagy egy intelligens számítógép vagy?'
 
 chitchat	= entities.smalltalk()
 chitchat_match	= parser.Intents(chitchat).match_set(user_text)
-if 'are_you_a_robot' in chitchat_match:
+if 'user_love' in chitchat_match:
+	print('Én is téged.')
+elif 'are_you_a_robot' in chitchat_match:
 	print('Egy számítógépet akkor nevezhetünk intelligensnek, ha át tud verni egy embert, hogy őt is embernek higgye.')
-		
+	
 >>> Egy számítógépet akkor nevezhetünk intelligensnek, ha át tud verni egy embert, hogy őt is embernek higgye.
 ```
+
 
 #### Create ML features
 
