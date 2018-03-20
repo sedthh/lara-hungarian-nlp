@@ -114,28 +114,6 @@ if 'are_you_a_robot' in chitchat_match:
 >>> Egy számítógépet akkor nevezhetünk intelligensnek, ha át tud verni egy embert, hogy őt is embernek higgye.
 ```
 
-Understands when the user is just trying to mess with your ChatBot, instead of actually sending a request:
-
-```python
-from lara import parser, entities
-
-user_text	= 'Hasta la vista baby!'
-
-references	= entities.popculture()
-references_match= parser.Intents(references).match_set(user_text)
-if references_match:
-	print('Értem, egy másik AI-ra utaltál az üzenetedben.')
-	if 'terminator' in references_match:
-		print('Visszatérek!')
-	elif 'matrix' in references_match:
-		print('Minden dolog, aminek kezdete van, véget is ér.')
-else:
-	print('Ez egy valós üzenetnek tűnik!')
-		
->>> Értem, egy másik AI-ra utaltál az üzenetedben.
->>> Visszatérek!
-```
-
 #### Create ML features
 
 Can create features from short Hungarian texts for Machine Learning models, without large dictionaries:
@@ -178,7 +156,7 @@ for line in husz:
 
 ## Licensing
 
-This project has **dual licensing**. You may use it either under the [GNU GPLv3 License](LICENSE.md) for Open Source ChatBot solutions and NLP research purposes or [contact me](https://github.com/sedthh) about different licensing options for commercial use. 
+This project has **dual licensing**. You may use it either under the [GNU GPLv3 License](LICENSE.md) for Open Source ChatBot solutions and NLP Research purposes or [contact me](https://github.com/sedthh) about different licensing options for commercial use. 
 
 Feel free to add your own ChatBot to the [use case list](https://github.com/sedthh/lara-hungarian-nlp/wiki/Projects) because
 

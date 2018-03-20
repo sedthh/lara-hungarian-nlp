@@ -9,7 +9,7 @@ class Intents:
 		
 	# STATIC REGULAR EXPRESSIONS
 	prefixes			= r'(?:(?i)'+('|'.join(["abba","alá","át","be","bele","benn","el","ellen","elő","fel","föl","hátra","hozzá","ide","ki","körül","le","meg","mellé","neki","oda","össze","rá","szét","túl","utána","vissza"]))+')?'
-	typo_prefixes		= r'(?:(?i)'+('|'.join(["aba","ala","at","be","bele","ben","el","elen","elo","fel","fol","hatra","hoza","ide","ki","korul","le","meg","mele","neki","oda","osze","ra","szet","tul","utana","visza"]))+')?'
+	typo_prefixes		= r'(?:(?i)'+('|'.join(["aba","ala","at","be","bele","ble","ben","el","elen","eln","elo","fel","fol","hatra","htara","harta","hoza","hzoa","ide","ki","korul","kroul","kourl","le","meg","mele","mle","neki","nkei","oda","osze","ozse","ra","szet","sezt","tul","utana","uatna","utna","visza","vsiza","vizsa"]))+')?'
 	pattern_noun		= r'(?i)a?i?n?(?:[aáeéioóöőuúü]?[djknmrst])?(?:[abjhkntv]?[aáeéioóöőuúü]?[lgkntz]?)?(?:[ae][kt])?'
 	typo_pattern_noun	= r'(?i)a?i?n?(?:[aeiou]?[djknmrst])?(?:[abjhkntv]?[aeiou]?[lgkntz]?)?(?:[ae][kt])?'
 	pattern_adj			= r'(?i)(?:[aeoóöő]?s)?(?:[aáeéoó]?b{0,2})(?:[ae]?[nk])?(?:(?:[aáeéioóöőuúü]?[dklmnt])?(?:[aáeéioóöőuúü]?[klnt]?)?)'
@@ -121,9 +121,10 @@ class Intents:
 		else:
 			if 'typo_prefix' not in item:
 				if isinstance(item['prefix'],list):
-					item['typo_prefix']	= r'(?:'+lara.nlp.strip_accents('|'.join(item['prefix']))+')?'
+					typo_prefix			= ['(?:'+self._scramble(lara.nlp.trim(lara.nlp.strip_accents(lara.nlp.remove_double_letters(elem))), (item['wordclass'] == 'adjective'))+')' for elem in item['prefix']]
+					item['typo_prefix']	= r'(?:'+('|'.join(typo_prefix))+r')?'
 				else:
-					item['typo_prefix']	= r''+lara.nlp.strip_accents(item['prefix'])
+					item['typo_prefix']	= r''+lara.nlp.trim(lara.nlp.strip_accents(lara.nlp.remove_double_letters(item['prefix'])))
 			else:
 				if isinstance(item['typo_prefix'],list):
 					item['typo_prefix']	=  [re.escape(prefix) for prefix in item['typo_prefix']]
@@ -141,7 +142,8 @@ class Intents:
 		else:
 			if 'typo_affix' not in item:
 				if isinstance(item['affix'],list):
-					item['typo_affix']	= r'(?:'+lara.nlp.strip_accents('|'.join(item['affix']))+')?'
+					typo_affix				= ['(?:'+self._scramble(lara.nlp.trim(lara.nlp.strip_accents(lara.nlp.remove_double_letters(elem))), (item['wordclass'] == 'adjective'))+')' for elem in item['affix']]
+					item['typo_affix']	= r'(?:'+('|'.join(typo_affix))+r')?'
 				else:
 					item['typo_affix']	= r''+lara.nlp.strip_accents(item['affix'])
 			else:
@@ -202,23 +204,9 @@ class Intents:
 			item['typo_pattern']	= r''+item['typo_stem']+item['typo_affix']
 		else:
 			
-			item['pattern']			= r'(?:'+re.escape(item['stem'])+r'{1,2}'+item['affix']+r')'
-			scramble				= item['typo_stem']
-			if len(scramble)>3:
-				typo		= [scramble[1:-1]]
-				for i in range(len(scramble)-3):
-					typo.append(re.escape(scramble[1:i+1]+scramble[i+2]+scramble[i+1]+scramble[i+3:-1]))
-				is_consonant= lara.nlp.is_consonant(scramble[-1])
-				scramble	= re.escape(scramble[0])+'(?:'+('|'.join(typo))+')(?:'+re.escape(scramble[-1])
-				scramble	= '[\s\-]?'.join(scramble.split('\ '))
-				if item['wordclass'] == 'adjective' and is_consonant:
-					scramble	+= '|[bB])'
-				else:
-					scramble	+=')'
-			else:
-				scramble				= re.escape(scramble)
-				scramble	= '[\s\-]?'.join(scramble.split('\ '))
-			item['typo_pattern']	= r'(?:'+scramble+item['typo_affix']+')'
+			item['pattern']		= r'(?:'+re.escape(item['stem'])+r'{1,2}'+item['affix']+r')'
+			scramble				= self._scramble(item['typo_stem'], (item['wordclass'] == 'adjective'))
+			item['typo_pattern']= r'(?:'+scramble+item['typo_affix']+')'
 			if not item['ignorecase']:
 				item['pattern']			= r'(?s)'+item['pattern']
 				item['typo_pattern']	= r'(?s)'+item['typo_pattern']
@@ -237,6 +225,24 @@ class Intents:
 		item['typo_pattern']	= item['typo_prefix']+item['typo_pattern']
 
 		return item
+	
+	# generate scrambled keywords
+	def _scramble(self,text,is_adjective=False):
+		if len(text)>3:
+			typo		= [text[1:-1]]
+			for i in range(len(text)-3):
+				typo.append(re.escape(text[1:i+1]+text[i+2]+text[i+1]+text[i+3:-1]))
+			is_consonant= lara.nlp.is_consonant(text[-1])
+			text		= re.escape(text[0])+'(?:'+('|'.join(typo))+')(?:'+re.escape(text[-1])
+			text		= '[\s\-]?'.join(text.split('\ '))
+			if is_adjective and is_consonant:
+				text		+= '|[bB])'
+			else:
+				text		+=')'
+		else:
+			text		= re.escape(text)
+			text		= '[\s\-]?'.join(text.split('\ '))
+		return text
 	
 	# Get all matches from text
 	def match(self, text="", zeros=False):
