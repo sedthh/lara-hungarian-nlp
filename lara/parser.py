@@ -8,14 +8,14 @@ import lara.nlp
 class Intents:
 		
 	# STATIC REGULAR EXPRESSIONS
-	prefixes			= r'(?:(?i)'+('|'.join(["abba","alá","át","be","bele","benn","el","ellen","elő","fel","föl","hátra","hozzá","ide","ki","körül","le","meg","mellé","neki","oda","össze","rá","szét","túl","utána","vissza"]))+')?'
-	typo_prefixes		= r'(?:(?i)'+('|'.join(["aba","ala","at","be","bele","ble","ben","el","elen","eln","elo","fel","fol","hatra","htara","harta","hoza","hzoa","ide","ki","korul","kroul","kourl","le","meg","mele","mle","neki","nkei","oda","osze","ozse","ra","szet","sezt","tul","utana","uatna","utna","visza","vsiza","vizsa"]))+')?'
-	pattern_noun		= r'(?i)a?i?n?(?:[aáeéioóöőuúü]?[djknmrst])?(?:[abjhkntv]?[aáeéioóöőuúü]?[lgkntz]?)?(?:[ae][kt])?'
+	prefixes					= r'(?:(?i)'+('|'.join(["abba","alá","át","be","bele","benn","el","ellen","elő","fel","föl","hátra","hozzá","ide","ki","körül","le","meg","mellé","neki","oda","össze","rá","szét","túl","utána","vissza"]))+')?'
+	typo_prefixes			= r'(?:(?i)'+('|'.join(["aba","ala","at","be","bele","ble","ben","el","elen","eln","elo","fel","fol","hatra","htara","harta","hoza","hzoa","ide","ki","korul","kroul","kourl","le","meg","mele","mle","neki","nkei","oda","osze","ozse","ra","szet","sezt","tul","utana","uatna","utna","visza","vsiza","vizsa"]))+')?'
+	pattern_noun			= r'(?i)a?i?n?(?:[aáeéioóöőuúü]?[djknmrst])?(?:[abjhkntv]?[aáeéioóöőuúü]?[lgkntz]?)?(?:[ae][kt])?'
 	typo_pattern_noun	= r'(?i)a?i?n?(?:[aeiou]?[djknmrst])?(?:[abjhkntv]?[aeiou]?[lgkntz]?)?(?:[ae][kt])?'
 	pattern_adj			= r'(?i)(?:[aeoóöő]?s)?(?:[aáeéoó]?b{0,2})(?:[ae]?[nk])?(?:(?:[aáeéioóöőuúü]?[dklmnt])?(?:[aáeéioóöőuúü]?[klnt]?)?)'
 	typo_pattern_adj	= r'(?i)(?:[aeo]?s)?(?:[aeo]?b?)(?:[ae]?[nk])?(?:(?:[aeiou]?[dklmnt])?(?:[aeiou]?[klnt]?)?)'
-	pattern_verb		= r'(?i)(?:h[ae][st])?(?:[eaá]?s{0,2}e?d?|[aáeéo]tt)?(?:(?:[jntv]|[eo]?g[ae]t+)?(?:[aeioöuü]n?[dklmt]|n[aáeéi]k?|sz|[aái])?(?:t[aáeéou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aáeéou](?:[dkm]|t[eéo]k)?)?t*)|[aáeé]?z?ni)?'
-	typo_pattern_verb	= r'(?i)(?:h[ae][st])?(?:[eaá]?s?e?d?|[aeo]t)?(?:(?:[jntv]|[eo]?g[ae]t)?(?:[aeiou]n?[dklmt]|n[aei]k?|sz|[ai])?(?:t[aeou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aeou](?:[dkm]|t[eo]k)?)?t?)|[ae]?z?ni)?'
+	pattern_verb			= r'(?i)(?:h[ae][st]+e?)?(?:j?[ae])?(?:[eaá]?s{0,2}e?d?|[aáeéo]tt)?(?:(?:[jntv]|[eo]?g[ae]t+)?(?:[aeioöuü]n?[dklmt]|n[aáeéi]k?|sz|[aái])?(?:t[aáeéou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aáeéou](?:[dkm]|t[eéo]k)?)?t*)|[aáeé]?z?ni)?'
+	typo_pattern_verb	= r'(?i)(?:h[ae][st]e?)?(?:j?[ae])?(?:[eaá]?s?e?d?|[aeo]t)?(?:(?:[jntv]|[eo]?g[ae]t)?(?:[aeiou]n?[dklmt]|n[aei]k?|sz|[ai])?(?:t[aeou][dkmt]?(?:ok)?)?)?(?:(?:t[ae]t)?(?:h[ae]t(?:[jnt]?[aeou](?:[dkm]|t[eo]k)?)?t?)|[ae]?z?ni)?'
 	
 	##### CONSTRUCTOR #####
 	def __init__(self, new_intents={}, is_raw=False):
