@@ -17,7 +17,7 @@ if __name__ == "__main__":
 	'''
 	
 	# A szöveg szavaiból bigramokat generál
-	tokens	= nlp.tokenizer(text)
+	tokens	= nlp.tokenize(text)
 	bigrams = nlp.ngram(tokens,2)
 	print(bigrams)
 	
@@ -28,7 +28,7 @@ if __name__ == "__main__":
 	
 	# A szöveg szavaiból bigramokat generál, miután eltávolította a stopszavakat
 	text	= nlp.remove_stopwords(text)
-	tokens	= nlp.tokenizer(text)
+	tokens	= nlp.tokenize(text)
 	bigrams = nlp.ngram(tokens,2)
 	print(bigrams)
 	

@@ -905,22 +905,6 @@ class Extract:
 		if self.text:
 			return _re.findall(r'\b([\w\d\-\_\.]+\@[\w\d\-\_\.]+\.\w{2,4}(?:\.\w{2,4})?)\b', re.IGNORECASE, self.text)
 		return []
-	
-	# returns the approx. number of words in text	
-	def number_of_words(self):
-		if self.text:
-			return len(self.tokens())
-		return 0
-
-	# tokenizes text
-	def tokenizer(self):
-		if self.text:
-			return lara.nlp.tokenizer(self.text)
-		return []
-		
-	# True if word has a digit in it	
-	def hasDigits(self):
-		return any(char.isdigit() for char in self.text)	
 
 	# Converts text representation of numbers to digits
 	def _convert_numbers(self,text):

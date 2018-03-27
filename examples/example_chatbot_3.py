@@ -8,7 +8,7 @@ from lara import parser, entities, nlp
 
 if __name__ == "__main__":
 	
-	user_text		= 'Keress rá arra, hogy a dolmányos gödlicét mivel kell etetni!'
+	user_text		= 'Keress rá arra, hogy Chatbot!'
 	
 	###
 	
@@ -26,6 +26,8 @@ if __name__ == "__main__":
 	if 'search' in commands_match:
 		print('Keressek rá erre?') 
 		
-		keywords		= nlp.strip_context(user_text,"search")
-		print('"',keywords,'"')
+		keywords		= parser.Intents(commands).clean(user_text)
+		keywords		= nlp.remove_stopwords(keywords)
+		keywords		= nlp.remove_punctuation(keywords)
+		print(nlp.trim(keywords))
 	
