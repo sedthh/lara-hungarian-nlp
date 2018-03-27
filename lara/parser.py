@@ -166,6 +166,8 @@ class Intents:
 				item['boundary']	= False
 			else:
 				item['boundary']	= True
+		if 'max_words' not in item or item['max_words']<0:
+			item['max_words']	= 0
 		
 		if 'with' in item:
 			if 'score' not in item:
@@ -277,34 +279,35 @@ class Intents:
 		
 	# Returns text without the inflected forms of matched intents
 	def _get_clean_text(self, text):
-		text		= lara.nlp.trim(text)
+		text			= lara.nlp.trim(text)
 		typo_text	= lara.nlp.strip_accents(lara.nlp.remove_double_letters(text))
-		fix_text	= text
+		fix_text		= text
 		if text:
 			for key, value in self.intents.items():
 				ignore	= False
-				allow	= -1
+				allow		= -1
 				for item in self.intents[key]:
 					if 'without' in item and len(item['without']):
 						for without in item['without']:
-							if 'stem' in without and self._match_pattern(text,without)[0]:
+							if self._match_pattern(text,without)[0]: # stem
 								ignore	= True
-							elif 'typo_stem' in without and self._match_pattern(typo_text,without,True)[0]:
+							elif self._match_pattern(typo_text,without,True)[0]: #typo_stem
 								ignore	= True
 					if 'with' in item and len(item['with']):
 						if allow == -1:
 							allow	= 0
 						for with_ in item['with']:
-							if 'stem' in with_ and self._match_pattern(text,with_)[0]:
+							if self._match_pattern(text,with_)[0]: # stem
 								allow	= 1
-							elif 'typo_stem' in with_ and self._match_pattern(typo_text,with_,True)[0]:
+							elif self._match_pattern(typo_text,with_,True)[0]: # typo_stem
 								allow	= 1
 				if not ignore and allow in (-1,1):
+					max_words	= _re.words(text)
 					for item in self.intents[key]:
-						if 'stem' in item:
-							fix_text		= self._match_pattern(fix_text,item,False,True)
-						if 'typo_stem' in item:
-							fix_text		= self._match_pattern(fix_text,item,True,True)
+						if item['max_words'] <= max_words:
+							fix_text		= self._match_pattern(fix_text,item,False,True)	# stem
+							fix_text		= self._match_pattern(fix_text,item,True,True)	# typo_stem
+						
 		return fix_text
 			
 	# Get score for intents in text
@@ -353,7 +356,11 @@ class Intents:
 	
 	# Find an intent in text
 	def _match_pattern(self, text, item, is_clean=False, delete=False):
-		if text:		
+		if text:	
+			if not delete and item['max_words']:
+				if _re.words(text)>item['max_words']:
+					return (False,0)
+			
 			if is_clean:
 				select		= 'typo_'
 			else:
@@ -1035,8 +1042,9 @@ class Extract:
 # Wrapper Class for Regular Expression Caching
 class _re:
 
-	compile_cache		= {}
+	compile_cache	= {}
 	findall_cache		= {}
+	words_cache		= {}
 	
 	# cache re.compile() outputs
 	def compile(e_hash,expression,flags):
@@ -1071,6 +1079,12 @@ class _re:
 		_re.compile(e_hash,expression,flags)
 		flags_str		= str(flags)
 		return _re.compile_cache[flags_str][e_hash].sub(repl,string)
+	
+	def words(text):
+		t_hash	= hashlib.sha1(str(text).encode("utf-8")).hexdigest()
+		if t_hash not in _re.words_cache:
+			_re.words_cache[t_hash]	= lara.nlp.number_of_words(text)
+		return _re.words_cache[t_hash]
 	
 	# clean cache
 	def flush(self):

@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.par
 from lara import parser, entities
 
 def validate_intent(intents):
-	valid_keys	= set(['stem','clean_stem','affix','clean_affix','prefix','clean_prefix','wordclass','with','without','score','clean_score','match_stem','match_at','ignorecase','boundary'])
+	valid_keys	= set(['stem','clean_stem','affix','clean_affix','prefix','clean_prefix','wordclass','with','without','score','clean_score','match_stem','match_at','ignorecase','boundary','max_words'])
 	valid_class = set(['noun','verb','adjective','regex','emoji','special'])
 	is_regex	= set(['|','(',')','+','*','+','?','\\'])
 	for intent,declaration in intents.items():
