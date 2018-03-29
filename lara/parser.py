@@ -169,28 +169,28 @@ class Intents:
 		if 'max_words' not in item or item['max_words']<0:
 			item['max_words']	= 0
 		
-		if 'with' in item:
+		if 'inc' in item:
 			if 'score' not in item:
 				item['score']		= 0
 			new_items	= []
-			for sub_item in item['with']:
+			for sub_item in item['inc']:
 				sub_item	= self._generate(sub_item)
 				if sub_item not in new_items:
 					new_items.append(sub_item)
-			item['with']	= new_items[:]
+			item['inc']	= new_items[:]
 		else:
-			item['with']	= []
+			item['inc']	= []
 			if 'score' not in item:
 				item['score']		= 1
-		if 'without' in item:
+		if 'exc' in item:
 			new_items	= []
-			for sub_item in item['without']:
+			for sub_item in item['exc']:
 				sub_item	= self._generate(sub_item)
 				if sub_item not in new_items:
 					new_items.append(sub_item)
-			item['without']	= new_items[:]
+			item['exc']	= new_items[:]
 		else:
-			item['without']	= []		
+			item['exc']	= []		
 		
 		if 'typo_score' not in item:
 			item['typo_score']= item['score']
@@ -287,19 +287,19 @@ class Intents:
 				ignore	= False
 				allow		= -1
 				for item in self.intents[key]:
-					if 'without' in item and len(item['without']):
-						for without in item['without']:
-							if self._match_pattern(text,without)[0]: # stem
+					if 'exc' in item and item['exc']:
+						for exc in item['exc']:
+							if self._match_pattern(text,exc)[0]: # stem
 								ignore	= True
-							elif self._match_pattern(typo_text,without,True)[0]: #typo_stem
+							elif self._match_pattern(typo_text,exc,True)[0]: #typo_stem
 								ignore	= True
-					if 'with' in item and len(item['with']):
+					if 'inc' in item and item['inc']:
 						if allow == -1:
 							allow	= 0
-						for with_ in item['with']:
-							if self._match_pattern(text,with_)[0]: # stem
+						for inc in item['inc']:
+							if self._match_pattern(text,inc)[0]: # stem
 								allow	= 1
-							elif self._match_pattern(typo_text,with_,True)[0]: # typo_stem
+							elif self._match_pattern(typo_text,inc,True)[0]: # typo_stem
 								allow	= 1
 				if not ignore and allow in (-1,1):
 					max_words	= _re.words(text)
@@ -331,8 +331,8 @@ class Intents:
 						score[key]	= 0
 					score[key]	+= result[1]
 					
-					if found and item['with']:
-						for sub_item in item['with']:
+					if found and item['inc']:
+						for sub_item in item['inc']:
 							if key not in score:
 								score[key]	= 0
 							found	= self._match_pattern(text,sub_item)
@@ -342,9 +342,9 @@ class Intents:
 							if found[0]:
 								score[key]	+=found[1]
 								
-					if found and item['without']:
+					if found and item['exc']:
 						if key in score and score[key]:
-							for sub_item in item['without']:
+							for sub_item in item['exc']:
 								if self._match_pattern(text,sub_item)[0]:
 									score[key]	= 0
 								elif self._match_pattern(typo_text,sub_item,True)[0]:

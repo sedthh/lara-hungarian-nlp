@@ -112,7 +112,7 @@ def test_parser_intents_add(intents,text,match):
 	),
 	(
 		{
-			"jo_ido"	: [{"stem":"jó","wordclass":"adjective","with":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}]}]
+			"jo_ido"	: [{"stem":"jó","wordclass":"adjective","inc":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}]}]
 		},
 		[
 			"Jó.",
@@ -136,8 +136,8 @@ def test_parser_intents_add(intents,text,match):
 	(
 		{
 			"jobb_ido"	: [{"stem":"jó","wordclass":"adjective",
-							"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}],
-							"without":[{"stem":"este","wordclass":"noun"}]}]
+							"inc":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}],
+							"exc":[{"stem":"este","wordclass":"noun"}]}]
 		},
 		[
 			"Jó.",
@@ -292,16 +292,16 @@ def test_parser_intents_match_zeros(intent,text,best):
 				"thanks"	: [{"stem":"köszön","wordclass":"verb"}]
 			},
 			{
-				"thanks"	: [{"stem":"köszön","wordclass":"verb","without":[{"stem":"szép","wordclass":"adjective"}]}]
+				"thanks"	: [{"stem":"köszön","wordclass":"verb","exc":[{"stem":"szép","wordclass":"adjective"}]}]
 			},
 			{
-				"thanks"	: [{"stem":"köszön","wordclass":"verb","with":[{"stem":"nagy","wordclass":"adjective"}]}]
+				"thanks"	: [{"stem":"köszön","wordclass":"verb","inc":[{"stem":"nagy","wordclass":"adjective"}]}]
 			},
 			{
-				"thanks"	: [{"stem":"köszön","wordclass":"verb","with":[{"stem":"kicsi","wordclass":"adjective"}]}]
+				"thanks"	: [{"stem":"köszön","wordclass":"verb","inc":[{"stem":"kicsi","wordclass":"adjective"}]}]
 			},
 			{
-				"thanks"	: [{"stem":"köszön","wordclass":"verb","with":[{"stem":"nagy","wordclass":"adjective"}],"without":[{"stem":"szép","wordclass":"adjective"}]}]
+				"thanks"	: [{"stem":"köszön","wordclass":"verb","inc":[{"stem":"nagy","wordclass":"adjective"}],"exc":[{"stem":"szép","wordclass":"adjective"}]}]
 			}
 		],
 		[

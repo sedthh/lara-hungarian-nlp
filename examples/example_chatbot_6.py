@@ -13,7 +13,7 @@ if __name__ == "__main__":
 	###
 	
 	info			= parser.Extract(user_text) # /echo command
-	commands		= info.commands()
+	commands	= info.commands()
 	func			= commands[0]
 	args			= commands[1]	# list
 	

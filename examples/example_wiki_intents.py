@@ -47,7 +47,7 @@ if __name__ == "__main__":
 	
 	egyutt_intents	= {
 		"jo_ido"	: [{"stem":"jó","wordclass":"adjective",
-						"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}]}]
+						"inc":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}]}]
 	}
 	egyutt_test		= parser.Intents(egyutt_intents)
 	print(egyutt_test.match("Jó."))							# nem veszi figyelembe
@@ -60,8 +60,8 @@ if __name__ == "__main__":
 
 	kulon_intents	= {
 		"jobb_ido"	: [{"stem":"jó","wordclass":"adjective",
-						"with":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}],
-						"without":[{"stem":"este","wordclass":"noun"}]}]
+						"inc":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}],
+						"exc":[{"stem":"este","wordclass":"noun"}]}]
 	}
 	kulon_test		= parser.Intents(kulon_intents)
 	print(kulon_test.match("Jó."))							# nem veszi figyelembe
