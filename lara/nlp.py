@@ -154,7 +154,7 @@ def tokenize(text):
 
 def sent_tokenize(text):
 	if text:
-		sent		= re.split(r'((?<!\w\.\w.)(?<!(Kft|KFT|BTK|[A-Z][A-Z|[A-Z][a-z]|[ICLXV][ICLXV][ICLXV])\.)(?<=\.|\!|\?)[\W\n]+|\(|\)|\r?\n)',text)
+		sent		= re.split(r'((?<!\w\.\w.)(?<!(Kft|KFT|BTK|Ifj|Özv|\W[A-Z0-9][A-Z0-9]|\W[A-Z][a-z]|[ICLXV][ICLXV][ICLXV])\.)(?<=\.|\!|\?)[\W\n]+|\(|\)|\r?\n)',text)
 		return [item for item in sent if item and item[0].isalnum()]
 	return []
 
