@@ -9,7 +9,6 @@ import os, errno, subprocess
 def test_entities(entity):
 	file	= os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir, 'examples/', entity+'.py')
 	if os.path.isfile(file) :
-		#os.system('python '+file)
 		event	= subprocess.Popen("python "+file, stdin=None, stdout=None, stderr=subprocess.PIPE).communicate()[1]
 		if event:
 			raise Exception(event.decode('utf-8'))

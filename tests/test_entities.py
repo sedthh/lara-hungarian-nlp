@@ -6,9 +6,9 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.par
 from lara import parser, entities
 
 def validate_intent(intents):
-	valid_keys	= set(['stem','clean_stem','affix','clean_affix','prefix','clean_prefix','wordclass','inc','exc','score','clean_score','match_stem','match_at','ignorecase','boundary','max_words'])
+	valid_keys	= set(['stem','clean_stem','affix','clean_affix','prefix','clean_prefix','wordclass','inc','exc','score','clean_score','match_stem','ignorecase','boundary','max_words'])
 	valid_class = set(['noun','verb','adjective','regex','emoji','special'])
-	is_regex	= set(['|','(',')','+','*','+','?','\\'])
+	is_regex	= set(['|','(',')','+','*','+','?','\\','[',']','{','}'])
 	for intent,declaration in intents.items():
 		for item in declaration:
 			for key,value in item.items():
@@ -27,7 +27,7 @@ def validate_intent(intents):
 						print(intent,'probably has a regex "wordclass" declared otherwise in',item['stem'])
 
 @pytest.mark.parametrize("entity", [
-    "common","commands","counties","dow","smalltalk","popculture","emoji","disallow","tone"
+    "common","commands","counties","dow","smalltalk","cocktail","popculture","emoji","disallow","tone"
 ])
 def test_entities(entity):
 	parenthesis_check = eval('parser.Intents(entities.'+entity+'()).match_set("test")')
