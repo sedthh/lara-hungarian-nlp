@@ -56,7 +56,7 @@ def validate_intent_item(item,intent):
 				print(intent,'probably has a regex "wordclass" declared otherwise in',item['stem'])
 						
 @pytest.mark.parametrize("entity", [
-    "common","commands","counties","dow","smalltalk","cocktail","popculture","emoji","disallow","tone"
+    "common","commands","counties","dow","smalltalk","emoji","disallow","tone"
 ])
 def test_entities(entity):
 	parenthesis_check = eval('parser.Intents(entities.'+entity+'()).match_set("test")')

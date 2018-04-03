@@ -8,16 +8,24 @@ from lara import parser, entities
 
 if __name__ == "__main__":
 	
-	user_text		= 'Hasta la vista baby!'
+	user_text		= 'Már órák óta várok! Kérem adjon információt arról, hogy mennyi az egyenlegem. Köszönöm.'
 	
 	###
 	
-	references		= entities.popculture()
-	references_match= parser.Intents(references).match_set(user_text)
+	tone				= entities.tone()
+	tone_match	= parser.Intents(tone).match_best(user_text,1) # match_best
+	common		= entities.common()
+	common_match= parser.Intents(common).match_set(user_text)
 	
-	if references_match:
-		print('Értem, egy másik AI-ra utaltál az üzenetedben.')
-		if 'terminator' in references_match:
-			print('Visszatérek!')
-	else:
-		print('Ez egy valós üzenetnek tűnik!') # nem fogja kiírni
+	if 'formal' in tone_match:
+		if 'profanity' in common_match:
+			print('Elnézését kérem a kellemetlenségét, de nem szükséges káromkodnia.') # nem fogja kiírni
+		print('Kérése feldolgozása folyamatban van.')
+	elif 'informal' in tone_match:
+		if 'profanity' in common_match:
+			print('Sajnálom, hogy hibáztam, de azért nem kell így beszélni.') # nem fogja kiírni
+		print('Kérésedet elkezdtük feldolgozni.') # nem fogja kiírni
+	else:	# nem eldönthető
+		if 'profanity' in common_match:
+			print('Elnézést kérünk a kellemetlenségért.') # nem fogja kiírni
+		print('Kérés feldolgozása...') # nem fogja kiírni
