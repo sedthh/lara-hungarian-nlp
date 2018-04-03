@@ -157,8 +157,8 @@ def emoji():
 def disallow():
 	return {
 		"obscene"			: [{"stem":"(fel|le|meg|r[aá]|ki|be|oda|[oö]s+ze|bele|hoz+[aá])?bas*z+d?\s?(at)?(hat)?(us|a[dk]?|n?[aá][kl]|[aá]?t[aáo][lkm]?|ot+|ni|n[aá]n?[dlkm]?|va|meg)?","wordclass":"regex","exc":[{"stem":"megye"}]},{"stem":"((l[oó]|agy)?fasz|fas+z+op[oó]|geci\w*|kurv[aá]([eé]let|an+yj?[aá])?|(be)?fos|ribanc|(be)?szar|buzi|k[oö]cs[oö]g|pin[aá]|pics[aá]|p[oö]cs|p[eé]nisz|(kurva)?any[aá]d)([oö]?k)?r?[aáeoö]?(\w{0,2}[aeoöőu][dnklt]*)?(n[ae]k)?\b","wordclass":"regex","boundary":False},{"stem":"((mother)?f\s?u\s?c\s?k|shit(as{2})?|bitch|pus{2}y|cunt|fag(g?[eo]t)?|penis|blowjob|but{2}(plug|head)?|as{2}|arse|homo|gay|dyke|cock|dick(pic)?)(e?s|ing|e?r)?","wordclass":"regex"}],
-		"racist"				: [{"stem":"(fek[aá]|nig+(er|a)|n[aá]ci|cig[oó]|cig[aá]n+y|gypsy|dzsip[oó]|zsidr?[ó])[aáeégklnmstv]*","wordclass":"regex"}],
-		"erotic"				: [{"stem":"(sz?ex|an[aá]l|vagina|p[eé]nisz?|creampie|cum|sperma?|fuck|homo(kos|sexu[aá]l(is)?)?|milf|bisexual|gay|dild[oó]|vibr[aá]tor|fel+atio|blow\s?job|whore|geci|pus{2}y|pics[aá]|pin[aá]|fasz|pis{2}|boner|dick(pic)?|x{3,}|hentai|catgirl|ec+hi|yaoi|loli|shot[aá]|\w*porn[oó]?(film)?)[aáeéioöőuüdgklmnprstvz]*","wordclass":"regex"}],
+		"racist"				: [{"stem":"(fek[aá]|nig+(er|a)|n[aá]ci|cig[oó]|cig[aá]n+y|gypsy|dzsip[oó]|zsidr?[ó])[aáeégklnmstv]*","wordclass":"regex","boundary":False}],
+		"erotic"				: [{"stem":"(sz?ex|an[aá]l|[bv]agina|[bp][eé][np]isz?|creampie|cum|sperma?|fuck|homo(kos|sexu[aá]l(is)?)?|milf|bisexual|gay|dild[oó]|vibr[aá]tor|fel+atio|blow\s?job|whore|geci|pus{2}y|pics[aá]|pin[aá]|fasz|pis{2}|boner|dick(pic)?|x{3,}|hentai|catgirl|ec+hi|yaoi|loli|shot[aá]|\w*porn[oó]?(film)?)[aáeéioöőuüdgklmnprstvz]*","wordclass":"regex","boundary":False},{"stem":"maki verem"}],
 		"unpleasant"		: [{"stem":"AIDS","wordclass":"noun"},{"stem":"HIV","ignorecase":False},{"stem":"Hitler","wordclass":"noun"},{"stem":"(Sz?t[aá]lin|Len+in)\w*","wordclass":"regex"},{"stem":"pedof[ií]l(i[aá])?[aokltv]*","wordclass":"regex"},{"stem":"(fur{2}y|bestiality|yif{2}y?)[aáeégklnmstv]*","wordclass":"regex"}],
 	}
 	
