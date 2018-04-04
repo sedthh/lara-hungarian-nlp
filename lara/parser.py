@@ -505,11 +505,29 @@ class Extract:
 	def numbers(self,decimals=True,convert=True):
 		if self.text:
 			if decimals:
-				matches	= _re.findall(r'((?:-\s?)?(?:\d\s?)+(?:[\.\,]\d+[^\.\,])?)', re.IGNORECASE, self._ntext_ if convert else self._text_)
-				return [float(''.join(number.replace(',','.').split())) for number in matches]
+				matches	= _re.findall(r'(?<!\d)(?<!\-)((?:\-\s?)?(?:(?:\d\s?)+(?:[\.\,]\d+[^\.\,])?|(?:[\.\,]\d+[^\.\,]))\-?)', re.IGNORECASE, self._ntext_ if convert else self._text_)
+				okay			= []
+				for item in matches:
+					if item[-1]!='-':
+						item	= item.replace(',','.')
+						if not item[-1].isnumeric():
+							item	=  item[:-1]
+						if item[0]=='-':
+							if item[1]=='.':
+								item	= '-0'+item[1:]
+						elif not item[0].isnumeric():
+							item	=  item[1:]
+						item	= ''.join([char for char in item if char!=' '])
+						try:
+							correct	= float(item)
+							okay.append(correct)
+						except:
+							pass
+				return okay
 			else:
-				matches	= _re.findall(r'(?<![\.\,\d])(\-?(?:\d\s?)+(?![\.\,]\d))\D', re.IGNORECASE, self._ntext_ if convert else self._text_)
-				return [int(''.join(number.split())) for number in matches]
+				matches	= _re.findall(r'(?<!\d\-)(?<![\.\,\d])(\-?(?:\d\s?)+(?![\.\,]\d))[^\d\-]+', re.IGNORECASE, self._ntext_ if convert else self._text_)
+				okay			= [item for item in matches if item and item[-1]!='-']
+				return [int(''.join(number.strip().split())) for number in okay]
 		return []
 	
 	# extract percentages
@@ -878,13 +896,37 @@ class Extract:
 						currency= 'JPY'
 					results.append(str(amount)+' '+currency)
 				if not results:
-					return [str(item)+' HUF' for item in self.numbers()]
+					return [str(item)+' HUF' for item in self._currencies_fallback()]
 				return results
 			else:
 				if not matches:
-					return [str(item) for item in self.numbers()]
+					return [str(item) for item in self._currencies_fallback()]
 				return matches
 		return []
+	
+	def _currencies_fallback(self):
+		dates		= [item.replace('-',':') for item in self.dates()]
+		number	= [str(item) for item in self.numbers()]
+		against	= [item[-2] if (len(item)>2 and item[-1]==0 and item[-2]=='.') else item for item in number]
+		ignore	= []
+		for item in dates:
+			parts	= item.split(':')
+			for check in against:
+				if check in parts:
+					ignore.append(check)
+				if len(check)>2 and check[-1]=='0' and check[-2]=='.':
+					if check[:-2] in parts:
+						ignore.append(check)
+		okay		= []
+		for item in against:
+			if item not in ignore:
+				if item+'.0' in number:
+					okay.append(item+'.0')
+				elif item in number:
+					okay.append(item)
+		return okay
+				
+			
 	
 	# extract commands and arguments from text: "/help lara" will return ('help',['lara'])
 	def commands(self):
