@@ -419,7 +419,7 @@ class Extract:
 		elif text:
 			self.text	= text
 			self.ntext	= self._convert_numbers(self.text)
-			self._text_	= ' '+self.text+' '		# some complex regular expressions were easier to write for padded text
+			self._text_	= ' '+self.text+' '	# some complex regular expressions were easier to write for padded text
 			self._ntext_= ' '+self.ntext+' '	# some complex regular expressions were easier to write for padded text
 
 	##### DATA MODEL #####
@@ -505,10 +505,10 @@ class Extract:
 	def numbers(self,decimals=True,convert=True):
 		if self.text:
 			if decimals:
-				matches	= _re.findall(r'(?<!\d)(?<!\-)((?:\-\s?)?(?:(?:\d\s?)+(?:[\.\,]\d+[^\.\,])?|(?:[\.\,]\d+[^\.\,]))\-?)', re.IGNORECASE, self._ntext_ if convert else self._text_)
+				matches	= _re.findall(r'(?<!\d)(?<!\-)(?<!\:)((?:\-\s?)?(?:(?:\d\s?)+(?:[\.\,]\d+[^\.\,])?|(?:[\.\,]\d+[^\.\,\:]))[\-\:]?)', re.IGNORECASE, self._ntext_ if convert else self._text_)
 				okay			= []
 				for item in matches:
-					if item[-1]!='-':
+					if item[-1] not in ('-',':'):
 						item	= item.replace(',','.')
 						if not item[-1].isnumeric():
 							item	=  item[:-1]
@@ -525,8 +525,8 @@ class Extract:
 							pass
 				return okay
 			else:
-				matches	= _re.findall(r'(?<!\d\-)(?<![\.\,\d])(\-?(?:\d\s?)+(?![\.\,]\d))[^\d\-]+', re.IGNORECASE, self._ntext_ if convert else self._text_)
-				okay			= [item for item in matches if item and item[-1]!='-']
+				matches	= _re.findall(r'(?<!\d\-)(?<![\.\,\d])(\-?(?:\d\s?)+(?![\.\,]\d))[^\d\-\:]+', re.IGNORECASE, self._ntext_ if convert else self._text_)
+				okay			= [item for item in matches if item and item[-1] not in ('-',':')]
 				return [int(''.join(number.strip().split())) for number in okay]
 		return []
 	
@@ -925,8 +925,6 @@ class Extract:
 				elif item in number:
 					okay.append(item)
 		return okay
-				
-			
 	
 	# extract commands and arguments from text: "/help lara" will return ('help',['lara'])
 	def commands(self):
