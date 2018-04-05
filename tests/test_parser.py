@@ -155,7 +155,7 @@ def test_parser_intents_add(intents,text,match):
 	(
 		{
 			"megszerel"	: [{"stem":"szerel","wordclass":"verb"}],
-			"hibasan"	: [{"stem":"alma","wordclass":"noun"}],
+			"hibasan"		: [{"stem":"alma","wordclass":"noun"}],
 		},
 		[
 			"Gyönyörű dolog a szerelem",
@@ -168,7 +168,7 @@ def test_parser_intents_add(intents,text,match):
 	),
 	(
 		{
-			"float"	: [{"stem":"a","score":.75},{"stem":"b","score":.6,"typo_score":1}],
+			"float"		: [{"stem":"a","score":.75},{"stem":"b","score":.6,"typo_score":1}],
 		},
 		[
 			"a b c"
@@ -189,7 +189,7 @@ def test_parser_intents_match(intent,text,match):
 		{
 			"change"	: [{"stem":"szép","wordclass":"adjective"}],
 			"typo"		: [{"stem":"görbe","wordclass":"adjective"}],
-			"fail"		: [{"stem":"kék","wordclass":"adjective"}]
+			"fail"			: [{"stem":"kék","wordclass":"adjective"}]
 		},
 		[
 			"Szebb sárga bögre göbre bögre."
@@ -200,10 +200,10 @@ def test_parser_intents_match(intent,text,match):
 	),
 	(
 		{
-			"capital"	: [{"stem":"NAGY","wordclass":"adjective","ignorecase":False}],
+			"capital"		: [{"stem":"NAGY","wordclass":"adjective","ignorecase":False}],
 			"lower"		: [{"stem":"kicsi","wordclass":"adjective","ignorecase":False}],
-			"any"		: [{"stem":"VáLtAkOzÓ","wordclass":"adjective","ignorecase":True}],
-			"acr"		: [{"stem":"KFT","ignorecase":False}]
+			"any"			: [{"stem":"VáLtAkOzÓ","wordclass":"adjective","ignorecase":True}],
+			"acr"			: [{"stem":"KFT","ignorecase":False}]
 		},
 		[
 			"legesLEGNAGYobb kicsiNEK vÁlTaKoZó szöveg kft"
@@ -241,7 +241,7 @@ def test_parser_intents_match_set(intent,text,match):
 	(	
 		{
 			"kave"			: [{"stem":"kávé","wordclass":"noun","affix":["gép"]}],
-			"takarit"		: [{"stem":"takarít","wordclass":"verb"}],
+			"takarit"			: [{"stem":"takarít","wordclass":"verb"}],
 			"sehol"			: [{"stem":"sehol"}]
 		},
 		[
@@ -266,7 +266,7 @@ def test_parser_intents_match_best(intent,text,best):
 	(	
 		{
 			"kave"			: [{"stem":"kávé","wordclass":"noun","affix":["gép"]}],
-			"takarit"		: [{"stem":"takarít","wordclass":"verb"}],
+			"takarit"			: [{"stem":"takarít","wordclass":"verb"}],
 			"sehol"			: [{"stem":"sehol"}]
 		},
 		[
@@ -335,7 +335,7 @@ def test_parser_intents_clean(intents,text,cleaned):
 	(
 		{
 			"text"		: "teszt szöveg https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-			"urls"		: ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"],
+			"urls"			: ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"],
 			"smileys"	: ["=d"]
 		}
 	),
@@ -361,20 +361,20 @@ def test_parser_intents_clean(intents,text,cleaned):
 	(
 		{
 			"text"		: "$ßŁł 🍹-😃🍔 :) ß¤é$× asddasd",
-			"emojis"	: ["🍹","😃","🍔"],
+			"emojis"		: ["🍹","😃","🍔"],
 			"smileys"	: [":)"]
 		}
 	),
 	(
 		{
 			"text"		: "john.doe@gmail.com email",
-			"emails"	: ["john.doe@gmail.com"]
+			"emails"		: ["john.doe@gmail.com"]
 		}
 	),
 	(
 		{
 			"text"		: "notmention@gmail.com email @mention",
-			"emails"	: ["notmention@gmail.com"],
+			"emails"		: ["notmention@gmail.com"],
 			"mentions"	: ["@mention"]
 		}
 	)
@@ -421,7 +421,7 @@ def test_parser_extract_convert_numbers(info):
 		{
 			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 300 300 és 20. 3 és 2.3.4 1",
 			"function"	: "digits",
-			"result"	: ['120', '5100', '420', '3456', '300300', '20', '3', '2341']
+			"result"		: ['120', '5100', '420', '3456', '300300', '20', '3', '2341']
 		}
 	),
 	(
@@ -429,7 +429,7 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 300 300 és 20. 3 és 2.3.4 1",
 			"function"	: "digits",
 			"args"		: [3],
-			"result"	: ['120', '420']
+			"result"		: ['120', '420']
 		}
 	),
 	(
@@ -437,14 +437,14 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "1-2-0 és 420 meg 3.6.0",
 			"function"	: "digits",
 			"args"		: [3,False],
-			"result"	: ['1-2-0', '420', '3.6.0']
+			"result"		: ['1-2-0', '420', '3.6.0']
 		}
 	),
 	(
 		{
 			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 78,90 yen 300 300 és 20. 3 és 2.3.4 1 de -2 jó e és a -2.0",
 			"function"	: "numbers",
-			"result"	: [120.0, 5100.0, 420.0, 34.56, 78.90, 300300.0, 20.0, 3.0, 2.0, 3.4, 1.0, -2.0, -2.0]
+			"result"		: [120.0, 5100.0, 420.0, 34.56, 78.90, 300300.0, 20.0, 3.0, 2.0, 3.4, 1.0, -2.0, -2.0]
 		}
 	),
 	(
@@ -452,14 +452,14 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "120 a 5 100 forint 420 dollár 34.56 yen 300 300 és 20. 3 és 2.3.4 1 de -2 jó e és a -2.0",
 			"function"	: "numbers",
 			"args"		: [False,False],
-			"result"	: [120, 5100, 420, 300300, 20, 3, 1, -2]
+			"result"		: [120, 5100, 420, 300300, 20, 3, 1, -2]
 		}
 	),
 	(
 		{
 			"text"		: "100 a 90% 1100% 123,45% 0.5 % és 0,4% valamint .7 %",
 			"function"	: "percentages",
-			"result"	: [0.90,11.0,1.2345,0.005,0.004,0.007]
+			"result"		: [0.90,11.0,1.2345,0.005,0.004,0.007]
 		}
 	),
 	(
@@ -467,14 +467,14 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "100 a 90% 1100% 123,45% 0.5 % és 0,4% valamint .7 %",
 			"function"	: "percentages",
 			"args"		: [False],
-			"result"	: ["90%","1100%","123,45%","0.5 %","0,4%",".7 %"]
+			"result"		: ["90%","1100%","123,45%","0.5 %","0,4%",".7 %"]
 		}
 	),
 	(
 		{
 			"text"		: "#hashtag #YOLO",
 			"function"	: "hashtags",
-			"result"	: ["#hashtag","#yolo"]
+			"result"		: ["#hashtag","#yolo"]
 		}
 	),
 	(
@@ -482,14 +482,14 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "#hashtag #YOLO",
 			"function"	: "hashtags",
 			"args"		: [False],
-			"result"	: ["#hashtag","#YOLO"]
+			"result"		: ["#hashtag","#YOLO"]
 		}
 	),
 	(
 		{
 			"text"		: "Hívj fel! A számom (06 30) 123/45 67!",
 			"function"	: "phone_numbers",
-			"result"	: ['+36 30 1234567']
+			"result"		: ['+36 30 1234567']
 		}
 	),
 	(
@@ -497,14 +497,14 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "Hívj fel! A számom (0630) 123/45 67!",
 			"function"	: "phone_numbers",
 			"args"		: [False],
-			"result"	: ['(0630) 123/45 67']
+			"result"		: ['(0630) 123/45 67']
 		}
 	),
 	(
 		{
 			"text"		: "5 000 YEN vagy 5 000€ vagy 5000 fontot 5000£",
 			"function"	: "currencies",
-			"result"	: ["5000.0 JPY","5000.0 EUR","5000.0 GBP","5000.0 GBP"],
+			"result"		: ["5000.0 JPY","5000.0 EUR","5000.0 GBP","5000.0 GBP"],
 		}
 	),
 	(
@@ -512,14 +512,14 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "$5 000 vagy 5 000$ vagy 5000 dollár 5000.-",
 			"function"	: "currencies",
 			"args"		: [False],
-			"result"	: ["$5 000","5 000$","5000 dollár","5000.-"],
+			"result"		: ["$5 000","5 000$","5000 dollár","5000.-"],
 		}
 	),
 	(
 		{
 			"text"		: "adj nekem $99,99-et meg 19 dollárt és 99 centet!",
 			"function"	: "currencies",
-			"result"	: ["99.99 USD", "19.99 USD"]
+			"result"		: ["99.99 USD", "19.99 USD"]
 		}
 	),
 	(
@@ -527,14 +527,14 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "adj nekem $99,99-et meg 19 dollárt és 99 centet!",
 			"function"	: "currencies",
 			"args"		: [False],
-			"result"	: ["$99,99", "19 dollárt és 99 centet"]
+			"result"		: ["$99,99", "19 dollárt és 99 centet"]
 		}
 	),
 	(
 		{
 			"text"		: "csak 1 000 000 van ide írva",
 			"function"	: "currencies",
-			"result"	: ["1000000.0 HUF"],
+			"result"		: ["1000000.0 HUF"],
 		}
 	),
 	(
@@ -542,7 +542,7 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "találkozzunk háromnegyed 3 előtt 4 perccel, holnap!",
 			"function"	: "times",
 			"args"		: [False,False,0],
-			"result"	: ["háromnegyed 3 előtt 4 perccel, holnap"]
+			"result"		: ["háromnegyed 3 előtt 4 perccel, holnap"]
 		}
 	),
 	(
@@ -550,7 +550,7 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "3 óra 4 perc",
 			"function"	: "times",
 			"args"		: [True,False,0],
-			"result"	: ["03:04"]
+			"result"		: ["03:04"]
 		}
 	),
 	(
@@ -558,7 +558,7 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "három óra négy perc",
 			"function"	: "times",
 			"args"		: [True,True,10],
-			"result"	: ["15:04"]
+			"result"		: ["15:04"]
 		}
 	),
 	(
@@ -566,7 +566,7 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "találkozzunk 10 perccel 9 előtt vagy 20 perccel 20 előtt vagy akár nekem 10 perccel 20 után is jó",
 			"function"	: "times",
 			"args"		: [True,False,10],
-			"result"	: ["20:50","19:40","20:10"]
+			"result"		: ["20:50","19:40","20:10"]
 		}
 	),
 	(
@@ -574,7 +574,7 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "10:30 simán, de reggel 9-től este 10-ig és holnap 4-kor vagy holnap délután 4-kor illetve 8-kor és holnap 8-kor",
 			"function"	: "times",
 			"args"		: [True,False,10],
-			"result"	: ["10:30","09:00","22:00","16:00","16:00","20:00","20:00"]
+			"result"		: ["10:30","09:00","22:00","16:00","16:00","20:00","20:00"]
 		}
 	),
 	(
@@ -582,7 +582,7 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "fél 3 után 2 perccel vagy háromnegyed 2 körül vagy fél 5 előtt vagy 5 előtt 2 perccel vagy fél 5 előtt 2 perccel vagy 2 perccel fél 5 előtt vagy fél 5 után vagy fél 5 után 2 perccel vagy 2 perccel fél 5 után",
 			"function"	: "times",
 			"args"		: [True,False,10],
-			"result"	: ["14:32","13:45","16:30","16:58","16:28","16:28","16:30","16:32","16:32"]
+			"result"		: ["14:32","13:45","16:30","16:58","16:28","16:28","16:30","16:32","16:32"]
 		}
 	),
 	(
@@ -590,7 +590,7 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "18/01/09 vagy 18-01-09 vagy 2018. 01. 09. vagy 2018. 01. 09-én vagy 2018 VII 20. és így 2018 január 20-án",
 			"function"	: "dates",
 			"args"		: [False],
-			"result"	: ["18/01/09","18-01-09","2018. 01. 09","2018. 01. 09","2018 VII 20","2018 január 20"]
+			"result"		: ["18/01/09","18-01-09","2018. 01. 09","2018. 01. 09","2018 VII 20","2018 január 20"]
 		}
 	),
 	(
@@ -598,7 +598,7 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "18/01/09 vagy 18-01-09 vagy 2019. 01. 09. vagy 2018. 01. 09-én vagy 2018 VII 20. és így 2018 január 20-án",
 			"function"	: "dates",
 			"args"		: [True],
-			"result"	: ["2018-01-09","2018-01-09","2019-01-09","2018-01-09","2018-07-20","2018-01-20"]
+			"result"		: ["2018-01-09","2018-01-09","2019-01-09","2018-01-09","2018-07-20","2018-01-20"]
 		}
 	),
 	(
@@ -606,15 +606,15 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "3 óra múlva vagy 12 percen belül de akár 2 és fél évvel előbb is megtörténhet, hogy 5 órával vissza kell állítani, az órát, mert jöttömre kelet felől 1,5 hét múlva számítsatok",
 			"function"	: "durations",
 			"args"		: [True],
-			"result"	: [10800.0, 720.0, -78840000.0, -18000.0, 907200.0]
+			"result"		: [10800.0, 720.0, -78840000.0, -18000.0, 907200.0]
 		}
 	),
 	(
 		{
-			"text"		: "3 óra és 4 perc múlva valamint majd egyszer 1 héttel rá",
+			"text"		: "3 óra és 4 perc múlva valamint majd egyszer egy héttel rá",
 			"function"	: "durations",
 			"args"		: [False],
-			"result"	: ['3 óra és 4 perc múlva', '1 héttel rá']
+			"result"		: ['3 óra és 4 perc múlva', '1 7 rá']
 		}
 	),
 	(
@@ -622,7 +622,23 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "3 óra és 4 perc múlva valamint majd egyszer 1 héttel rá",
 			"function"	: "durations",
 			"args"		: [True],
-			"result"	: [11040.0, 604800.0]
+			"result"		: [11040.0, 604800.0]
+		}
+	),
+	(
+		{
+			"text"		: "vagyis jövő kedden is tegnapelőtt vagyis múlt hét vasárnap azaz hétfőn",
+			"function"	: "relative_dates",
+			"args"		: [True,'2018-04-01'],
+			"result"		: ['2018-04-03', '2018-03-30', '2018-03-25', '2018-03-26']
+		}
+	),
+	(
+		{
+			"text"		: "vagyis jövő kedden is tegnapelőtt vagyis múlt hét vasárnap azaz hétfőn",
+			"function"	: "relative_dates",
+			"args"		: [False,'2018-04-01'],
+			"result"		: ['jövő kedd', 'tegnapelőtt', 'múlt hét vasárnap', 'hétfő']
 		}
 	),
 ])

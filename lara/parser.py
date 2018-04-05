@@ -679,22 +679,23 @@ class Extract:
 		return results
 		
 	# extract times like 12:00 or délután 4
-	def times(self,normalize=True,convert=True,current=-1):
+	def times(self,normalize=True,convert=True,current=False):
 		if self.text:
-			matches	= _re.findall(r'((?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(?:reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?)?\,?\s?(?:[12345]?\d\s?perc+el\s)?(?:(?:h[aá]rom)?negyed\s?|f[eé]l\s?)?[012]?\d\s?(?:\:\s?|\-?kor\s?|[oó]r[aá]\w{0,3}\s?)?(?:el[oöő]t+\s?|ut[aá]n\s?)?(?:[0123456]?\d[\-\s]?(?:kor|perc\w{0,3})?)?\,?\s?(?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(?:reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?)?)', re.IGNORECASE, self._ntext_ if convert else self._text_)
+			matches	= _re.findall(r'((?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?)?\,?\s?(?:[12345]?\d\s?perc+el\s)?(?:(?:h[aá]rom)?negyed\s?|f[eé]l\s?)?[012]?\d\s?(?:\:\s?|\-?kor\s?|\-?t[oóöő]l|\-?ig|\-?r[ae]|[oó]r[aá]\w{0,3}\s?)?(?:el[oöő]t+\s?|ut[aá]n\s?)?(?:[0123456]?\d[\-\s]?(?:kor|t[oóöő]l|ig|r[ae]|perc\w{0,3})?)?\,?\s?(?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(?(1)(reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?))?)', re.IGNORECASE, self._ntext_ if convert else self._text_)
 			if normalize:
 				results	= []
-				for item in matches:
+				for _item in matches:
+					item	= _item[0]
 					if len(item.strip())>2:
-						item	= ' '+item+' '
-						hour	= "00"
+						item		= ' '+item.lower()+' '
+						hour		= "00"
 						minute	= "00"
 						pm		= False
-						zero	= False
-						elott	= False
-						hour_matches 	= _re.findall(r'\D([012]?\d(?!\d))\D*?(?!perc)(?:\:|\-?kor|[oó]r[aá])?', re.IGNORECASE, item)
-						minute_matches 	= _re.findall(r'(?!negyed|f[eé]l)\D([0123456]?\d(?!\d))\D*?(?![oó]ra)(?:\-?kor|perc)?', re.IGNORECASE, item)
-						quarter_matches	= _re.findall(r'((?:h[aá]rom)?negyed|f[eé]l)', re.IGNORECASE, item)
+						zero		= False
+						elott		= False
+						hour_matches 	= _re.findall(r'\D([012]?\d(?!\d))\D*?(?!perc)(?:\:|\-?kor|\-?t[oóöő]l|\-?ig|\-?r[ae]|[oó]r[aá]\w*)?', re.IGNORECASE, item)
+						minute_matches	= _re.findall(r'(?!negyed|f[eé]l)\D([0123456]?\d(?!\d))\D*?(?![oó]r[aá])(?:\-?kor|\-?t[oóöő]l|\-?ig|\-?r[ae]|perc\w*)?', re.IGNORECASE, item)
+						quarter_matches= _re.findall(r'((?:h[aá]rom)?negyed|f[eé]l)', re.IGNORECASE, item)
 						am_matches		= _re.findall(r'(reggel|hajnal|d[eé]lel[oöő]t|d\.?e\.?)', re.IGNORECASE, item)
 						pm_matches		= _re.findall(r'(d[eé]lut[aá]n|d\.?u\.?|este|[eé]j+el)', re.IGNORECASE, item)
 						if len(hour_matches) in (1,2):
@@ -763,15 +764,14 @@ class Extract:
 								if pm_matches:
 									pm	= True
 								elif not am_matches:
-									if current:
-										if current>=0:
-											now	= current
-										else:
-											now	= datetime.datetime.now().hour							
-										if 'holnap' in item and hour<9:
-											pm = True
-										elif hour<12 and now>hour:
-											pm = True
+									if current is not False:
+										now	= current
+									else:
+										now	= datetime.datetime.now().hour							
+									if 'holnap' in item and hour<9:
+										pm = True
+									elif hour<12 and now>hour:
+										pm = True
 								if pm and hour<=12:
 									hour	+= 12
 							hour	%= 24
@@ -780,7 +780,7 @@ class Extract:
 							results.append(str(hour).zfill(2)+':'+str(minute).zfill(2))
 				return results
 			else:
-				return [item.strip() for item in matches if len(item.strip())>2]
+				return [item[0].strip() for item in matches if len(item[0].strip())>2]
 		return []
 	
 	# extract list of time durations
@@ -795,13 +795,13 @@ class Extract:
 					val			= 0
 					for sub_item in sub_matches:
 						match	= sub_item.lower().replace(',','.')
-						sval	= ''
+						sval		= ''
 						for char in match:
 							if char.isdigit() or char=='.':
 								sval+=char
 							else:
 								break
-						sval	= float(sval)
+						sval		= float(sval)
 						mpx		= 1
 						if 'tized' in match or 'tízed' in match:
 							mpx		= 0.1
@@ -953,11 +953,57 @@ class Extract:
 			return _re.findall(r'\b([\w\d\-\_\.]+\@[\w\d\-\_\.]+\.\w{2,4}(?:\.\w{2,4})?)\b', re.IGNORECASE, self.text)
 		return []
 
+	# extract relative dates like tomorrow or wednesday
+	def relative_dates(self,normalize=True,current=False):
+		if self.text:
+			matches	= _re.findall(r'\b((?:(?:meg)?el[oöő]z[oöő]|m[uú]lt|(?:r[aá])?k[oö]vetkez[oöő]|j[oö]v[oöő])?\s?(?:h[eé]t(?:i|en)?\s?)?(?:tegnap(?:el[oöő]t+)?|holnap(?:ut[aá]n)?|m[aá](?:i nap)?|h[eé]tf[oöő]|ked+|szerd[aá]|cs[uü]t[oö]rt[oö]k|p[eé]ntek|szo[nm]bat|vas[aá]rnap))(?:[aáeoö][dm])?(?:ig|r[ae]|t[oóöő]l|[aáeoöő]?t|[dkmnptv][ae][lk]|[aáeoö]?n)?\b', re.IGNORECASE, self.text)
+			if normalize:
+				if current is not False:
+					_now			= datetime.datetime.strptime(current,"%Y-%m-%d")
+				else:
+					_now			= datetime.datetime.now()
+				results	=	[]
+				for item in matches:
+					item	= item.lower()
+					now	= _now
+					if 'holnap' in item:
+						if 'ut' in item:
+							now			+= datetime.timedelta(days = 2)
+						else:
+							now			+= datetime.timedelta(days = 1)
+					elif 'tegnap' in item:
+						if 'el' in item:
+							now			+= datetime.timedelta(days = -2)
+						else:
+							now			+= datetime.timedelta(days = -1)
+					elif 'ma' not in item and 'má' not in item:
+						now			-= datetime.timedelta(days = now.weekday())
+						if _re.findall(r'((?:meg)?el[oöő]z[oöő]|m[uú]lt)', re.IGNORECASE, item):
+							now			-= datetime.timedelta(weeks = 1)
+						elif _re.findall(r'((?:r[aá])?k[oö]vetkez[oöő]|j[oö]v[oöő])', re.IGNORECASE, item):
+							now			+= datetime.timedelta(weeks = 1)
+						if 'ked' in item:
+							now			+= datetime.timedelta(days = 1)
+						elif 'szerd' in item:
+							now			+= datetime.timedelta(days = 2)
+						elif _re.findall(r'cs[uü]t[oö]rt[oö]k', re.IGNORECASE, item):
+							now			+= datetime.timedelta(days = 3)
+						elif _re.findall(r'p[eé]ntek', re.IGNORECASE, item):
+							now			+= datetime.timedelta(days = 4)
+						elif _re.findall(r'szo[mn]bat', re.IGNORECASE, item):
+							now			+= datetime.timedelta(days = 5)
+						elif _re.findall(r'vas[aá]rnap', re.IGNORECASE, item):
+							now			+= datetime.timedelta(days = 6)
+					results.append(now.strftime('%Y-%m-%d'))
+				return results
+			else:
+				return [item.strip() for item in matches]
+		return []
+		
 	# Converts text representation of numbers to digits
 	def _convert_numbers(self,text):
 		if text:
-			#fix		= _re.sub(r'(?<=\d)\s+(?=\d)',re.IGNORECASE,'',text.lower())
-			matches	= _re.findall(r'((?:m[ií]n[uú]sz\s?|negat[ií]v\s?)?(?:(?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|egy|els[eoöő]|k[eé]t+[oöő]?|m[aá]sod(?:ik)?|h[aá]rom|harmadik|n[eé]gy|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?\W*)|(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z|t[ií]z|h[uú]sz|harminc|nulla|z[eé]r[oó])\W*)+(?:[aeoö]dik)?(?:j?[aáeéi]+n?)?)\b', re.IGNORECASE, text.lower())
+			matches	= _re.findall(r'((?:m[ií]n[uú]sz\s?|negat[ií]v\s?)?(?:(?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|eg+y|els[eoöő]|k[eé]t+[oöő]?|m[aá]sod(?:ik)?|h[aá]rom|harmadik|n[eé]g+y|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?\W*)|(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z|t[ií]z|h[uú]sz|harminc|nulla|z[eé]r[oó])\W*)+(?:[aeoö]dik)?(?:j?[aáeéi]+[gnt]?|[aáeéoöő]?t|kor|t[oóöő]l|r[ae]|[ckmrtvz]?[ae]l)?)\b', re.IGNORECASE, text)
 			results	= {}
 			for match in matches:
 				value	= 0
@@ -968,7 +1014,7 @@ class Extract:
 				else:
 					minus	= 1
 					minusm	= ''
-				parts	= _re.findall(r'((?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|egy|els[eoöő]|k[eé]t+[oöő]?|m[aá]sod(?:ik)?|h[aá]rom|harmadik|n[eé]gy|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?|(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z|t[ií]z|h[uú]sz|harminc|nulla|z[eé]r[oó]))\W*)', re.IGNORECASE, match)
+				parts	= _re.findall(r'((?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|eg+y|els[eoöő]|k[eé]t+[oöő]?|m[aá]sod(?:ik)?|h[aá]rom|harmadik|n[eé]g+y|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?|(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z|t[ií]z|h[uú]sz|harminc|nulla|z[eé]r[oó]))\W*)', re.IGNORECASE, match)
 				values	= []
 				for part in parts:
 					val			= 0
@@ -1045,7 +1091,7 @@ class Extract:
 					
 			swap 	= sorted(results.items(), key=lambda x: x[1], reverse=True)
 			for item in swap:
-				text		= _re.sub(r'\b('+re.escape(item[0])+r')(?:[aeoö]dik?)?(?:j?[aáeéi]+n?)?\b', re.IGNORECASE, str(item[1]), text)
+				text		= _re.sub(r'\b('+re.escape(item[0])+r')(?:[aeoö]dik?)?(?:j?[aáeéi]+[gnt]?|[aáeéoöő]?t|kor|t[oóöő]l|r[ae]|[ckmrtvz]?[ae]l)?\b', re.IGNORECASE, str(item[1]), text)
 			return text
 		return ''
 	
@@ -1063,9 +1109,9 @@ class Extract:
 			return 2
 		elif _re.findall(r'(harmadik|h[aá]rom)', re.IGNORECASE, match):
 			return 3
-		elif _re.findall(r'n[eé]gy', re.IGNORECASE, match):
+		elif _re.findall(r'n[eé]g+y', re.IGNORECASE, match):
 			return 4
-		elif 'egy' in match or 'els' in match:
+		elif 'egy' in match or 'els' in match or 'eggy' in match:
 			return 1
 		elif _re.findall(r'[oö]t', re.IGNORECASE, match):
 			return 5
