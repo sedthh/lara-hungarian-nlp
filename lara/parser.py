@@ -681,18 +681,20 @@ class Extract:
 	# extract times like 12:00 or délután 4
 	def times(self,normalize=True,convert=True,current=False):
 		if self.text:
-			matches	= _re.findall(r'((?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?)?\,?\s?(?:[12345]?\d\s?perc+el\s)?(?:(?:h[aá]rom)?negyed\s?|f[eé]l\s?)?[012]?\d\s?(?:\:\s?|\-?kor\s?|\-?t[oóöő]l|\-?ig|\-?r[ae]|[oó]r[aá]\w{0,3}\s?)?(?:el[oöő]t+\s?|ut[aá]n\s?)?(?:[0123456]?\d[\-\s]?(?:kor|t[oóöő]l|ig|r[ae]|perc\w{0,3})?)?\,?\s?(?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(?(1)(reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?))?)', re.IGNORECASE, self._ntext_ if convert else self._text_)
+			matches	= _re.findall(r'((?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?)?\,?\s?(?:[12345]?\d\s?perc+el\s)?(?:(?:h[aá]rom)?negyed\s?|f[eé]l\s?)?(?:[012]?\d|d[eé]l\w*|[eé]jf[eé]l\w*)\s?(?:\:\s?|\-?kor\s?|\-?t[oóöő]l|\-?ig|\-?r[ae]|[oó]r[aá]\w{0,3}\s?)?(?:el[oöő]t+\s?|ut[aá]n\s?)?(?:[0123456]?\d[\-\s]?(?:kor|t[oóöő]l|ig|r[ae]|perc\w{0,3})?)?\,?\s?(?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(?(1)(reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?))?)', re.IGNORECASE, self._ntext_ if convert else self._text_)
 			if normalize:
 				results	= []
+				last_pm	= None
 				for _item in matches:
 					item	= _item[0]
 					if len(item.strip())>2:
 						item		= ' '+item.lower()+' '
 						hour		= "00"
 						minute	= "00"
-						pm		= False
+						pm		= last_pm
 						zero		= False
 						elott		= False
+						del_matches		= _re.findall(r'd[eé]l\w*|[eé]jf[eé]l\w*', re.IGNORECASE, item)
 						hour_matches 	= _re.findall(r'\D([012]?\d(?!\d))\D*?(?!perc)(?:\:|\-?kor|\-?t[oóöő]l|\-?ig|\-?r[ae]|[oó]r[aá]\w*)?', re.IGNORECASE, item)
 						minute_matches	= _re.findall(r'(?!negyed|f[eé]l)\D([0123456]?\d(?!\d))\D*?(?![oó]r[aá])(?:\-?kor|\-?t[oóöő]l|\-?ig|\-?r[ae]|perc\w*)?', re.IGNORECASE, item)
 						quarter_matches= _re.findall(r'((?:h[aá]rom)?negyed|f[eé]l)', re.IGNORECASE, item)
@@ -770,17 +772,24 @@ class Extract:
 										now	= datetime.datetime.now().hour							
 									if 'holnap' in item and hour<9:
 										pm = True
-									elif hour<12 and now>hour:
+									elif hour<12 and now>hour and last_pm is not False:
 										pm = True
+								else:
+									pm	= False
 								if pm and hour<=12:
 									hour	+= 12
-							hour	%= 24
+							hour		%= 24
 							minute	%= 60
-							
+							last_pm	= pm
 							results.append(str(hour).zfill(2)+':'+str(minute).zfill(2))
+						elif del_matches:
+							if 'jf' in item:
+								results.append('00:00')
+							else:
+								results.append('12:00')
 				return results
 			else:
-				return [item[0].strip() for item in matches if len(item[0].strip())>2]
+				return [item[0].strip() for item in matches if len(item[0].strip())>4]
 		return []
 	
 	# extract list of time durations
@@ -956,7 +965,7 @@ class Extract:
 	# extract relative dates like tomorrow or wednesday
 	def relative_dates(self,normalize=True,current=False):
 		if self.text:
-			matches	= _re.findall(r'\b((?:(?:meg)?el[oöő]z[oöő]|m[uú]lt|(?:r[aá])?k[oö]vetkez[oöő]|j[oö]v[oöő])?\s?(?:h[eé]t(?:i|en)?\s?)?(?:tegnap(?:el[oöő]t+)?|holnap(?:ut[aá]n)?|m[aá](?:i nap)?|h[eé]tf[oöő]|ked+|szerd[aá]|cs[uü]t[oö]rt[oö]k|p[eé]ntek|szo[nm]bat|vas[aá]rnap))(?:[aáeoö][dm])?(?:ig|r[ae]|t[oóöő]l|[aáeoöő]?t|[dkmnptv][ae][lk]|[aáeoö]?n)?\b', re.IGNORECASE, self.text)
+			matches	= _re.findall(r'\b((?:(?:meg)?el[oöő]z[oöő]|m[uú]lt|(?:r[aá])?k[oö]vetkez[oöő]|j[oö]v[oöő])?\s?(?:h[eé]t(?:i|en)?\s?)?(?:tegnap(?:el[oöő]t+)?|holnap(?:ut[aá]n)?|m[aá](?:i nap)?|h[eé]tf[oöő]|ked+|szerd[aá]|cs[uü]t[oö]rt[oö]k|p[eé]ntek|szo[nm]bat|vas[aá]rnap))(?:[aáeoö][dm])?(?:ig?|r[ae]|t[oóöő]l|[aáeoöő]?t|[dkmnptv][ae][lk]|[aáeoö]?n)?\b', re.IGNORECASE, self.text)
 			if normalize:
 				if current is not False:
 					_now			= datetime.datetime.strptime(current,"%Y-%m-%d")
@@ -1000,6 +1009,74 @@ class Extract:
 				return [item.strip() for item in matches]
 		return []
 		
+	# extract full timestamps using dates(), relative_dates() and times()
+	def timestamps(self,current=False):
+		# testing environment
+		c_relative		= False
+		c_times		= False
+		if current:
+			c_relative	= current.split()[0]
+			now			= c_relative
+			c_times		= int((current.split()[1]).split(':')[0])
+		else:
+			now			=	datetime.datetime.now().strftime('%Y-%m-%d')
+		dates			= self.dates(False)
+		relative		= self.relative_dates(False,c_relative)
+		times			= self.times(False,True,c_times)
+		dates_pos	= []
+		relative_pos= []
+		times_pos	= []
+		for item in dates:
+			for match in _re.finditer(r'\b'+re.escape(item), re.IGNORECASE, self.text):
+				dates_pos.append(match.span()[0])
+		for item in relative:
+			for match in _re.finditer(r'\b'+re.escape(item), re.IGNORECASE, self.text):
+				relative_pos.append(match.span()[0])
+		for item in times:
+			for match in _re.finditer(r'\b'+re.escape(item), re.IGNORECASE, self.text):
+				times_pos.append(match.span()[0])
+		dates_pos.append(-1)
+		relative_pos.append(-1)
+		times_pos.append(-1)
+		dates			= self.dates()
+		relative		= self.relative_dates(True,c_relative)
+		times			= self.times(True,True,c_times)
+		results		= []
+		last_date	= ''
+		last_date_a= ''
+		last_time	= ''
+		dates_i		= 0
+		relative_i	= 0
+		times_i		= 0
+		for i in range(max(dates_pos+relative_pos+times_pos)+1):
+			if i == dates_pos[dates_i]:
+				if last_date or last_time:
+					if last_date!=last_date_a:
+						results.append((last_date or now)+' '+(last_time or '??:??'))
+						last_time	= ''
+				if len(dates)>dates_i:
+					last_date	= dates[dates_i]
+				dates_i		+= 1
+			if i == relative_pos[relative_i]:
+				if last_date or last_time:
+					if last_date!=last_date_a:
+						results.append((last_date or now)+' '+(last_time or '??:??'))
+						last_time	= ''
+				if len(relative)>relative_i:
+					last_date	= relative[relative_i]
+				relative_i	+= 1
+			if i == times_pos[times_i]:
+				if len(times)>times_i:
+					last_time	= times[times_i]
+					results.append((last_date or now)+' '+(last_time or '??:??'))
+				times_i		+= 1
+				last_time	= ''
+				last_date_a= last_date
+		if last_date or last_time:
+			if last_date!=last_date_a or last_time:
+				results.append((last_date or now)+' '+(last_time or '??:??'))
+		return results
+						
 	# Converts text representation of numbers to digits
 	def _convert_numbers(self,text):
 		if text:
@@ -1130,6 +1207,7 @@ class _re:
 
 	compile_cache	= {}
 	findall_cache		= {}
+	finditer_cache		= {}
 	words_cache		= {}
 	
 	# cache re.compile() outputs
@@ -1158,6 +1236,20 @@ class _re:
 		if e_hash not in _re.findall_cache[flags_str][t_hash]:
 			_re.findall_cache[flags_str][t_hash][e_hash]	= _re.compile_cache[flags_str][e_hash].findall(text)
 		return _re.findall_cache[flags_str][t_hash][e_hash]
+	
+	# cache re.compile().finditer() outputs
+	def finditer(expression,flags,text):
+		e_hash			= hashlib.sha1(str(expression).encode("utf-8")).hexdigest()
+		_re.compile(e_hash,expression,flags)
+		t_hash			= hashlib.sha1(str(text).encode("utf-8")).hexdigest()
+		flags_str		= str(flags)
+		if flags_str not in _re.finditer_cache:
+			_re.finditer_cache[flags_str]	= {}
+		if t_hash not in _re.finditer_cache[flags_str]:
+			_re.finditer_cache[flags_str][t_hash]	= {}
+		if e_hash not in _re.finditer_cache[flags_str][t_hash]:
+			_re.finditer_cache[flags_str][t_hash][e_hash]	= _re.compile_cache[flags_str][e_hash].finditer(text)
+		return _re.finditer_cache[flags_str][t_hash][e_hash]
 	
 	# user cached re.compile() for re.sub()
 	def sub(expression,flags,repl,string):

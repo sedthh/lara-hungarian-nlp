@@ -641,6 +641,15 @@ def test_parser_extract_convert_numbers(info):
 			"result"		: ['jövő kedd', 'tegnapelőtt', 'múlt hét vasárnap', 'hétfő']
 		}
 	),
+	(
+		{
+			"text"		: "délben mi van? akkor találkozzunk holnap 9 és 11 óra között vagy valamikor reggel 7-kor",
+			"function"	: "timestamps",
+			"args"		: ['2018-04-01 12:00'],
+			"result"		: ['2018-04-01 12:00', '2018-04-02 21:00', '2018-04-02 23:00', '2018-04-02 07:00']
+		}
+	),
+	
 ])
 def test_parser_extract_parameter(info):
 	test	= parser.Extract(info['text'])
