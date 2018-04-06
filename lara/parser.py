@@ -681,9 +681,9 @@ class Extract:
 	# extract times like 12:00 or délután 4
 	def times(self,normalize=True,convert=True,current=False):
 		if self.text:
-			matches	= _re.findall(r'((?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?)?\,?\s?(?:[12345]?\d\s?perc+el\s)?(?:(?:h[aá]rom)?negyed\s?|f[eé]l\s?)?(?:[012]?\d|d[eé]l\w*|[eé]jf[eé]l\w*)\s?(?:\:\s?|\-?kor\s?|\-?t[oóöő]l|\-?ig|\-?r[ae]|[oó]r[aá]\w{0,3}\s?)?(?:el[oöő]t+\s?|ut[aá]n\s?)?(?:[0123456]?\d[\-\s]?(?:kor|t[oóöő]l|ig|r[ae]|perc\w{0,3})?)?\,?\s?(?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(?(1)(reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?))?)', re.IGNORECASE, self._ntext_ if convert else self._text_)
+			matches	= _re.findall(r'((?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?)?\,?\s?(?:[12345]?\d\s?perc+el\s)?(?:(?:h[aá]rom)?negyed\s?|f[eé]l\s?)?(?:[012]?\d|d[eé]l\w*|[eé]jf[eé]l\w*)\s?(?:\:\s?|k[oö]z[oö]t+|\-?kor\s?|\-?t[oóöő]l|\-?ig?|\-?r[ae]|[oó]r[aá]\w{0,3}\s?)?(?:el[oöő]t+\s?|ut[aá]n\s?)?(?:[0123456]?\d[\-\s]?(?![cmntvz][ae]l)(?:kor|t[oóöő]l|ig?|r[ae]|perc\w{0,3})?)?\,?\s?(?:ma\s?|holnap(?:\s?ut[aá]n)?\s?|tegnap(?:\s?el[oöő]t+)?\s?)?(?(1)(reggel\s?|hajnal(?:i|ban)?\s?|d[eé]lel[oöő]t+\s?|d\.?e\.?\s?|d[eé]lut[aá]n\s?|d\.?u\.?\s?|este\s?|[eé]j+el\s?))?)', re.IGNORECASE, self._ntext_ if convert else self._text_)
+			results	= []
 			if normalize:
-				results	= []
 				last_pm	= None
 				for _item in matches:
 					item	= _item[0]
@@ -695,8 +695,8 @@ class Extract:
 						zero		= False
 						elott		= False
 						del_matches		= _re.findall(r'd[eé]l\w*|[eé]jf[eé]l\w*', re.IGNORECASE, item)
-						hour_matches 	= _re.findall(r'\D([012]?\d(?!\d))\D*?(?!perc)(?:\:|\-?kor|\-?t[oóöő]l|\-?ig|\-?r[ae]|[oó]r[aá]\w*)?', re.IGNORECASE, item)
-						minute_matches	= _re.findall(r'(?!negyed|f[eé]l)\D([0123456]?\d(?!\d))\D*?(?![oó]r[aá])(?:\-?kor|\-?t[oóöő]l|\-?ig|\-?r[ae]|perc\w*)?', re.IGNORECASE, item)
+						hour_matches 	= _re.findall(r'\D([012]?\d(?!\d))\D*?(?!perc)(?:\:\s?|k[oö]z[oö]t+|\-?kor|\-?t[oóöő]l|\-?ig?|\-?r[ae]|[oó]r[aá]\w*)?', re.IGNORECASE, item)
+						minute_matches	= _re.findall(r'(?!negyed|f[eé]l)\D([0123456]?\d(?!\d))\D*?(?![oó]r[aá])(?:\-?kor|\-?t[oóöő]l|\-?ig?|\-?r[ae]|perc\w*)?', re.IGNORECASE, item)
 						quarter_matches= _re.findall(r'((?:h[aá]rom)?negyed|f[eé]l)', re.IGNORECASE, item)
 						am_matches		= _re.findall(r'(reggel|hajnal|d[eé]lel[oöő]t|d\.?e\.?)', re.IGNORECASE, item)
 						pm_matches		= _re.findall(r'(d[eé]lut[aá]n|d\.?u\.?|este|[eé]j+el)', re.IGNORECASE, item)
@@ -787,15 +787,22 @@ class Extract:
 								results.append('00:00')
 							else:
 								results.append('12:00')
-				return results
 			else:
-				return [item[0].strip() for item in matches if len(item[0].strip())>4]
+				for item in matches:
+					item	= item[0].strip()
+					ok		= False
+					for char in item:
+						if not char.isnumeric():
+							ok	= True
+					if item and ok:
+						results.append(item)
+			return results
 		return []
 	
 	# extract list of time durations
 	def durations(self,normalize=True,convert=True):
 		if self.text:
-			matches	= _re.findall(r'\b((?:(?:(?:\d\s?)+(?:[\.\,]\d+)?\s(?:(?:[eé]s\s)?(?:f[eé]l|(?:h[aá]rom)?negyed)\s)?(?:(?:(?:t[ií]zed|sz[aá]zad|ezred)?m[aá]sod)?perc\w{0,3}|[oó]r[aá]\w{0,3}|nap\w{0,3}|7|h[eé]t\w{0,3}|h[oó]nap\w{0,3}|[eé]v\w{0,3})(?:\s(?:m[uú]lva|r[aá]|(?:ez)?el[oöő]t+|el[oöő]b+|k[eé]s[oö]b+|bel[uü]l|h[aá]tr(?:a|[eé]bb)|vissza|el[oöő]re))?)(?:\W{1,2}(?:[eé]s|meg)?\W*)?)+)', re.IGNORECASE, self.ntext if convert else self.text)
+			matches	= _re.findall(r'\b((?:(?:(?:\d\s?)+(?:[\.\,]\d+)?\s(?:(?:[eé]s\s)?(?:f[eé]l|(?:h[aá]rom)?negyed)\s)?(?:(?:(?:t[ií]zed|sz[aá]zad|ezred)?m[aá]sod)?perc\w{0,3}|[oó]r[aá]\w{0,3}|nap\w{0,3}|7\w{0,3}|h[eé]t\w{0,3}|h[oó]nap\w{0,3}|[eé]v\w{0,3})(?:\s(?:m[uú]lva|r[aá]|(?:ez)?el[oöő]t+|el[oöő]b+|k[eé]s[oö]b+|bel[uü]l|h[aá]tr(?:a|[eé]bb)|vissza|el[oöő]re))?)(?:\W{1,2}(?:[eé]s|meg)?\W*)?)+)', re.IGNORECASE, self.ntext if convert else self.text)
 			if normalize:
 				results	= []
 				now = datetime.datetime.now()
@@ -1027,13 +1034,13 @@ class Extract:
 		relative_pos= []
 		times_pos	= []
 		for item in dates:
-			for match in _re.finditer(r'\b'+re.escape(item), re.IGNORECASE, self.text):
+			for match in _re.finditer(r'\b'+re.escape(item), re.IGNORECASE, self.ntext):
 				dates_pos.append(match.span()[0])
 		for item in relative:
-			for match in _re.finditer(r'\b'+re.escape(item), re.IGNORECASE, self.text):
+			for match in _re.finditer(r'\b'+re.escape(item), re.IGNORECASE, self.ntext):
 				relative_pos.append(match.span()[0])
 		for item in times:
-			for match in _re.finditer(r'\b'+re.escape(item), re.IGNORECASE, self.text):
+			for match in _re.finditer(r'\b'+re.escape(item), re.IGNORECASE, self.ntext):
 				times_pos.append(match.span()[0])
 		dates_pos.append(-1)
 		relative_pos.append(-1)
@@ -1168,7 +1175,7 @@ class Extract:
 					
 			swap 	= sorted(results.items(), key=lambda x: x[1], reverse=True)
 			for item in swap:
-				text		= _re.sub(r'\b('+re.escape(item[0])+r')(?:[aeoö]dik?)?(?:j?[aáeéi]+[gnt]?|[aáeéoöő]?t|kor|t[oóöő]l|r[ae]|[ckmrtvz]?[ae]l)?\b', re.IGNORECASE, str(item[1]), text)
+				text		= _re.sub(r'\b('+re.escape(item[0])+r')((?:[aeoö]dik?)?(?:j?[aáeéi]+[gnt]?|[aáeéoöő]?t|kor|t[oóöő]l|r[ae]|[ckmrtvz]?[ae]l)?)?\b', re.IGNORECASE, re.escape(str(item[1]))+r'\2', text)
 			return text
 		return ''
 	

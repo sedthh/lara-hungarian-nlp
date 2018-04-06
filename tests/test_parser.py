@@ -402,7 +402,7 @@ def test_parser_extract(info):
 	(
 		{
 			"in"		: "harmincnégy lol első a második harmadik :D negyed végén ötödikén mit más csinálsz tízenkétmillióhatvanezerhetvenegy és hárommillió száz huszonkettő vagy még nullamilliárd de akkor már kettő kettő tizenkettő :) harmincnégy és nyolcvan illetve kilencvenezer az állás pedig egy-egy és végül egy kettő három",
-			"out"		: "34 lol 1 a 2 3 :D negyed végén 5 mit más csinálsz 12060071 és 3000122 vagy még 0 de akkor már 2212 :) 34 és 80 illetve 90000 az állás pedig 1-1 és végül 1 2 3"
+			"out"		: "34 lol 1 a 2 3 :D negyed végén 5ödikén mit más csinálsz 12060071 és 3000122 vagy még 0 de akkor már 2212 :) 34 és 80 illetve 90000 az állás pedig 1-1 és végül 1 2 3"
 		}
 	),
 	(
@@ -614,7 +614,7 @@ def test_parser_extract_convert_numbers(info):
 			"text"		: "3 óra és 4 perc múlva valamint majd egyszer egy héttel rá",
 			"function"	: "durations",
 			"args"		: [False],
-			"result"		: ['3 óra és 4 perc múlva', '1 7 rá']
+			"result"		: ['3 óra és 4 perc múlva', '1 7tel rá']
 		}
 	),
 	(
