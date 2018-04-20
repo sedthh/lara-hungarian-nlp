@@ -135,7 +135,7 @@ elif 'are_you_a_robot' in chitchat_match:
 Can create features from short Hungarian texts for Machine Learning models, without large dictionaries:
 
 ```python
-from lara import tippmix, nlp
+from lara import stemmer, nlp
 
 text 	= '''
 	A szövegbányászat a strukturálatlan vagy kis mértékben strukturált 
@@ -147,7 +147,7 @@ text 	= '''
 	'''
 
 clean	= nlp.remove_stopwords(text)
-stems	= tippmix.stemmer(clean)
+stems	= stemmer.tippmix(clean)
 bigrams = nlp.ngram(stems,2)
 print(bigrams)
 

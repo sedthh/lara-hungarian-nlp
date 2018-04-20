@@ -2,7 +2,7 @@
 
 import os.path, sys
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
-from lara import tippmix, nlp
+from lara import stemmer, nlp
 
 ''' Stemmer and n-gram example '''
 
@@ -22,7 +22,7 @@ if __name__ == "__main__":
 	print(bigrams)
 	
 	# A szöveg szavait stemmeli és ezekből bigramokat generál
-	stems	= tippmix.stemmer(text)
+	stems	= stemmer.tippmix(text)
 	bigrams = nlp.ngram(stems,2)
 	print(bigrams)
 	
@@ -33,6 +33,6 @@ if __name__ == "__main__":
 	print(bigrams)
 	
 	# A stopszavak eltávolítása után megmaradt szavakat stemmeli és ezekből generál bigramokat
-	stems	= tippmix.stemmer(text)
+	stems	= stemmer.tippmix(text)
 	bigrams = nlp.ngram(stems,2)
 	print(bigrams)

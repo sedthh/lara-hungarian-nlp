@@ -8,7 +8,7 @@ import lara.nlp
 
 
 # a stemmer that's slightly better than random guessing
-def stemmer(text):
+def tippmix(text):
 	if text:
 		word_list	= lara.nlp.tokenize(text)
 		if word_list:
