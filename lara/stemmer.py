@@ -1,11 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-import sys
-
-#if 'lara.nlp' not in sys.modules:
-#	import lara.nlp
 import lara.nlp
-
 
 # a stemmer that's slightly better than random guessing
 def tippmix(text):
@@ -236,3 +231,72 @@ def _tippmix_stemmer_get_affix(word):
 	word	= word[:-1]+_tippmix_stemmer_accents(word[-1])
 	
 	return word
+
+# a stemmer for figuring out stems for words used in short questions
+def just_asking(text):
+	if text:
+		word_list	= lara.nlp.tokenize(text.lower())
+		results		= []
+		for word in word_list:
+			if len(word)>4:
+				vh	= lara.nlp.vowel_harmony(word)
+				if word[-1] in ('k','t'):
+					if word[-3]=='n' and word[-2] in ('a','e'):
+						if vh == 'magas':
+							if word[-2] == 'e':
+								word	= word[:-3]
+						else:
+							if word[-2] == 'a':
+								word	= word[:-3]
+					if len(word)>4:
+						if vh == 'magas':
+							if word[-2] in ('e','é'):
+								word	= word[:-2]
+							else:
+								word	= word[:-1]
+						else:
+							if word[-2] in ('a','á','o','ó'):
+								word	= word[:-2]
+							else:
+								word	= word[:-1]	
+				elif word[-1] == 'i':
+					if word != 'zokni' and word != 'hakni':
+						if word[-2] == 'n':
+							if vh == 'magas':
+								if word[-3]=='e':
+									word	= word[:-3]+'és'
+								else:
+									word	= word[:-2]+'és'
+							else:
+								if word[-3]=='a':
+									word	= word[:-3]+'ás'
+								else:
+									word	= word[:-2]+'ás'
+						else:
+							word	= word[:-1]
+				elif word[-1] == 'l':
+					if word[-2] in ('o','ó','ö','ő'):
+						if word[-3] in ('b','r','t'):
+							if word[-4]=='i':
+								word	= word[:-4]
+							else:
+								word	= word[:-3]
+					elif word[-2] in ('a','e'):
+						if word[-3] =='v' or (word[-3]==word[-4] and lara.nlp.is_consonant(word[-3])):
+							if vh == 'magas':
+								if word[-2]=='e':
+									if word[-4]=='i':
+										word	= word[:-4]
+									else:
+										word	= word[:-3]
+							else:
+								if word[-2]=='a':
+									if word[-4]=='i':
+										word	= word[:-4]
+									else:
+										word	= word[:-3]
+				if len(word)>3 and word[-1] in ('á','é'):
+					word	= word[:-1]+word[-1].replace('á','a').replace('é','e')
+			results.append(word)
+		return results	
+	return []
