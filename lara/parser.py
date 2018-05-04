@@ -271,21 +271,22 @@ class Intents:
 			return set()
 	
 	# Remove matches from text
-	def clean(self, text=""):
+	def clean(self, text="", deep=False):
 		if text:
-			return self._get_clean_text(text)
+			return self._get_clean_text(text,deep)
 		else:
 			return ""
 		
 	# Returns text without the inflected forms of matched intents
-	def _get_clean_text(self, text):
-		text			= lara.nlp.trim(text)
+	def _get_clean_text(self, text, deep):
+		text		= lara.nlp.trim(text)
 		typo_text	= lara.nlp.strip_accents(lara.nlp.remove_double_letters(text))
-		fix_text		= text
+		c_text		= text
+		c_typo_text	= typo_text
 		if text:
 			for key, value in self.intents.items():
 				ignore	= False
-				allow		= -1
+				allow	= -1
 				for item in self.intents[key]:
 					if 'exc' in item and item['exc']:
 						for exc in item['exc']:
@@ -301,14 +302,25 @@ class Intents:
 								allow	= 1
 							elif self._match_pattern(typo_text,inc,True)[0]: # typo_stem
 								allow	= 1
-				if not ignore and allow in (-1,1):
-					max_words	= _re.words(text)
-					for item in self.intents[key]:
+					if not ignore and allow in (-1,1):
+						max_words	= _re.words(text)
 						if item['max_words'] <= max_words:
-							fix_text		= self._match_pattern(fix_text,item,False,True)	# stem
-							fix_text		= self._match_pattern(fix_text,item,True,True)	# typo_stem
-						
-		return fix_text
+							c_text		= self._match_pattern(c_text,item,False,True,deep)	# stem
+							c_typo_text	= self._match_pattern(c_typo_text,item,True,True,deep)	# typo_stem
+			# attempt to merge results
+			c_text		= lara.nlp.trim(c_text).split()
+			c_typo_text	= lara.nlp.trim(c_typo_text).split()
+			fix_text	= []
+			last		= 0
+			for word in c_text:
+				x_word	= lara.nlp.strip_accents(lara.nlp.remove_double_letters(word))
+				for i in range(last,len(c_typo_text)):
+					if x_word==c_typo_text[i]:
+						fix_text.append(word)
+						last		= i
+						break
+			return ' '.join(fix_text)
+		return text
 			
 	# Get score for intents in text
 	def _get_score(self, text, greedy=True):
@@ -355,12 +367,12 @@ class Intents:
 		return score
 	
 	# Find an intent in text
-	def _match_pattern(self, text, item, is_clean=False, delete=False):
+	def _match_pattern(self, text, item, is_clean=False, delete=False, deep=False):
 		if text:	
 			if not delete and item['max_words']:
 				if _re.words(text)>item['max_words']:
 					return (False,0)
-			
+		
 			if is_clean:
 				select		= 'typo_'
 			else:
@@ -383,6 +395,9 @@ class Intents:
 							match	= match[0]
 						if item['match_stem'] or (item['ignorecase'] and match.lower() != item[select+'stem'].lower()) or (match.lower() != item[select+'stem']):
 							tmp	= _re.sub(boundary+r'('+re.escape(match)+r')'+boundary,re.IGNORECASE,'',tmp)
+					if deep and 'inc' in item:
+						for inc in item['inc']:
+							tmp	= self._match_pattern(tmp, inc, is_clean, delete, deep)
 					return tmp
 				else:	
 					if not item['match_stem']:
