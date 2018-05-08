@@ -240,14 +240,15 @@ def just_asking(text):
 		for word in word_list:
 			if len(word)>4:
 				vh	= lara.nlp.vowel_harmony(word)
-				if word[-1] in ('k','t'):
-					if word[-3]=='n' and word[-2] in ('a','e'):
+				if word[-1] in ('a','e'):
+					if word[-2] == 'r':
 						if vh == 'magas':
-							if word[-2] == 'e':
-								word	= word[:-3]
+							if word[-1] == 'e':
+								word	= word[:-2]
 						else:
-							if word[-2] == 'a':
-								word	= word[:-3]
+							if word[-1] == 'a':
+								word	= word[:-2]
+				elif word[-1] == 't':
 					if len(word)>4:
 						if vh == 'magas':
 							if word[-2] in ('e','é'):
@@ -259,21 +260,6 @@ def just_asking(text):
 								word	= word[:-2]
 							else:
 								word	= word[:-1]	
-				elif word[-1] == 'i':
-					if word != 'zokni' and word != 'hakni':
-						if word[-2] == 'n':
-							if vh == 'magas':
-								if word[-3]=='e':
-									word	= word[:-3]+'és'
-								else:
-									word	= word[:-2]+'és'
-							else:
-								if word[-3]=='a':
-									word	= word[:-3]+'ás'
-								else:
-									word	= word[:-2]+'ás'
-						else:
-							word	= word[:-1]
 				elif word[-1] == 'l':
 					if word[-2] in ('o','ó','ö','ő'):
 						if word[-3] in ('b','r','t'):
@@ -295,8 +281,128 @@ def just_asking(text):
 										word	= word[:-4]
 									else:
 										word	= word[:-3]
+				if word[-1] == 'k':
+					if word[-3]=='n' and word[-2] in ('a','e'):
+						if vh == 'magas':
+							if word[-2] == 'e':
+								word	= word[:-3]
+						else:
+							if word[-2] == 'a':
+								word	= word[:-3]
+					if len(word)>4:
+						if vh == 'magas':
+							if word[-2] in ('e','é'):
+								word	= word[:-2]
+							else:
+								word	= word[:-1]
+						else:
+							if word[-2] in ('a','á','o','ó'):
+								word	= word[:-2]
+							else:
+								word	= word[:-1]	
+				if word[-1] == 'i':
+					if word != 'zokni' and word != 'hakni':
+						if word[-2] == 'n':
+							if vh == 'magas':
+								if word[-3]=='e':
+									word	= word[:-3]+'és'
+								else:
+									word	= word[:-2]+'és'
+							else:
+								if word[-3]=='a':
+									word	= word[:-3]+'ás'
+								else:
+									word	= word[:-2]+'ás'
+						else:
+							word	= word[:-1]
 				if len(word)>3 and word[-1] in ('á','é'):
 					word	= word[:-1]+word[-1].replace('á','a').replace('é','e')
 			results.append(word)
 		return results	
 	return []
+
+# add affixes to words based on their vowel harmony	
+def inverse(word,affix):
+	if not word:
+		return ''
+	vh		= lara.nlp.vowel_harmony(word)
+	result	= word
+	if affix in ('ra','re'):
+		if vh == 'magas':
+			return result+'ra'
+		else:
+			return result+'re'
+	if affix == 't':
+		if lara.nlp.is_vowel(word[-1]):
+			if word[-1].lower() in ('a','e'):
+				result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
+			return result+'t'
+		elif vh == 'magas':
+			return result+'et'
+		else:
+			return result+'at'
+	if affix == 'k':
+		if lara.nlp.is_vowel(word[-1]):
+			if word[-1].lower() in ('a','e'):
+				result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
+			return result+'k'
+		elif vh == 'magas':
+			return result+'ek'
+		else:
+			return result+'ak'
+	if affix == 'i':
+		if word[-1]=='i':
+			return result
+		return result+'i'
+	if affix in ('bol','ból','böl','ből'):
+		if word[-1].lower() in ('a','e'):
+			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
+		if vh in ('magas','vegye'):
+			return result+'ből'
+		return result+'ból'
+	if affix in ('rol','ról','röl','ről'):
+		if word[-1].lower() in ('a','e'):
+			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
+		if vh in ('magas','vegyes'):
+			return result+'ről'
+		return result+'ról'
+	if affix in ('tol','tól','töl','től'):
+		if word[-1].lower() in ('a','e'):
+			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
+		if vh in ('magas','vegyes'):
+			return result+'től'
+		return result+'tól'
+	if affix in ('nak','nek'):
+		if word[-1].lower() in ('a','e'):
+			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
+		if vh in ('magas','vegyes'):
+			return result+'nek'
+		return result+'nak'
+	if affix in ('val','vel'):
+		if lara.nlp.is_vowel(word[-1]):
+			if word[-1].lower() in ('a','e'):
+				result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
+			if vh == 'magas':
+				return result+'vel'
+			else:
+				return result+'val'
+		elif word[-1] == '-':
+			if vh == 'magas':
+				return result+'vel'
+			else:
+				return result+'val'
+		else:
+			if len(word)>1:
+				if word[-2:].lower() in ('cs','gy','ly','ny','sz','ty','zs'):
+					result	= result[:-2]+result[-2]+result[-2]+result[-1]
+					if vh == 'magas':
+						return result+'el'
+					else:
+						return result+'al'				
+			if vh == 'magas':
+				return result+result[-1]+'el'
+			else:
+				return result+result[-1]+'al'		
+	raise ValueError('Unsupported affix',affix)
+
+		
