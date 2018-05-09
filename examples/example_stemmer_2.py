@@ -15,3 +15,4 @@ if __name__ == "__main__":
 	search	= ' '.join(valid)
 	
 	print("Keresés erre:",search)
+	

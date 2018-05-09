@@ -323,59 +323,63 @@ def just_asking(text):
 
 # add affixes to words based on their vowel harmony	
 def inverse(word,affix):
+	word	= lara.nlp.trim(word)
 	if not word:
 		return ''
 	vh		= lara.nlp.vowel_harmony(word)
 	result	= word
 	if affix in ('ra','re'):
+		if word[-1].lower() in ('a','e'):
+			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
 		if vh == 'magas':
-			return result+'ra'
-		else:
 			return result+'re'
-	if affix == 't':
+		else:
+			return result+'ra'
+	if affix in ('k','s','t'):
 		if lara.nlp.is_vowel(word[-1]):
 			if word[-1].lower() in ('a','e'):
 				result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
-			return result+'t'
-		elif vh == 'magas':
-			return result+'et'
+			if len(result)==2:
+				if word.lower()=="fű":
+					return result[0]+"üve"+affix
+				elif word.lower()=="tó":
+					return result[0]+"ava"+affix
+				elif word.lower()=="ló":
+					return result[0]+"ova"+affix
+			return result+affix
+		test	= _inverse_only_o(result)	# exceptions
+		if test:
+			test2	= sum([lara.nlp.is_vowel(char) for char in result]) # more exceptions
+			if test2<2:
+				return result+test+affix
+			return result[:-2]+result[-1]+test+affix
+		if vh == 'magas':
+			return result+'e'+affix
+		elif vh == 'vegyes':
+			return result+'o'+affix
 		else:
-			return result+'at'
-	if affix == 'k':
-		if lara.nlp.is_vowel(word[-1]):
-			if word[-1].lower() in ('a','e'):
-				result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
-			return result+'k'
-		elif vh == 'magas':
-			return result+'ek'
-		else:
-			return result+'ak'
+			return result+'a'+affix
 	if affix == 'i':
+		if len(result)==2:
+			if word.lower()=="fű":
+				return result[0]+"üvi"
+			elif word.lower()=="tó":
+				return result[0]+"avi"
+			elif word.lower()=="ló":
+				return result[0]+"ovi"
 		if word[-1]=='i':
 			return result
 		return result+'i'
-	if affix in ('bol','ból','böl','ből'):
+	if affix in ('bol','ból','böl','ből','rol','ról','röl','ről','tol','tól','töl','től'):
 		if word[-1].lower() in ('a','e'):
 			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
-		if vh in ('magas','vegye'):
-			return result+'ből'
-		return result+'ból'
-	if affix in ('rol','ról','röl','ről'):
-		if word[-1].lower() in ('a','e'):
-			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
-		if vh in ('magas','vegyes'):
-			return result+'ről'
-		return result+'ról'
-	if affix in ('tol','tól','töl','től'):
-		if word[-1].lower() in ('a','e'):
-			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
-		if vh in ('magas','vegyes'):
-			return result+'től'
-		return result+'tól'
+		if vh == 'magas':
+			return result+affix[0]+'ől'
+		return result+affix[0]+'ól'
 	if affix in ('nak','nek'):
 		if word[-1].lower() in ('a','e'):
 			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
-		if vh in ('magas','vegyes'):
+		if vh == 'magas':
 			return result+'nek'
 		return result+'nak'
 	if affix in ('val','vel'):
@@ -394,15 +398,33 @@ def inverse(word,affix):
 		else:
 			if len(word)>1:
 				if word[-2:].lower() in ('cs','gy','ly','ny','sz','ty','zs'):
-					result	= result[:-2]+result[-2]+result[-2]+result[-1]
+					if word[-3].lower()!=word[-2].lower():
+						result	= result[:-2]+result[-2]+result[-2]+result[-1]
+					else:
+						result	= result[:-2]+result[-2]+result[-1]
 					if vh == 'magas':
 						return result+'el'
 					else:
 						return result+'al'				
-			if vh == 'magas':
-				return result+result[-1]+'el'
+			if word[-2].lower()!=word[-1].lower():
+				if vh == 'magas':
+					return result+result[-1]+'el'
+				else:
+					return result+result[-1]+'al'
 			else:
-				return result+result[-1]+'al'		
+				if vh == 'magas':
+					return result+'el'
+				else:
+					return result+'al'
 	raise ValueError('Unsupported affix',affix)
 
-		
+def _inverse_only_o(word):
+	vowel	= ''
+	for char in word:
+		if lara.nlp.is_vowel(char):
+			if char not in ('o','O','ó','Ó','ö','Ö','ő','Ő'):
+				return False
+			else:
+				vowel	= char
+	return vowel.lower()
+				
