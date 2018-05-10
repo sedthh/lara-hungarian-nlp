@@ -241,7 +241,7 @@ def just_asking(text):
 			if len(word)>4:
 				vh	= lara.nlp.vowel_harmony(word)
 				if word[-1] in ('a','e'):
-					if word[-2] == 'r':
+					if word[-2] in ('b','r'):
 						if vh == 'magas':
 							if word[-1] == 'e':
 								word	= word[:-2]
@@ -281,6 +281,14 @@ def just_asking(text):
 										word	= word[:-4]
 									else:
 										word	= word[:-3]
+				elif word[-1] == 'n':
+					if word[-3] == 'b':
+						if vh == 'magas':
+							if word[-2] == 'e':
+								word	= word[:-3]
+						else:
+							if word[-2] == 'a':
+								word	= word[:-3]
 				if word[-1] == 'k':
 					if word[-3]=='n' and word[-2] in ('a','e'):
 						if vh == 'magas':
@@ -335,6 +343,20 @@ def inverse(word,affix):
 			return result+'re'
 		else:
 			return result+'ra'
+	if affix in ('ba','be'):
+		if word[-1].lower() in ('a','e'):
+			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
+		if vh == 'magas':
+			return result+'be'
+		else:
+			return result+'ba'
+	if affix in ('ban','ben'):
+		if word[-1].lower() in ('a','e'):
+			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
+		if vh == 'magas':
+			return result+'ben'
+		else:
+			return result+'ban'
 	if affix in ('k','s','t'):
 		if lara.nlp.is_vowel(word[-1]):
 			if word[-1].lower() in ('a','e'):
@@ -379,8 +401,12 @@ def inverse(word,affix):
 	if affix in ('nak','nek'):
 		if word[-1].lower() in ('a','e'):
 			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
-		if vh == 'magas':
+		if vh in 'magas':
 			return result+'nek'
+		if result[0].lower()=='e':
+			test2	= sum([lara.nlp.is_vowel(char) for char in result]) # more exceptions
+			if test2<2:
+				return result+'nek'
 		return result+'nak'
 	if affix in ('val','vel'):
 		if lara.nlp.is_vowel(word[-1]):
@@ -416,6 +442,35 @@ def inverse(word,affix):
 					return result+'el'
 				else:
 					return result+'al'
+	if affix in ('on','en','ön'):
+		if len(result)==2:
+			if word.lower()=="fű":
+				return "füvön"
+			elif word.lower()=="tó":
+				return "tavon"
+			elif word.lower()=="ló":
+				return "lovon"
+		if word.lower()=="pécs":
+			return "pécsett"
+		elif word.lower()=="győr":
+			return "győrött"
+		elif word.lower()=="vác":
+			return "vácott"
+		if lara.nlp.is_vowel(word[-1]):
+			if word[-1].lower() in ('a','e'):
+				result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
+			return result+'n'
+		test	= _inverse_only_o(result)	# exceptions
+		if test:
+			test2	= sum([lara.nlp.is_vowel(char) for char in result]) # more exceptions
+			if test2<2:
+				return result+test+'n'
+			return result[:-2]+result[-1]+test+'n'
+		if vh == 'magas':
+			return result+'en'
+		else:
+			return result+'on'
+			
 	raise ValueError('Unsupported affix',affix)
 
 def _inverse_only_o(word):

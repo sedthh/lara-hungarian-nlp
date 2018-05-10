@@ -132,7 +132,7 @@ elif 'are_you_a_robot' in chitchat_match:
 
 #### Create ML features
 
-Can create features from short Hungarian texts for Machine Learning models, without large dictionaries:
+Rule based stemmers can help you create features from short Hungarian texts for Machine Learning models, without the need for large dictionaries:
 
 ```python
 from lara import stemmer, nlp
@@ -156,6 +156,27 @@ print(bigrams)
 ```
 
 #### And much more
+
+Use keywords in actual sentences:
+
+```python
+from lara import nlp, stemmer
+
+query	= "Toto - Afrika"
+	
+parts	= query.split('-')
+artist	= stemmer.inverse(parts[0],'től')	# "tól" and "től" are both valid
+title	= stemmer.inverse(parts[1],'t')
+the	= ('az' if nlp.vowel_beginning(title) else 'a')
+	
+print('A zenelejátszó program az alábbi számot játssza:')
+print(artist,the,title)
+
+>>> A zenelejátszó program az alábbi számot játssza:
+>>> Tototól az Afrikát
+```
+
+Better understand poetry:
 
 ```python
 from lara import nlp
