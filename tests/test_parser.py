@@ -262,6 +262,39 @@ def test_parser_intents_match_best(intent,text,best):
 		result	= test.match_best(text[i],i+1)
 		assert best[i] == result
 
+@pytest.mark.parametrize("intent,text,order,preference", [
+	(	
+		{
+			"alma"		: [{"stem":"alma","wordclass":"noun"}],
+			"szed"		: [{"stem":"szed","wordclass":"verb"}],
+			"körte"		: [{"stem":"körte","wordclass":"noun"}]
+		},
+		[
+			"Mikor szedjük le a pirosabb almákat?",
+			"Mikor szedjük le a pirosabb almákat?",
+			"Mikor szedjük le a pirosabb almákat?",
+			"Mikor szedjük le a pirosabb almákat?"
+		],
+		[
+			["körte"],
+			["körte","szed"],
+			["körte","alma"],
+			["alma","szed"],
+		],
+		[
+			"szed",
+			"szed",
+			"alma",
+			"alma"
+		]
+	),
+])
+def test_parser_intents_match_order(intent,text,order,preference):
+	test	= parser.Intents(intent)
+	for i in range(len(text)):
+		result	= test.match_order(text[i],order[i])
+		assert preference[i] == result
+		
 @pytest.mark.parametrize("intent,text,best", [
 	(	
 		{

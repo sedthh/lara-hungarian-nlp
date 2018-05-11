@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 
+import re
 import lara.nlp
 
 # a stemmer that's slightly better than random guessing
@@ -250,16 +251,19 @@ def just_asking(text):
 								word	= word[:-2]
 				elif word[-1] == 't':
 					if len(word)>4:
-						if vh == 'magas':
-							if word[-2] in ('e','é'):
-								word	= word[:-2]
+						if re.findall(r'(ameri[ck][aá]|eur[oó]p[aá]|eur[aá]zsi[aá]|afri[ck][aá]|[aá]zsi[aá])t', word, re.IGNORECASE):
+							word	= word[:-1]
+						else:							
+							if vh == 'magas':
+								if word[-2] in ('e','é'):
+									word	= word[:-2]
+								else:
+									word	= word[:-1]
 							else:
-								word	= word[:-1]
-						else:
-							if word[-2] in ('a','á','o','ó'):
-								word	= word[:-2]
-							else:
-								word	= word[:-1]	
+								if word[-2] in ('a','á','o','ó'):
+									word	= word[:-2]
+								else:
+									word	= word[:-1]	
 				elif word[-1] == 'l':
 					if word[-2] in ('o','ó','ö','ő'):
 						if word[-3] in ('b','r','t'):

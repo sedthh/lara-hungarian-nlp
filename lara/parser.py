@@ -270,6 +270,27 @@ class Intents:
 		else:
 			return set()
 	
+	# Returns dictionary with N best matching intents with the highest value
+	def match_best(self, text, n=1):
+		if text:
+			score	= self.match(text)
+			if score:
+				best_candidates	= sorted(score, key=score.get, reverse=True)
+				best_candidates	= best_candidates[:(min(len(best_candidates),n))]
+				return {item:score[item] for item in best_candidates}
+		return {}
+		
+	# Get best match based on preference hierarchy
+	def match_order(self,text,preference=[]):
+		if text:
+			score	= self.match(text)
+			if score:
+				for item in preference:
+					if item in score:
+						return item
+				return max(score, key=score.get)
+		return ''
+	
 	# Remove matches from text
 	def clean(self, text="", deep=False):
 		if text:
@@ -413,16 +434,6 @@ class Intents:
 		if delete:
 			return text
 		return (False,0)
-		
-	# Returns dictionary with N best matching intents with the highest value
-	def match_best(self, text, n=1):
-		if text:
-			score	= self.match(text)
-			if score:
-				best_candidates	= sorted(score, key=score.get, reverse=True)
-				best_candidates	= best_candidates[:(min(len(best_candidates),n))]
-				return {item:score[item] for item in best_candidates}
-		return {}
 
 # Extract Class
 class Extract:
