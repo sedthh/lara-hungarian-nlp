@@ -334,8 +334,10 @@ def inverse(word,affix):
 	word	= lara.nlp.trim(word)
 	if not word:
 		return ''
-	vh		= lara.nlp.vowel_harmony(word)
+	vh		= lara.nlp.vowel_harmony(word.split()[-1])
 	result	= word
+	if not result[-1].isalnum():
+		result	= result+"-"
 	if affix in ('ra','re'):
 		if word[-1].lower() in ('a','e'):
 			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')

@@ -55,6 +55,10 @@ def vowel_harmony(word, vegyes=True):
 		magas	= re.compile('[eéiíöőüű]', re.IGNORECASE)
 		mely_m	= len(mely.findall(word))
 		magas_m	= len(magas.findall(word))
+		if not magas_m and not mely_m:
+			if word[-1].lower() in ('h','k','q'):
+				return 'mely'
+			return 'magas'				
 		if magas_m and mely_m:
 			if vegyes:
 				return 'vegyes'
@@ -62,7 +66,7 @@ def vowel_harmony(word, vegyes=True):
 		if magas_m>mely_m:
 			return 'magas'
 		return 'mely'
-	return 'hiba'
+	return 'mely'
 
 def is_vowel(letter):
 	if letter:
