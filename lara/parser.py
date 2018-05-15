@@ -104,6 +104,8 @@ class Intents:
 				item['typo_stem']	= item['stem']
 			else:
 				item['typo_stem']	= lara.nlp.trim(lara.nlp.strip_accents(lara.nlp.remove_double_letters(item['stem'])))
+				if not item['typo_stem']:
+					item['typo_stem']	= lara.nlp.trim(lara.nlp.remove_double_letters(item['stem']))
 		
 		if 'prefix' not in item:
 			if item['wordclass']	== 'verb':
@@ -122,13 +124,13 @@ class Intents:
 			if 'typo_prefix' not in item:
 				if isinstance(item['prefix'],list):
 					typo_prefix			= ['(?:'+self._scramble(lara.nlp.trim(lara.nlp.strip_accents(lara.nlp.remove_double_letters(elem))), (item['wordclass'] == 'adjective'))+')' for elem in item['prefix']]
-					item['typo_prefix']	= r'(?:'+('|'.join(typo_prefix))+r')?'
+					item['typo_prefix']	= r'(?:'+('|'.join(typo_prefix))+r')?\s?'
 				else:
 					item['typo_prefix']	= r''+lara.nlp.trim(lara.nlp.strip_accents(lara.nlp.remove_double_letters(item['prefix'])))
 			else:
 				if isinstance(item['typo_prefix'],list):
 					item['typo_prefix']	=  [re.escape(prefix) for prefix in item['typo_prefix']]
-					item['typo_prefix']	= r'(?:'+('|'.join(item['typo_prefix']))+')?' #prefix?
+					item['typo_prefix']	= r'(?:'+('|'.join(item['typo_prefix']))+')?\s?'
 				else:
 					item['typo_prefix']	= r''+(item['typo_prefix'])
 			if isinstance(item['prefix'],list):
@@ -142,14 +144,14 @@ class Intents:
 		else:
 			if 'typo_affix' not in item:
 				if isinstance(item['affix'],list):
-					typo_affix				= ['(?:'+self._scramble(lara.nlp.trim(lara.nlp.strip_accents(lara.nlp.remove_double_letters(elem))), (item['wordclass'] == 'adjective'))+')' for elem in item['affix']]
-					item['typo_affix']	= r'(?:'+('|'.join(typo_affix))+r')?'
+					typo_affix			= ['(?:'+self._scramble(lara.nlp.trim(lara.nlp.strip_accents(lara.nlp.remove_double_letters(elem))), (item['wordclass'] == 'adjective'))+')' for elem in item['affix']]
+					item['typo_affix']	= r'\s?(?:'+('|'.join(typo_affix))+r')?'
 				else:
 					item['typo_affix']	= r''+lara.nlp.strip_accents(item['affix'])
 			else:
 				if isinstance(item['typo_affix'],list):
 					item['typo_affix']	=  [re.escape(affix) for affix in item['typo_affix']]
-					item['typo_affix']	= r'(?:'+('|'.join(item['typo_affix']))+')?'
+					item['typo_affix']	= r'\s?(?:'+('|'.join(item['typo_affix']))+')?'
 				else:
 					item['typo_affix']	= r''+(item['typo_affix'])
 			if isinstance(item['affix'],list):
@@ -281,10 +283,17 @@ class Intents:
 		return {}
 		
 	# Get best match based on preference hierarchy
-	def match_order(self,text,preference=[]):
+	def match_order(self,text,preference=[],reverse=False):
 		if text:
 			score	= self.match(text)
 			if score:
+				if reverse:
+					if max(score, key=score.get) not in preference:
+						return max(score, key=score.get)
+					for item in score:
+						if item not in preference:
+							return item
+					preference.reverse()
 				for item in preference:
 					if item in score:
 						return item
