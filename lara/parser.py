@@ -956,7 +956,7 @@ class Extract:
 		return []
 	
 	def _currencies_fallback(self):
-		dates		= [item.replace('-',':') for item in self.dates()]
+		dates	= [item.replace('-',':') for item in self.dates()]
 		number	= [str(item) for item in self.numbers()]
 		against	= [item[-2] if (len(item)>2 and item[-1]==0 and item[-2]=='.') else item for item in number]
 		ignore	= []
@@ -977,15 +977,39 @@ class Extract:
 					okay.append(item)
 		return okay
 	
-	# extract commands and arguments from text: "/help lara" will return ('help',['lara'])
+	# extract commands and arguments from text: /help "about lara" will return ['help','about lara']
 	def commands(self):
-		if self.text and self.text[0] == '/':
-			commands				= (lara.nlp.trim(str(self.text[1:]))).split(" ")
-			if len(commands)>1:
-				return (commands[0],commands[1:])
-			else:
-				return (commands[0],[])
-		return ('',[])
+		result	= []
+		if len(self.text)>1 and self.text[0] in ('/','\\'):
+			quote	= ''
+			keyword	= ''
+			for char in self.text[1:]:
+				if char in (' ','"',"'"):
+					if char==' ':
+						if quote:
+							keyword	+= ' '
+						else:
+							if keyword:
+								result.append(keyword)
+								keyword	= ''
+					elif char in ('"',"'"):
+						if not quote:
+							if keyword:
+								result.append(keyword)
+								keyword	= ''
+							quote	= char
+						elif quote==char:
+							if keyword:
+								result.append(keyword)
+								keyword	= ''
+							quote	= ''
+						else:
+							keyword	+= char
+				else:
+					keyword	+= char
+			if keyword:
+				result.append(keyword)
+		return result
 	
 	# extract list of emojis from text via https://gist.github.com/naotokui/
 	def emojis(self):
@@ -1065,9 +1089,9 @@ class Extract:
 		dates			= self.dates(False)
 		relative		= self.relative_dates(False,c_relative)
 		times			= self.times(False,True,c_times)
-		dates_pos	= []
-		relative_pos= []
-		times_pos	= []
+		dates_pos		= []
+		relative_pos	= []
+		times_pos		= []
 		for item in dates:
 			for match in _re.finditer(r'\b'+re.escape(item), re.IGNORECASE, self.ntext):
 				dates_pos.append(match.span()[0])
@@ -1083,13 +1107,13 @@ class Extract:
 		dates			= self.dates()
 		relative		= self.relative_dates(True,c_relative)
 		times			= self.times(True,True,c_times)
-		results		= []
-		last_date	= ''
-		last_date_a= ''
-		last_time	= ''
-		dates_i		= 0
-		relative_i	= 0
-		times_i		= 0
+		results			= []
+		last_date		= ''
+		last_date_a		= ''
+		last_time		= ''
+		dates_i			= 0
+		relative_i		= 0
+		times_i			= 0
 		for i in range(max(dates_pos+relative_pos+times_pos)+1):
 			if i == dates_pos[dates_i]:
 				if last_date or last_time:

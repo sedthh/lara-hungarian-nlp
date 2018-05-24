@@ -38,7 +38,7 @@ if __name__ == "__main__":
 	print(busz_test.match("Lassan beérünk az autóbusszal a buszpályaudvarra."))
 	
 	hasonul_intents	= {
-		"enni"		: [{"stem":"esz","wordclass":"verb","match_stem":False},{"stem":"en","wordclass":"verb","match_stem":False}]
+		"enni"			: [{"stem":"esz","wordclass":"verb","match_stem":False},{"stem":"en","wordclass":"verb","match_stem":False}]
 	}
 	hasonul_test	= parser.Intents(hasonul_intents)
 	print(hasonul_test.match("Tőmorfémák: esz, en."))		# nem veszi figyelembe
@@ -46,7 +46,7 @@ if __name__ == "__main__":
 	print(hasonul_test.match("Azt nem lehet megenni."))
 	
 	egyutt_intents	= {
-		"jo_ido"	: [{"stem":"jó","wordclass":"adjective",
+		"jo_ido"		: [{"stem":"jó","wordclass":"adjective",
 						"inc":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}]}]
 	}
 	egyutt_test		= parser.Intents(egyutt_intents)
@@ -59,7 +59,7 @@ if __name__ == "__main__":
 	print(egyutt_test.match("Jó meleg az időjárás."))		# dupla pont
 
 	kulon_intents	= {
-		"jobb_ido"	: [{"stem":"jó","wordclass":"adjective",
+		"jobb_ido"		: [{"stem":"jó","wordclass":"adjective",
 						"inc":[{"stem":"idő","wordclass":"noun","affix":["járás"]},{"stem":"meleg","wordclass":"adjective"}],
 						"exc":[{"stem":"este","wordclass":"noun"}]}]
 	}
@@ -70,8 +70,8 @@ if __name__ == "__main__":
 	print(kulon_test.match("Jó meleg esténk van!"))			# szintén nem veszi figyelembe
 
 	fals_pozitiv	= {
-		"megszerel"	: [{"stem":"szerel","wordclass":"verb"}],
-		"hibasan"	: [{"stem":"alma","wordclass":"noun"}],
+		"megszerel"		: [{"stem":"szerel","wordclass":"verb"}],
+		"hibasan"		: [{"stem":"alma","wordclass":"noun"}],
 	}
 	hibas_test		= parser.Intents(fals_pozitiv)
 	print(hibas_test.match("Gyönyörű dolog a szerelem"))	# elfogadja hibásan

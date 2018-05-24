@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
 	important		= {
 		"lottery"		: [{"stem":"lottó","wordclass":"noun"}],
-		"winning"	: [{"stem":"nyer","wordclass":"verb"},{"stem":"nyertes","wordclass":"noun"}],
+		"winning"		: [{"stem":"nyer","wordclass":"verb"},{"stem":"nyertes","wordclass":"noun"}],
 		"losing"		: [{"stem":"veszt","wordclass":"verb"},{"stem":"veszít","wordclass":"verb"},{"stem":"vesztes","wordclass":"noun"}],
 	}
 	important_match	= parser.Intents(important).match(article)

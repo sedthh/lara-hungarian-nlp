@@ -15,8 +15,8 @@ if __name__ == "__main__":
 	order			= {
 		"pizza"			: [{"stem":"pizza","wordclass":"noun"}],
 		"cheese"		: [{"stem":"sajt","wordclass":"noun"}],
-		"pepperoni"	: [{"stem":"szalámi","wordclass":"noun"}],
-		"pineapple"	: [{"stem":"ananász","wordclass":"noun"}],
+		"pepperoni"		: [{"stem":"szalámi","wordclass":"noun"}],
+		"pineapple"		: [{"stem":"ananász","wordclass":"noun"}],
 	}
 	order_match		= parser.Intents(order).match_set(user_text)
 	

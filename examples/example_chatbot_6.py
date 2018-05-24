@@ -8,19 +8,19 @@ from lara import parser
 
 if __name__ == "__main__":
 	
-	user_text		= '/echo visszhang teszt'
+	user_text		= '/echo "visszhang teszt"'
 	
 	###
 	
 	info			= parser.Extract(user_text) # /echo command
-	commands	= info.commands()
+	commands		= info.commands()
 	func			= commands[0]
-	args			= commands[1]	# list
+	args			= commands[1]
 	
 	if func:
 		if func == 'ping':
 			print('pong')
 		elif func == 'echo':
-			print(' '.join(args))
+			print(args)
 	else:
 		print('Parancs nélküli üzenet') # nem íródik ki

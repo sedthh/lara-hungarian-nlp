@@ -12,10 +12,10 @@ if __name__ == "__main__":
 	
 	###
 	
-	tone				= entities.tone()
-	tone_match	= parser.Intents(tone).match_best(user_text,1) # match_best
-	common		= entities.common()
-	common_match= parser.Intents(common).match_set(user_text)
+	tone			= entities.tone()
+	tone_match		= parser.Intents(tone).match_best(user_text,1) # match_best
+	common			= entities.common()
+	common_match	= parser.Intents(common).match_set(user_text)
 	
 	if 'formal' in tone_match:
 		if 'profanity' in common_match:
