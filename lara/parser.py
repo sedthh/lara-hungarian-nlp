@@ -99,6 +99,11 @@ class Intents:
 				item['wordclass']	= item['wordclass'].lower()
 			else:
 				item['wordclass']	= 'special'		
+		if item['wordclass'] == 'regex':
+			item['stem']	= item['stem'].replace("\b","\\b")
+			if 'typo_stem' in item:
+				item['typo_stem']	= item['typo_stem'].replace("\b","\\b")
+				
 		if 'typo_stem' not in item:
 			if item['wordclass'] in ('regex','emoji'):
 				item['typo_stem']	= item['stem']
