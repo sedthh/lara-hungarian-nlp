@@ -24,7 +24,7 @@ def remove_double_letters(text, replace=''):
 		return replace.join([text[i] for i in range(len(text)-1) if text[i+1]!= text[i]]+[text[-1]])
 	return ''
 
-def remove_space_between_numbers(text, replace=''):
+def remove_spaces_between_numbers(text, replace=''):
 	if text:
 		return re.sub(r'(?<=\d)[\s\\\-/]+(?=\d)', replace, text)
 	return ''
@@ -363,3 +363,23 @@ def ngram(tokens,n=2):
 			grams	= [tokens[i:i+n] for i in range(len(tokens)-n+1)]
 			return [' '.join(item) for item in grams]
 	return []
+
+# a or az
+def az(word):
+	word	= trim(word)
+	if word:
+		if vowel_beginning(word):
+			return 'az'
+		if word[0] == '5':
+			return 'az'
+		if word[0] == '1':
+			number	= ''
+			for char in word:
+				if char.isnumeric():
+					number	+= char
+				else:
+					if char != ' ':
+						break
+			if len(number) in (1,4,7,10):
+				return 'az'
+	return 'a'

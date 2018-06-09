@@ -343,6 +343,10 @@ def inverse(word,affix):
 	if not result[-1].isalnum():
 		result	= result+"-"
 	if affix in ('ra','re'):
+		if word in ('a','az'):
+			return 'arra'
+		if word=='ez':
+			return 'erre'
 		if word[-1].lower() in ('a','e'):
 			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
 		if vh == 'magas':
@@ -350,6 +354,10 @@ def inverse(word,affix):
 		else:
 			return result+'ra'
 	if affix in ('ba','be'):
+		if word in ('a','az'):
+			return 'abba'
+		if word=='ez':
+			return 'ebbe'
 		if word[-1].lower() in ('a','e'):
 			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
 		if vh == 'magas':
@@ -357,6 +365,10 @@ def inverse(word,affix):
 		else:
 			return result+'ba'
 	if affix in ('ban','ben'):
+		if word in ('a','az'):
+			return 'abban'
+		if word=='ez':
+			return 'ebben'
 		if word[-1].lower() in ('a','e'):
 			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
 		if vh == 'magas':
@@ -364,6 +376,16 @@ def inverse(word,affix):
 		else:
 			return result+'ban'
 	if affix in ('k','s','t'):
+		if word in ('a','az'):
+			if affix=='k':
+				return 'azok'
+			if affix=='t':
+				return 'azt'
+		if word=='ez':
+			if affix=='k':
+				return 'ezek'
+			if affix=='t':
+				return 'ezt'
 		if lara.nlp.is_vowel(word[-1]):
 			if word[-1].lower() in ('a','e'):
 				result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
@@ -399,12 +421,20 @@ def inverse(word,affix):
 			return result
 		return result+'i'
 	if affix in ('bol','ból','böl','ből','rol','ról','röl','ről','tol','tól','töl','től'):
+		if word in ('a','az'):
+			return 'a'+affix[0]+affix[0]+'ól'
+		if word=='ez':
+			return 'e'+affix[0]+affix[0]+'ől'
 		if word[-1].lower() in ('a','e'):
 			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
 		if vh == 'magas':
 			return result+affix[0]+'ől'
 		return result+affix[0]+'ól'
 	if affix in ('nak','nek'):
+		if word in ('a','az'):
+			return 'annak'
+		if word == 'ez':
+			return 'ennek'
 		if word[-1].lower() in ('a','e'):
 			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
 		if vh in 'magas':
@@ -415,6 +445,10 @@ def inverse(word,affix):
 				return result+'nek'
 		return result+'nak'
 	if affix in ('val','vel'):
+		if word in ('a','az'):
+			return 'azzal'
+		if word == 'ez':
+			return 'ezzel'
 		if lara.nlp.is_vowel(word[-1]):
 			if word[-1].lower() in ('a','e'):
 				result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
@@ -449,6 +483,10 @@ def inverse(word,affix):
 				else:
 					return result+'al'
 	if affix in ('on','en','ön'):
+		if word in ('a','az'):
+			return 'azon'
+		if word == 'ez':
+			return 'ezen'
 		if len(result)==2:
 			if word.lower()=="fű":
 				return "füvön"

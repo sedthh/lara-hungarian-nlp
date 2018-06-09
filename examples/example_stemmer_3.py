@@ -12,7 +12,7 @@ if __name__ == "__main__":
 	parts	= query.split('-')
 	artist	= stemmer.inverse(parts[0],'től')	# "tól" and "től" are both valid
 	title	= stemmer.inverse(parts[1],'t')
-	the		= ('az' if nlp.vowel_beginning(title) else 'a')
+	the		= nlp.az(title)
 	
 	print('A zenelejátszó program az alábbi számot játssza:')
 	print(artist,the,title)
