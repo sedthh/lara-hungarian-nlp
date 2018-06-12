@@ -48,7 +48,7 @@ alma_intents	= {
 	"szed"		: [{"stem":"szed","wordclass":"verb"}],
 	"piros"		: [{"stem":"piros","wordclass":"adjective"}]
 }
-alma_test		= parser.Intents(alma_intents)
+alma_test	= parser.Intents(alma_intents)
 print(alma_test.match("Mikor szedjük le a pirosabb almákat?"))
 
 >>> {'alma': 1, 'szed': 2, 'piros': 2}
@@ -167,7 +167,7 @@ query	= "Toto - Afrika"
 parts	= query.split('-')
 artist	= stemmer.inverse(parts[0],'től')	# "tól" and "től" are both valid
 title	= stemmer.inverse(parts[1],'t')
-the	= ('az' if nlp.vowel_beginning(title) else 'a')
+the	= nlp.az(title)
 	
 print('A zenelejátszó program az alábbi számot játssza:')
 print(artist,the,title)

@@ -347,6 +347,8 @@ def inverse(word,affix):
 			return 'arra'
 		if word=='ez':
 			return 'erre'
+		if word.lower()=='budapest':
+			return result+'re'
 		if word[-1].lower() in ('a','e'):
 			result	= result[:-1]+result[-1].replace('a','á').replace('e','é')
 		if vh == 'magas':
@@ -494,7 +496,9 @@ def inverse(word,affix):
 				return "tavon"
 			elif word.lower()=="ló":
 				return "lovon"
-		if word.lower()=="pécs":
+		if word.lower()=="budapest":
+			return "budapesten"
+		elif word.lower()=="pécs":
 			return "pécsett"
 		elif word.lower()=="győr":
 			return "győrött"

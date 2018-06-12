@@ -1045,7 +1045,7 @@ class Extract:
 				results	=	[]
 				for item in matches:
 					item	= item.lower()
-					now	= _now
+					now		= _now
 					if 'holnap' in item:
 						if 'ut' in item:
 							now			+= datetime.timedelta(days = 2)
@@ -1084,13 +1084,13 @@ class Extract:
 	def timestamps(self,current=False):
 		# testing environment
 		c_relative		= False
-		c_times		= False
+		c_times			= False
 		if current:
-			c_relative	= current.split()[0]
-			now			= c_relative
-			c_times		= int((current.split()[1]).split(':')[0])
+			c_relative		= current.split()[0]
+			now				= c_relative
+			c_times			= int((current.split()[1]).split(':')[0])
 		else:
-			now			=	datetime.datetime.now().strftime('%Y-%m-%d')
+			now				= datetime.datetime.now().strftime('%Y-%m-%d')
 		dates			= self.dates(False)
 		relative		= self.relative_dates(False,c_relative)
 		times			= self.times(False,True,c_times)
@@ -1098,13 +1098,16 @@ class Extract:
 		relative_pos	= []
 		times_pos		= []
 		for item in dates:
-			for match in _re.finditer(r'\b'+re.escape(item), re.IGNORECASE, self.ntext):
+			regex	= re.compile(r'\b'+re.escape(item), re.IGNORECASE)
+			for match in regex.finditer(self.ntext):
 				dates_pos.append(match.span()[0])
 		for item in relative:
-			for match in _re.finditer(r'\b'+re.escape(item), re.IGNORECASE, self.ntext):
+			regex	= re.compile(r'\b'+re.escape(item), re.IGNORECASE)
+			for match in regex.finditer(self.ntext):
 				relative_pos.append(match.span()[0])
 		for item in times:
-			for match in _re.finditer(r'\b'+re.escape(item), re.IGNORECASE, self.ntext):
+			regex	= re.compile(r'\b'+re.escape(item), re.IGNORECASE)
+			for match in regex.finditer(self.ntext):
 				times_pos.append(match.span()[0])
 		dates_pos.append(-1)
 		relative_pos.append(-1)
@@ -1308,7 +1311,8 @@ class _re:
 			_re.findall_cache[flags_str][t_hash][e_hash]	= _re.compile_cache[flags_str][e_hash].findall(text)
 		return _re.findall_cache[flags_str][t_hash][e_hash]
 	
-	# cache re.compile().finditer() outputs
+	# for some unknown reason this does not work as intended
+	'''
 	def finditer(expression,flags,text):
 		e_hash			= hashlib.sha1(str(expression).encode("utf-8")).hexdigest()
 		_re.compile(e_hash,expression,flags)
@@ -1321,6 +1325,7 @@ class _re:
 		if e_hash not in _re.finditer_cache[flags_str][t_hash]:
 			_re.finditer_cache[flags_str][t_hash][e_hash]	= _re.compile_cache[flags_str][e_hash].finditer(text)
 		return _re.finditer_cache[flags_str][t_hash][e_hash]
+	'''
 	
 	# user cached re.compile() for re.sub()
 	def sub(expression,flags,repl,string):
