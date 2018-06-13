@@ -619,11 +619,27 @@ def test_parser_extract_convert_numbers(info):
 		}
 	),
 	(
+		{	
+			"text"		: "Hívj fel ezen a számon 2018 IV. huszadikán mondjuk délután nyolc perccel háromnegyed kettő előtt!",
+			"function"	: "times",
+			"args"		: [True,True,10],
+			"result"		: ["13:37"]
+		}
+	),
+	(
+		{	
+			"text"		: "Hívj fel ezen a számon 2018 IV. huszadikán mondjuk délután nyolc perccel háromnegyed kettő előtt!",
+			"function"	: "dates",
+			"args"		: [True],
+			"result"	: ["2018-04-20"]
+		}
+	),
+	(
 		{
 			"text"		: "18/01/09 vagy 18-01-09 vagy 2018. 01. 09. vagy 2018. 01. 09-én vagy 2018 VII 20. és így 2018 január 20-án",
 			"function"	: "dates",
 			"args"		: [False],
-			"result"		: ["18/01/09","18-01-09","2018. 01. 09","2018. 01. 09","2018 VII 20","2018 január 20"]
+			"result"		: ["18/01/09","18-01-09","2018. 01. 09","2018. 01. 09","2018 VII 20","2018 január 20-án"]
 		}
 	),
 	(
