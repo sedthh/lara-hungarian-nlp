@@ -443,6 +443,12 @@ def test_parser_extract(info):
 			"in"		: "egymillió és százezer és tízezer és tízmilliótíz és százezerszáz",
 			"out"		: "1000000 és 100000 és 10000 és 10000010 és 100100"
 		}
+	),
+	(
+		{
+			"in"		: "mennyi egyszer egy és kétszer kettő?",
+			"out"		: "mennyi 1szer 1 és 2szer 2?"
+		}
 	)
 ])
 def test_parser_extract_convert_numbers(info):

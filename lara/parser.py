@@ -1156,7 +1156,7 @@ class Extract:
 	# Converts text representation of numbers to digits
 	def _convert_numbers(self,text):
 		if text:
-			matches	= _re.findall(r'((?:m[ií]n[uú]sz\s?|negat[ií]v\s?)?(?:(?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|eg+y|els[eoöő]|k[eé]t+[oöő]?|m[aá]sod(?:ik)?|h[aá]rom|harmadik|n[eé]g+y|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?\W*)|(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z|t[ií]z|h[uú]sz|harminc|nulla|z[eé]r[oó])\W*)+(?:[aeoö]dik)?(?:j?[aáeéi]+[gnt]?|[aáeéoöő]?t|kor|t[oóöő]l|r[ae]|[ckmrtvz]?[ae]l)?)\b', re.IGNORECASE, text)
+			matches	= _re.findall(r'((?:m[ií]n[uú]sz\s?|negat[ií]v\s?)?(?:(?:(?:(?:(?:t[ií]z|h[uú]sz|harminc)(?:[eo]n)?)?(?:nulla|eg+y|els[eoöő]|k[eé]t+[oöő]?|m[aá]sod(?:ik)?|h[aá]rom|harmadik|n[eé]g+y|[oö]t|hat|h[eé]t|nyolc|kilenc)(?:v[ae]n)?)(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z)?\W*)|(?:milli[aá]rd|milli[oó]|ezer|sz[aá]z|t[ií]z|h[uú]sz|harminc|nulla|z[eé]r[oó])\W*)+(?:[aeoö]dik)?(?:j?[aáeéi]+[gnt]?|[aáeéoöő]?t|kor|t[oóöő]l|r[ae]|sz[eoö]r|[ckmrtvz]?[ae]l)?)\b', re.IGNORECASE, text)
 			results	= {}
 			for match in matches:
 				value	= 0
@@ -1244,7 +1244,7 @@ class Extract:
 					
 			swap 	= sorted(results.items(), key=lambda x: x[1], reverse=True)
 			for item in swap:
-				text		= _re.sub(r'\b('+re.escape(item[0])+r')((?:[aeoö]dik?)?(?:j?[aáeéi]+[gnt]?|[aáeéoöő]?t|kor|t[oóöő]l|r[ae]|[ckmrtvz]?[ae]l)?)?\b', re.IGNORECASE, re.escape(str(item[1]))+r'\2', text)
+				text		= _re.sub(r'\b('+re.escape(item[0])+r')((?:[aeoö]dik?)?(?:j?[aáeéi]+[gnt]?|[aáeéoöő]?t|kor|t[oóöő]l|r[ae]|sz[eoö]r|[ckmrtvz]?[ae]l)?)?\b', re.IGNORECASE, re.escape(str(item[1]))+r'\2', text)
 			return text
 		return ''
 	
