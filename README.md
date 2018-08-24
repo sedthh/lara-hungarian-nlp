@@ -14,7 +14,8 @@ Instead of being an all purpose NLP tool, **Lara** was created to fit the [quirk
 
 ## About Lara
 
-Here is a short list of things you can easily do with **Lara** in Hungarian. For full documentation and further examples, **CHECK OUT [THE WIKI](https://github.com/sedthh/lara-hungarian-nlp/wiki)**.
+Here is a short list of things you can easily do with **Lara** in Hungarian. For full documentation and further examples, **CHECK OUT [THE WIKI](https://github.com/sedthh/lara-hungarian-nlp/wiki)**. A complete case study on [how to make ChatBots and Virtual Assistants](https://chatbotsmagazine.com/a-complete-case-study-for-developing-smart-assistants-79316be80e89) in foreign languages is also available. 
+
 
 #### Find intents
 

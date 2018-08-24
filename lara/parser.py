@@ -212,10 +212,9 @@ class Intents:
 			item['pattern']			= r''+item['stem']+item['affix']
 			item['typo_pattern']	= r''+item['typo_stem']+item['typo_affix']
 		else:
-			
-			item['pattern']		= r'(?:'+re.escape(item['stem'])+r'{1,2}'+item['affix']+r')'
+			item['pattern']			= r'(?:'+re.escape(item['stem'])+r'{1,2}'+item['affix']+r')'
 			scramble				= self._scramble(item['typo_stem'], (item['wordclass'] == 'adjective'))
-			item['typo_pattern']= r'(?:'+scramble+item['typo_affix']+')'
+			item['typo_pattern']	= r'(?:'+scramble+item['typo_affix']+')'
 			if not item['ignorecase']:
 				item['pattern']			= r'(?s)'+item['pattern']
 				item['typo_pattern']	= r'(?s)'+item['typo_pattern']
@@ -232,7 +231,7 @@ class Intents:
 				
 		item['pattern']			= item['prefix']+item['pattern']	
 		item['typo_pattern']	= item['typo_prefix']+item['typo_pattern']
-
+				
 		return item
 	
 	# generate scrambled keywords
@@ -612,10 +611,13 @@ class Extract:
 		return results
 		
 	# extract list of common Hungarian date formats from text without further processing them
-	def dates(self,normalize=True,convert=True):
+	def dates(self,normalize=True,convert=True,current=False):
 		results	= []
 		if self.text:
-			now = datetime.datetime.now()
+			if current:
+				now		= datetime.datetime.strptime(current,"%Y-%m-%d")
+			else:
+				now 	= datetime.datetime.now()
 			matches	= _re.findall(r'((\d{2})?(\d{2}([\\\/\.\-]\s?|\s))([eé]v\s?)?(\d{1,2}([\\\/\.\-]\s?|\s)(h[oó](nap)?\s?)?)?(\d{1,2}))\W*([aáeéio][ikn]|nap)?\b', re.IGNORECASE, self.text)
 			for item in matches:
 				match	= re.sub('([eé]v|h[oó]|nap)', '', item[0])
@@ -639,7 +641,7 @@ class Extract:
 							results.append(str(now.year)+'-'+parts[0].zfill(2)+'-'+parts[1].zfill(2))
 					else:
 						results.append(item[0])
-			matches	= _re.findall(r'((\d{2}(\d{2})?\W{1,2})?((jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec)\w{0,10}\W{1,2}|[ivx]{1,4}\W{0,2})(h[aoó][nv]?\w{0,7}\W{1,2})?(\d{1,2})?\W?\w*)\b', re.IGNORECASE, self.ntext if convert else self.text)
+			matches	= _re.findall(r'\b((\d{2}(\d{2})?\W{1,2})?((jan|feb|m[aá]r|[aá]pr|m[aá]j|j[uú][nl]|aug|sz?ep|okt|nov|dec)\w{0,10}\W{1,2}|[ivx]{1,4}\W{0,2})(h[aoó][nv]?\w{0,7}\W{1,2})?(\d{1,2})?\W?\w*)\b', re.IGNORECASE, self.ntext if convert else self.text)
 			for item in matches:
 				match	= item[0].lower()
 				year	= ''
@@ -713,11 +715,22 @@ class Extract:
 							month	= str(11-len(roman)).zfill(2)
 					else:
 						month	= str(len(roman)).zfill(2)
-				if month and month!='00':
+				if month and month!='00' and len(day)<=2:
 					if normalize:
 						results.append(year+'-'+month+'-'+day)
 					else:
 						results.append(item[0])
+			if not results:
+				matches	= _re.findall(r'\b(?<!\-)([0123]?\d)[\.\-aáeéint]+(?![kloópr])', re.IGNORECASE, self.ntext if convert else self.text)
+				for item in matches:
+					if int(item)<=31:
+						if normalize:
+							year	= str(now.year)
+							month	= str(now.month).zfill(2)
+							day		= item.zfill(2)
+							results.append(year+'-'+month+'-'+day)
+						else:
+							results.append(item)	
 		return results
 		
 	# extract times like 12:00 or délután 4

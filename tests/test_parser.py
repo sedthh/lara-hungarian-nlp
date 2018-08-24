@@ -636,7 +636,7 @@ def test_parser_extract_convert_numbers(info):
 		{	
 			"text"		: "Hívj fel ezen a számon 2018 IV. huszadikán mondjuk délután nyolc perccel háromnegyed kettő előtt!",
 			"function"	: "dates",
-			"args"		: [True],
+			"args"		: [True,True,'2018-04-01'],
 			"result"	: ["2018-04-20"]
 		}
 	),
@@ -644,15 +644,23 @@ def test_parser_extract_convert_numbers(info):
 		{
 			"text"		: "18/01/09 vagy 18-01-09 vagy 2018. 01. 09. vagy 2018. 01. 09-én vagy 2018 VII 20. és így 2018 január 20-án",
 			"function"	: "dates",
-			"args"		: [False],
+			"args"		: [False,True,'2018-04-01'],
 			"result"		: ["18/01/09","18-01-09","2018. 01. 09","2018. 01. 09","2018 VII 20","2018 január 20-án"]
+		}
+	),
+	(
+		{
+			"text"		: "találkozzunk 20-án valamikor vagy 21-én?",
+			"function"	: "dates",
+			"args"		: [True,True,'2018-04-01'],
+			"result"		: ["2018-04-20","2018-04-21"]
 		}
 	),
 	(
 		{
 			"text"		: "18/01/09 vagy 18-01-09 vagy 2019. 01. 09. vagy 2018. 01. 09-én vagy 2018 VII 20. és így 2018 január 20-án",
 			"function"	: "dates",
-			"args"		: [True],
+			"args"		: [True,True,'2018-04-01'],
 			"result"		: ["2018-01-09","2018-01-09","2019-01-09","2018-01-09","2018-07-20","2018-01-20"]
 		}
 	),
