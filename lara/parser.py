@@ -238,8 +238,13 @@ class Intents:
 	def _scramble(self,text,is_adjective=False):
 		if len(text)>3:
 			typo		= [text[1:-1]]
+			remove_one	= bool(len(text)>5)
 			for i in range(len(text)-3):
 				typo.append(re.escape(text[1:i+1]+text[i+2]+text[i+1]+text[i+3:-1]))
+				if remove_one:
+					typo.append(re.escape(text[1:i+1]+text[i+2]+text[i+3:-1]))
+			if remove_one:
+				typo.append(re.escape(text[1:-2]))
 			is_consonant= lara.nlp.is_consonant(text[-1])
 			text		= re.escape(text[0])+'(?:'+('|'.join(typo))+')(?:'+re.escape(text[-1])
 			text		= '[\s\-]?'.join(text.split('\ '))

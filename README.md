@@ -38,6 +38,7 @@ Will `match` the intent `"to_do"` in the following sentences:
 - Teljesen **kicsinálva** érzem magamat ettől a melegtől.
 - **Csinálhatott** volna mást is.
 - **Visszacsinalnad** az ekezeteket a billentyuzetemen, kerlek?
+- Vigyázz, hogy el ne gépeld a **csniálni** igét!
 
 By defining the `wordclass` and `stem` of a keyword, **Lara** will generate possible patterns for text matching, without having to rely on large dictionaries!
 

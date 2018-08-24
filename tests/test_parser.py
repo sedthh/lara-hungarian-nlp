@@ -68,7 +68,9 @@ def test_parser_intents_add(intents,text,match):
 			"Megcsináltatták a berendezést.",
 			"Teljesen kicsinálva érzem magamat ettől a melegtől.",
 			"Csinálhatott volna mást is.",
-			"Visszacsinalnad az ekezeteket a billentyuzetemen, kerlek?"
+			"Visszacsinalnad az ekezeteket a billentyuzetemen, kerlek?",
+			"Szépen megcsiáltad a feladatot csak kihagytál egy karaktert!",
+			"Vigyázz, hogy el ne gépeld a csniálni igét!"
 		],
 		[
 			{'to_do': 2},
@@ -77,6 +79,8 @@ def test_parser_intents_add(intents,text,match):
 			{'to_do': 2},
 			{'to_do': 2},
 			{'to_do': 2},
+			{'to_do': 1},
+			{'to_do': 1},
 			{'to_do': 1}
 		]
 	),
