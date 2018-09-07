@@ -195,4 +195,6 @@ for line in husz:
 
 ## Licensing
 
-This project has **dual licensing**. You may use it either under the [GNU GPLv3 License](LICENSE.md) for Open Source ChatBot solutions and NLP Research purposes or [contact me](https://github.com/sedthh) about different licensing options for commercial use. 
+Lara is available under the MIT license starting from version 2.0.0 and up.
+
+Feel free to use it for your Hungarian ChatBot solutions and NLP Research purposes. [Let me know](https://github.com/sedthh) if you've used it in an interesting project. 
